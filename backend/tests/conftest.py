@@ -27,10 +27,10 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.pool import NullPool
 
-from app.auth import create_access_token
-from app.core.config import Settings, get_settings
-from app.infra.persistence.db.base import Base
-from app.infra.persistence.models.user_model import UserModel
+from src.auth import create_access_token
+from src.core.config import Settings, get_settings
+from src.infra.persistence.db.base import Base
+from src.infra.persistence.models.user_model import UserModel
 
 
 def create_override_get_db(db_session):
@@ -118,8 +118,8 @@ async def auth_client(
     test_user: UserModel,
     auth_token: str,
 ) -> AsyncGenerator[AsyncClient, None]:
-    from app.infra.persistence.db.session import get_db
-    from app.main import app
+    from src.infra.persistence.db.session import get_db
+    from src.main import app
 
     app.dependency_overrides[get_db] = create_override_get_db(db_session)
 
@@ -163,8 +163,8 @@ async def another_auth_client(
     db_session: AsyncSession,
     another_user: UserModel,
 ) -> AsyncGenerator[AsyncClient, None]:
-    from app.infra.persistence.db.session import get_db
-    from app.main import app
+    from src.infra.persistence.db.session import get_db
+    from src.main import app
 
     app.dependency_overrides[get_db] = create_override_get_db(db_session)
 
@@ -179,8 +179,8 @@ async def another_auth_client(
 
 @pytest_asyncio.fixture
 async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient, None]:
-    from app.infra.persistence.db.session import get_db
-    from app.main import app
+    from src.infra.persistence.db.session import get_db
+    from src.main import app
 
     app.dependency_overrides[get_db] = create_override_get_db(db_session)
 

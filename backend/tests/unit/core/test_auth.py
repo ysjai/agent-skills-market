@@ -22,9 +22,9 @@ import pytest
 from fastapi import HTTPException, status
 from jwt.exceptions import InvalidTokenError as JWTError
 
-from app.core.auth import get_current_user
-from app.domain.aggregates.user import User
-from app.domain.value_objects.email import Email
+from src.core.auth import get_current_user
+from src.domain.aggregates.user import User
+from src.domain.value_objects.email import Email
 
 
 class TestGetCurrentUserAuthenticationScenarios:

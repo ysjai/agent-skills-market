@@ -2,7 +2,7 @@
 
 import logging
 
-from app.core.logging import SensitiveDataFilter, get_logger, setup_logging
+from src.core.logging import SensitiveDataFilter, get_logger, setup_logging
 
 
 class TestSensitiveDataFilter:

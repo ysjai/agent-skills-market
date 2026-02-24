@@ -5,10 +5,10 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.get_tree_handler import handle_get_tree
-from app.domain.aggregates.tree import Tree
-from app.domain.exceptions import ResourceNotFoundError
-from app.domain.repositories.tree_repository import TreeRepository
+from src.application.handlers.get_tree_handler import handle_get_tree
+from src.domain.aggregates.tree import Tree
+from src.domain.exceptions import ResourceNotFoundError
+from src.domain.repositories.tree_repository import TreeRepository
 
 
 class TestGetTreeHandler:

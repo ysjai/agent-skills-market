@@ -5,8 +5,8 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.list_skills_handler import handle_list_skills
-from app.domain.repositories.skill_repository import SkillRepository
+from src.application.handlers.list_skills_handler import handle_list_skills
+from src.domain.repositories.skill_repository import SkillRepository
 
 
 class TestListSkillsHandler:

@@ -9,7 +9,7 @@ Tests the get_db function to cover exception handling paths:
 
 import pytest
 
-from app.infra.persistence.db.session import get_db
+from src.infra.persistence.db.session import get_db
 
 
 class TestSessionExceptionHandling:

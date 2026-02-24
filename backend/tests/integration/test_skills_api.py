@@ -5,8 +5,8 @@ import pytest_asyncio
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.persistence.models.skill_model import SkillModel
-from app.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.models.skill_model import SkillModel
+from src.infra.persistence.models.user_model import UserModel
 
 
 @pytest_asyncio.fixture

@@ -247,16 +247,16 @@ frontend/lib/__tests__/
 ## 添加新功能
 
 ### 添加新模型
-1. `backend/app/models/` 创建模型
-2. `backend/app/schemas/` 创建 schema
-3. `backend/app/crud/` 创建 CRUD
-4. `backend/app/routers/` 添加路由
+1. `backend/src/models/` 创建模型
+2. `backend/src/schemas/` 创建 schema
+3. `backend/src/crud/` 创建 CRUD
+4. `backend/src/routers/` 添加路由
 5. `alembic revision --autogenerate -m "desc"` + `alembic upgrade head`
 
 ### 添加 API 端点
-1. `backend/app/routers/` 创建路由
+1. `backend/src/routers/` 创建路由
 2. 使用 `Depends(get_current_user)` 保护认证接口
-3. `backend/app/api/__init__.py` 注册路由
+3. `backend/src/api/__init__.py` 注册路由
 
 ### 数据库迁移
 

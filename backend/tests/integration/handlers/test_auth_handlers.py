@@ -18,8 +18,8 @@ import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.auth import create_access_token, create_refresh_token
-from app.infra.persistence.models.user_model import UserModel
+from src.auth import create_access_token, create_refresh_token
+from src.infra.persistence.models.user_model import UserModel
 
 AUTH_PREFIX = "/api/auth"
 
@@ -127,10 +127,10 @@ class TestRegisterUserHandler:
         db_session: AsyncSession,
     ):
         """场景2: 带 phone 参数注册，phone 保存成功"""
-        from app.application.handlers.register_user_handler import (
+        from src.application.handlers.register_user_handler import (
             handle_register_user,
         )
-        from app.infra.persistence.repositories.sql_user_repository import (
+        from src.infra.persistence.repositories.sql_user_repository import (
             SqlUserRepository,
         )
 
@@ -186,7 +186,7 @@ class TestRefreshTokenHandler:
     @pytest.mark.asyncio
     async def test_refresh_fails_when_no_sub_in_token(self, client: AsyncClient):
         """场景2: Token 中无 sub 字段时返回 UnauthorizedError"""
-        from app.core.config import get_settings
+        from src.core.config import get_settings
 
         settings = get_settings()
         expire = datetime.now(timezone.utc) + timedelta(days=7)
@@ -208,7 +208,7 @@ class TestRefreshTokenHandler:
     @pytest.mark.asyncio
     async def test_refresh_fails_with_invalid_user_id_format(self, client: AsyncClient):
         """场景3: Token 中包含无效的 user_id 格式时返回 UnauthorizedError"""
-        from app.core.config import get_settings
+        from src.core.config import get_settings
 
         settings = get_settings()
         expire = datetime.now(timezone.utc) + timedelta(days=7)

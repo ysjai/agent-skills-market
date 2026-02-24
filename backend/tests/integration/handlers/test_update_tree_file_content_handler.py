@@ -16,14 +16,14 @@ import pytest_asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.handlers.update_tree_file_content_handler import (
+from src.application.handlers.update_tree_file_content_handler import (
     handle_update_tree_file_content,
 )
-from app.domain.exceptions import ResourceNotFoundError
-from app.infra.persistence.models.blob_model import BlobModel
-from app.infra.persistence.models.tree_model import TreeModel
-from app.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
-from app.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
+from src.domain.exceptions import ResourceNotFoundError
+from src.infra.persistence.models.blob_model import BlobModel
+from src.infra.persistence.models.tree_model import TreeModel
+from src.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
+from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
 
 @pytest_asyncio.fixture

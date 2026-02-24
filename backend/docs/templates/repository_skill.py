@@ -5,9 +5,9 @@ from __future__ import annotations
 import uuid
 from abc import ABC, abstractmethod
 
-from app.domain.entities.skill import Skill
+from src.domain.entities.skill import Skill
 
-from app.domain.value_objects.slug import Slug
+from src.domain.value_objects.slug import Slug
 
 
 class SkillRepository(ABC):
@@ -38,7 +38,7 @@ from sqlalchemy import Boolean, DateTime, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.infra.persistence.db.base import Base
+from src.infra.persistence.db.base import Base
 
 
 class SkillModel(Base):
@@ -59,8 +59,8 @@ class SkillModel(Base):
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.repositories.skill_repository import SkillRepository
-from app.infra.persistence.models.skill_model import SkillModel
+from src.domain.repositories.skill_repository import SkillRepository
+from src.infra.persistence.models.skill_model import SkillModel
 
 
 class SqlSkillRepository(SkillRepository):

@@ -3,7 +3,7 @@
 import uuid
 from datetime import datetime
 
-from app.domain.entities.skill import Skill
+from src.domain.entities.skill import Skill
 from pydantic import BaseModel, Field
 
 

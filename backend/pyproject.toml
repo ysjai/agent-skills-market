@@ -52,7 +52,7 @@ dev = [
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["app*"]
+include = ["src*"]
 
 [tool.ruff]
 line-length = 100
@@ -83,7 +83,7 @@ filterwarnings = [
 
 
 [tool.coverage.run]
-source = ["app"]
+source = ["src"]
 omit = [
     "*/tests/*",
     "*/test_*.py",

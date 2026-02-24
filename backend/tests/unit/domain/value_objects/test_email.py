@@ -12,8 +12,8 @@
 
 import pytest
 
-from app.domain.exceptions import ValidationError
-from app.domain.value_objects.email import Email
+from src.domain.exceptions import ValidationError
+from src.domain.value_objects.email import Email
 
 
 class TestValidEmailCreation:

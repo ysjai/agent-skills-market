@@ -5,10 +5,10 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.move_tree_file_handler import handle_move_tree_file
-from app.domain.aggregates.tree import Tree
-from app.domain.exceptions import ResourceNotFoundError
-from app.domain.repositories.tree_repository import TreeRepository
+from src.application.handlers.move_tree_file_handler import handle_move_tree_file
+from src.domain.aggregates.tree import Tree
+from src.domain.exceptions import ResourceNotFoundError
+from src.domain.repositories.tree_repository import TreeRepository
 
 
 class TestMoveTreeFileHandler:

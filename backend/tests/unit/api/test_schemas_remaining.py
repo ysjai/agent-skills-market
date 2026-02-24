@@ -4,8 +4,8 @@ from datetime import datetime
 from unittest.mock import Mock
 from uuid import uuid4
 
-from app.api.schemas.blob import GetBlobResp
-from app.domain.entities.blob import Blob
+from src.api.schemas.blob import GetBlobResp
+from src.domain.entities.blob import Blob
 
 
 class TestGetBlobResp:

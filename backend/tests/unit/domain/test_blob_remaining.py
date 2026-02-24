@@ -2,7 +2,7 @@
 
 
 
-from app.domain.entities.blob import Blob
+from src.domain.entities.blob import Blob
 
 
 class TestBlobRemaining:

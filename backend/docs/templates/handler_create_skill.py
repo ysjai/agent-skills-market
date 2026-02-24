@@ -3,9 +3,9 @@
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.repositories.skill_repository import SkillRepository
-from app.infra.persistence.db.session import get_db
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.domain.repositories.skill_repository import SkillRepository
+from src.infra.persistence.db.session import get_db
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 
 
 async def get_skill_repo(
@@ -16,11 +16,11 @@ async def get_skill_repo(
 
 import uuid
 
-from app.domain.entities.skill import Skill
+from src.domain.entities.skill import Skill
 
-from app.domain.exceptions import SkillAlreadyExistsError
-from app.domain.repositories.skill_repository import SkillRepository
-from app.domain.value_objects.slug import Slug
+from src.domain.exceptions import SkillAlreadyExistsError
+from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.value_objects.slug import Slug
 
 
 async def handle_create_skill(
@@ -47,14 +47,14 @@ async def handle_create_skill(
 
 
 
-from app.dependencies.auth import get_current_user
-from app.schemas.skill import CreateSkillReq, CreateSkillResp
+from src.dependencies.auth import get_current_user
+from src.schemas.skill import CreateSkillReq, CreateSkillResp
 from fastapi import APIRouter, Depends, status
 
-from app.api.dependencies.repositories import get_skill_repo
-from app.application.handlers.create_skill_handler import handle_create_skill
-from app.domain.repositories.skill_repository import SkillRepository
-from app.models.user import User
+from src.api.dependencies.repositories import get_skill_repo
+from src.application.handlers.create_skill_handler import handle_create_skill
+from src.domain.repositories.skill_repository import SkillRepository
+from src.models.user import User
 
 router = APIRouter(prefix="/skills", tags=["skills"])
 

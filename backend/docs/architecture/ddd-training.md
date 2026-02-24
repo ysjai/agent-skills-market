@@ -316,8 +316,8 @@ class SkillModel(Base):
     updated_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), server_default=text("NOW()"), onupdate=text("NOW()"))
 
     def to_domain(self) -> Skill:
-        from app.domain.aggregates.skill import Skill
-        from app.domain.value_objects.slug import Slug
+        from src.domain.aggregates.skill import Skill
+        from src.domain.value_objects.slug import Slug
         return Skill(id=self.id, user_id=self.user_id, name=self.name, slug=Slug(self.slug), description=self.description, tree_id=self.tree_id, version=self.version, is_public=self.is_public, created_at=self.created_at, updated_at=self.updated_at)
 
     @classmethod
@@ -521,7 +521,7 @@ from fastapi import HTTPException
 # ✅ GOOD: Domain is pure Python
 from dataclasses import dataclass
 from uuid import UUID
-from app.domain.value_objects.slug import Slug
+from src.domain.value_objects.slug import Slug
 ```
 
 ### Exceptions with HTTP Codes
@@ -546,13 +546,13 @@ CATEGORY_STATUS_MAP = { "NOT_FOUND": 404, "CONFLICT": 409 }
 
 | Type | Path |
 |------|------|
-| Aggregates | `app/domain/aggregates/` |
-| Value Objects | `app/domain/value_objects/` |
-| Repository Interfaces | `app/domain/repositories/` |
-| Factories | `app/domain/factories/` |
-| Handlers | `app/application/handlers/` |
-| ORM Models | `app/infra/persistence/models/` |
-| Repository Impl | `app/infra/persistence/repositories/` |
+| Aggregates | `src/domain/aggregates/` |
+| Value Objects | `src/domain/value_objects/` |
+| Repository Interfaces | `src/domain/repositories/` |
+| Factories | `src/domain/factories/` |
+| Handlers | `src/application/handlers/` |
+| ORM Models | `src/infra/persistence/models/` |
+| Repository Impl | `src/infra/persistence/repositories/` |
 
 ### Naming Conventions
 

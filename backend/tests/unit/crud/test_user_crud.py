@@ -6,8 +6,8 @@ from unittest.mock import AsyncMock, MagicMock
 import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.crud.user import UserCRUD, user
-from app.infra.persistence.models.user_model import UserModel
+from src.crud.user import UserCRUD, user
+from src.infra.persistence.models.user_model import UserModel
 
 
 class TestUserCRUD:
@@ -92,6 +92,6 @@ class TestUserCRUDSingleton:
 
     def test_user_singleton_is_same_instance(self):
         """Test user singleton is same instance on multiple imports."""
-        from app.crud.user import user as user2
+        from src.crud.user import user as user2
 
         assert user is user2

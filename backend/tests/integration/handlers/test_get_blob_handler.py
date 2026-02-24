@@ -5,10 +5,10 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.get_blob_handler import handle_get_blob
-from app.domain.entities.blob import Blob
-from app.domain.exceptions import ResourceNotFoundError
-from app.domain.repositories.blob_repository import BlobRepository
+from src.application.handlers.get_blob_handler import handle_get_blob
+from src.domain.entities.blob import Blob
+from src.domain.exceptions import ResourceNotFoundError
+from src.domain.repositories.blob_repository import BlobRepository
 
 
 class TestGetBlobHandler:

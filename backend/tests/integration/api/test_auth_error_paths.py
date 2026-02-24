@@ -8,8 +8,8 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
-from app.auth import create_access_token, create_refresh_token
-from app.infra.persistence.models.user_model import UserModel
+from src.auth import create_access_token, create_refresh_token
+from src.infra.persistence.models.user_model import UserModel
 
 AUTH_PREFIX = "/api/auth"
 
@@ -130,7 +130,7 @@ class TestLoginErrorPaths:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(password.encode(), salt).decode()
 
-        from app.infra.persistence.models.user_model import UserModel
+        from src.infra.persistence.models.user_model import UserModel
 
         inactive_user = UserModel(
             email=unique_email,

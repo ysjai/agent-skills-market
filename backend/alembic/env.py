@@ -10,13 +10,13 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 # Import Base directly from db.base to avoid circular imports
-from app.infra.persistence.db.base import Base
-from app.infra.persistence.models.blob_model import BlobModel  # noqa: F401
-from app.infra.persistence.models.skill_model import SkillModel  # noqa: F401
-from app.infra.persistence.models.tree_model import TreeModel  # noqa: F401
+from src.infra.persistence.db.base import Base
+from src.infra.persistence.models.blob_model import BlobModel  # noqa: F401
+from src.infra.persistence.models.skill_model import SkillModel  # noqa: F401
+from src.infra.persistence.models.tree_model import TreeModel  # noqa: F401
 
 # Import all models to register them with Base.metadata
-from app.infra.persistence.models.user_model import UserModel  # noqa: F401
+from src.infra.persistence.models.user_model import UserModel  # noqa: F401
 
 # Load environment variables from .env file
 load_dotenv()

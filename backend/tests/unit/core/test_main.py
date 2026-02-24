@@ -7,7 +7,7 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from httpx import AsyncClient
 
-from app.main import app, lifespan
+from src.main import app, lifespan
 
 
 class TestApplicationLifespan:

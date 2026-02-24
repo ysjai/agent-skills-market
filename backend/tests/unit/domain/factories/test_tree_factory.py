@@ -4,9 +4,9 @@ import uuid
 
 import pytest
 
-from app.domain.aggregates.tree import Tree
-from app.domain.exceptions import ValidationError
-from app.domain.factories.tree_factory import TreeFactory
+from src.domain.aggregates.tree import Tree
+from src.domain.exceptions import ValidationError
+from src.domain.factories.tree_factory import TreeFactory
 
 
 class TestTreeFactoryCreate:

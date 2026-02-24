@@ -39,13 +39,13 @@ format-check:
 	ruff format --check .
 
 type-check:
-	mypy app --ignore-missing-imports
+	mypy src --ignore-missing-imports
 
 test:
 	pytest -v
 
 test-cov:
-	pytest --cov=app --cov-report=term --cov-report=html --cov-report=xml -v
+	pytest --cov=src --cov-report=term --cov-report=html --cov-report=xml -v
 
 test-unit:
 	pytest tests/unit -v
@@ -77,10 +77,10 @@ migrate-create:
 	alembic revision --autogenerate -m "$$msg"
 
 run:
-	uvicorn app.main:app --host 0.0.0.0 --port 8000
+	uvicorn src.main:app --host 0.0.0.0 --port 8000
 
 run-dev:
-	uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+	uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 docker-up:
 	docker-compose up -d

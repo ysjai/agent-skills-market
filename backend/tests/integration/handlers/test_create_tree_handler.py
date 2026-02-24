@@ -4,9 +4,9 @@ from unittest.mock import AsyncMock
 
 import pytest
 
-from app.application.handlers.create_tree_handler import handle_create_tree
-from app.domain.aggregates.tree import Tree
-from app.domain.repositories.tree_repository import TreeRepository
+from src.application.handlers.create_tree_handler import handle_create_tree
+from src.domain.aggregates.tree import Tree
+from src.domain.repositories.tree_repository import TreeRepository
 
 
 class TestCreateTreeHandler:

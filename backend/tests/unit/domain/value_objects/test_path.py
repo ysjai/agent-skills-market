@@ -11,8 +11,8 @@
 
 import pytest
 
-from app.domain.exceptions import ValidationError
-from app.domain.value_objects.path import Path
+from src.domain.exceptions import ValidationError
+from src.domain.value_objects.path import Path
 
 
 class TestValidPathCreation:

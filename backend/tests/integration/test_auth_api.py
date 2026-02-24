@@ -3,8 +3,8 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
-from app.auth import create_access_token, create_refresh_token
-from app.infra.persistence.models.user_model import UserModel
+from src.auth import create_access_token, create_refresh_token
+from src.infra.persistence.models.user_model import UserModel
 
 AUTH_PREFIX = "/api/auth"
 

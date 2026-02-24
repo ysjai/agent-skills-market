@@ -19,7 +19,7 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from app.domain.entities.blob import Blob
+from src.domain.entities.blob import Blob
 
 class TestBlobPostInit:
     """__post_init__ 计算 size 和 checksum 测试场景。"""

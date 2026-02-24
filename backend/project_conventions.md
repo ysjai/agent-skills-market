@@ -45,7 +45,7 @@
 ### 2.1 目录结构
 
 ```
-backend/app/
+backend/src/
 ├── api/                      # API 层
 │   ├── dependencies/         # 依赖注入
 │   └── routers/              # 路由
@@ -231,9 +231,9 @@ def _to_model(self, skill):
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import get_db
-from app.domain.repositories.skill_repository import SkillRepository
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.db.session import get_db
+from src.domain.repositories.skill_repository import SkillRepository
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 
 async def get_skill_repo(db: AsyncSession = Depends(get_db)) -> SkillRepository:
     return SqlSkillRepository(db)
@@ -342,7 +342,7 @@ CATEGORY_STATUS_MAP = {
 **使用 `get_db()` 管理事务**。一个请求 = 一个事务。
 
 ```python
-# app/db/session.py
+# src/db/session.py
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         try:

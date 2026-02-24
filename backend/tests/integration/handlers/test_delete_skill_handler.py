@@ -5,11 +5,11 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.delete_skill_handler import handle_delete_skill
-from app.domain.aggregates.skill import Skill
-from app.domain.repositories.blob_repository import BlobRepository
-from app.domain.repositories.skill_repository import SkillRepository
-from app.domain.repositories.tree_repository import TreeRepository
+from src.application.handlers.delete_skill_handler import handle_delete_skill
+from src.domain.aggregates.skill import Skill
+from src.domain.repositories.blob_repository import BlobRepository
+from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.repositories.tree_repository import TreeRepository
 
 
 class TestDeleteSkillHandler:

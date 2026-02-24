@@ -1,6 +1,6 @@
 import bcrypt
 
-from app.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.models.user_model import UserModel
 
 
 def create_user(

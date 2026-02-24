@@ -23,7 +23,7 @@ class TestJourneyImport:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(password.encode(), salt).decode()
 
-        from app.infra.persistence.models.user_model import UserModel
+        from src.infra.persistence.models.user_model import UserModel
 
         user = UserModel(
             email=email,
@@ -43,9 +43,9 @@ class TestJourneyImport:
         db_session: AsyncSession,
         import_user,
     ) -> AsyncGenerator[AsyncClient, None]:
-        from app.auth import create_access_token
-        from app.infra.persistence.db.session import get_db
-        from app.main import app
+        from src.auth import create_access_token
+        from src.infra.persistence.db.session import get_db
+        from src.main import app
 
         app.dependency_overrides[get_db] = create_override_get_db(db_session)
         token = create_access_token({"sub": str(import_user.id)})
@@ -316,7 +316,7 @@ startxref 308
         # 这会模拟线上环境，验证数据是否真的提交了
         from sqlalchemy import text
 
-        from app.infra.persistence.db.session import AsyncSessionLocal
+        from src.infra.persistence.db.session import AsyncSessionLocal
 
         async with AsyncSessionLocal() as fresh_db:
             result = await fresh_db.execute(

@@ -69,7 +69,7 @@
 重构后的目标目录结构如下：
 
 ```
-backend/app/
+backend/src/
 ├── api/                      # API 层
 │   ├── __init__.py
 │   ├── dependencies/         # FastAPI 依赖注入
@@ -141,7 +141,7 @@ API 层依赖应用层，应用层依赖领域层，领域层不依赖任何外�
 
 ### 3.2 Slug 值对象完整模板
 
-以下代码可直接复制到 `backend/app/domain/value_objects/slug.py`：
+以下代码可直接复制到 `backend/src/domain/value_objects/slug.py`：
 
 ```python
 from __future__ import annotations
@@ -236,7 +236,7 @@ class Slug:
 
 ### 4.2 Skill 聚合根完整模板
 
-以下代码可直接复制到 `backend/app/domain/entities/skill.py`：
+以下代码可直接复制到 `backend/src/domain/entities/skill.py`：
 
 ```python
 from __future__ import annotations
@@ -246,7 +246,7 @@ from dataclasses import dataclass, field
 from datetime import datetime
 from typing import Optional
 
-from app.domain.value_objects.slug import Slug
+from src.domain.value_objects.slug import Slug
 
 
 @dataclass
@@ -364,7 +364,7 @@ class Skill:
 
 ### 5.2 SkillRepository 接口模板
 
-以下代码可直接复制到 `backend/app/domain/repositories/skill_repository.py`：
+以下代码可直接复制到 `backend/src/domain/repositories/skill_repository.py`：
 
 ```python
 from __future__ import annotations
@@ -373,8 +373,8 @@ import uuid
 from abc import ABC, abstractmethod
 from typing import Optional
 
-from app.domain.entities.skill import Skill
-from app.domain.value_objects.slug import Slug
+from src.domain.entities.skill import Skill
+from src.domain.value_objects.slug import Slug
 
 
 class SkillRepository(ABC):
@@ -408,7 +408,7 @@ class SkillRepository(ABC):
 
 ### 5.3 ORM 模型映射模板
 
-以下代码可直接复制到 `backend/app/infra/persistence/models/skill_model.py`：
+以下代码可直接复制到 `backend/src/infra/persistence/models/skill_model.py`：
 
 ```python
 from __future__ import annotations
@@ -421,7 +421,7 @@ from sqlalchemy import Boolean, Column, DateTime, Integer, String, Text
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.orm import Mapped, mapped_column
 
-from app.db.base import Base
+from src.db.base import Base
 
 
 class SkillModel(Base):
@@ -448,7 +448,7 @@ class SkillModel(Base):
 
 ### 5.4 SqlSkillRepository 实现模板
 
-以下代码可直接复制到 `backend/app/infra/persistence/repositories/sql_skill_repository.py`：
+以下代码可直接复制到 `backend/src/infra/persistence/repositories/sql_skill_repository.py`：
 
 ```python
 from __future__ import annotations
@@ -459,10 +459,10 @@ from typing import Optional
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.domain.entities.skill import Skill
-from app.domain.repositories.skill_repository import SkillRepository
-from app.domain.value_objects.slug import Slug
-from app.infra.persistence.models.skill_model import SkillModel
+from src.domain.entities.skill import Skill
+from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.value_objects.slug import Slug
+from src.infra.persistence.models.skill_model import SkillModel
 
 
 class SqlSkillRepository(SkillRepository):
@@ -559,15 +559,15 @@ class SqlSkillRepository(SkillRepository):
 
 ### 6.2 Repository 依赖注入
 
-以下代码可直接复制到 `backend/app/api/dependencies/repositories.py`：
+以下代码可直接复制到 `backend/src/api/dependencies/repositories.py`：
 
 ```python
 from fastapi import Depends
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.session import get_db
-from app.domain.repositories.skill_repository import SkillRepository
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.db.session import get_db
+from src.domain.repositories.skill_repository import SkillRepository
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 
 
 async def get_skill_repo(
@@ -579,16 +579,16 @@ async def get_skill_repo(
 
 ### 6.3 Handler 函数模板
 
-以下代码可直接复制到 `backend/app/application/handlers/create_skill_handler.py`：
+以下代码可直接复制到 `backend/src/application/handlers/create_skill_handler.py`：
 
 ```python
 from typing import Optional
 import uuid
 
-from app.domain.entities.skill import Skill
-from app.domain.exceptions import SkillAlreadyExistsError
-from app.domain.repositories.skill_repository import SkillRepository
-from app.domain.value_objects.slug import Slug
+from src.domain.entities.skill import Skill
+from src.domain.exceptions import SkillAlreadyExistsError
+from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.value_objects.slug import Slug
 
 
 async def handle_create_skill(
@@ -625,16 +625,16 @@ async def handle_create_skill(
 以下代码展示了如何在路由中调用 Handler：
 
 ```python
-# backend/app/api/routers/skills.py
+# backend/src/api/routers/skills.py
 from fastapi import APIRouter, Depends, status
 from uuid import UUID
 
-from app.api.dependencies.repositories import get_skill_repo
-from app.application.handlers.create_skill_handler import handle_create_skill
-from app.domain.repositories.skill_repository import SkillRepository
-from app.schemas.skill import CreateSkillReq, CreateSkillResp
-from app.dependencies.auth import get_current_user
-from app.models.user import User
+from src.api.dependencies.repositories import get_skill_repo
+from src.application.handlers.create_skill_handler import handle_create_skill
+from src.domain.repositories.skill_repository import SkillRepository
+from src.schemas.skill import CreateSkillReq, CreateSkillResp
+from src.dependencies.auth import get_current_user
+from src.models.user import User
 
 
 router = APIRouter(prefix="/skills", tags=["skills"])
@@ -714,7 +714,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from app.domain.entities.skill import Skill
+from src.domain.entities.skill import Skill
 
 
 class CreateSkillResp(BaseModel):
@@ -750,7 +750,7 @@ from typing import Optional
 
 from pydantic import BaseModel, Field
 
-from app.domain.entities.skill import Skill
+from src.domain.entities.skill import Skill
 
 
 class ListSkillsItemResp(BaseModel):
@@ -798,7 +798,7 @@ async def list_skills(
 ### 8.2 异常层次结构
 
 ```
-DomainError (app/domain/exceptions.py)
+DomainError (src/domain/exceptions.py)
 ├── 类别分类（category 属性）
 │   ├── "NOT_FOUND"     → 404
 │   ├── "CONFLICT"      → 409
@@ -811,7 +811,7 @@ DomainError (app/domain/exceptions.py)
 
 ### 8.3 DomainError 基类模板
 
-以下代码可直接复制到 `backend/app/domain/exceptions.py`：
+以下代码可直接复制到 `backend/src/domain/exceptions.py`：
 
 ```python
 from __future__ import annotations
@@ -907,13 +907,13 @@ class InvalidSlugError(ValidationError):
 
 ### 8.5 全局异常处理器
 
-以下代码放置在 `backend/app/api/exceptions.py`：
+以下代码放置在 `backend/src/api/exceptions.py`：
 
 ```python
 from fastapi import FastAPI, Request, status
 from fastapi.responses import JSONResponse
 
-from app.domain.exceptions import DomainError
+from src.domain.exceptions import DomainError
 
 
 CATEGORY_STATUS_MAP = {
@@ -945,7 +945,7 @@ def setup_exception_handlers(app: FastAPI) -> None:
 
 ```python
 from fastapi import FastAPI
-from app.api.exceptions import setup_exception_handlers
+from src.api.exceptions import setup_exception_handlers
 
 
 def create_app() -> FastAPI:
@@ -992,7 +992,7 @@ async def create_skill(...):
 ### 9.2 现有实现
 
 ```python
-# app/db/session.py
+# src/db/session.py
 async def get_db() -> AsyncGenerator[AsyncSession, None]:
     async with AsyncSessionLocal() as session:
         try:
@@ -1114,9 +1114,9 @@ import pytest_asyncio
 from httpx import AsyncClient, ASGITransport
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine, async_sessionmaker
 
-from app.main import create_app
-from app.db.base import Base
-from app.db.session import get_db
+from src.main import create_app
+from src.db.base import Base
+from src.db.session import get_db
 
 
 @pytest_asyncio.fixture
@@ -1139,8 +1139,8 @@ async def db_session():
 @pytest_asyncio.fixture
 async def test_user(db_session: AsyncSession):
     """测试用户"""
-    from app.models.user import User
-    from app.core.auth import hash_password
+    from src.models.user import User
+    from src.core.auth import hash_password
     
     user = User(
         id=uuid.uuid4(),
@@ -1209,9 +1209,9 @@ import pytest
 @pytest.mark.asyncio
 async def test_create_and_retrieve_skill(db_session, test_user):
     """创建并检索 Skill 的完整流程"""
-    from app.application.handlers.create_skill_handler import handle_create_skill
-    from app.api.dependencies.repositories import UnitOfWork
-    from app.db.session import get_db
+    from src.application.handlers.create_skill_handler import handle_create_skill
+    from src.api.dependencies.repositories import UnitOfWork
+    from src.db.session import get_db
     
     # 1. 创建 Skill
     uow = UnitOfWork(db_session)
@@ -1227,8 +1227,8 @@ async def test_create_and_retrieve_skill(db_session, test_user):
     assert str(skill.slug) == "my-skill"
     
     # 3. 检索 Skill
-    from app.domain.repositories.skill_repository import SkillRepository
-    from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+    from src.domain.repositories.skill_repository import SkillRepository
+    from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
     
     repo = SqlSkillRepository(db_session)
     retrieved = await repo.get_by_id(skill.id)
@@ -1399,14 +1399,14 @@ def luhn_checksum(card_number: str) -> int:
 
 | 类型 | 命名规则 | 示例 |
 |------|----------|------|
-| 值对象 | slug.py | `from app.domain.value_objects.slug import Slug` |
-| 聚合根 | skill.py | `from app.domain.entities.skill import Skill` |
-| 仓库接口 | skill_repository.py | `from app.domain.repositories.skill_repository import SkillRepository` |
-| 仓库实现 | sql_skill_repository.py | `from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository` |
-| ORM 模型 | skill_model.py | `from app.infra.persistence.models.skill_model import SkillModel` |
-| Handler | create_skill_handler.py | `from app.application.handlers.create_skill_handler import handle_create_skill` |
-| 依赖注入 | repositories.py | `from app.api.dependencies.repositories import get_skill_repo` |
-| 路由 | skills.py | `from app.api.routers.skills import router` |
+| 值对象 | slug.py | `from src.domain.value_objects.slug import Slug` |
+| 聚合根 | skill.py | `from src.domain.entities.skill import Skill` |
+| 仓库接口 | skill_repository.py | `from src.domain.repositories.skill_repository import SkillRepository` |
+| 仓库实现 | sql_skill_repository.py | `from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository` |
+| ORM 模型 | skill_model.py | `from src.infra.persistence.models.skill_model import SkillModel` |
+| Handler | create_skill_handler.py | `from src.application.handlers.create_skill_handler import handle_create_skill` |
+| 依赖注入 | repositories.py | `from src.api.dependencies.repositories import get_skill_repo` |
+| 路由 | skills.py | `from src.api.routers.skills import router` |
 
 ### 12.2 类命名速查表
 
@@ -1436,8 +1436,8 @@ def luhn_checksum(card_number: str) -> int:
 
 ```python
 # 推荐
-from app.domain.entities.skill import Skill
-from app.domain.value_objects.slug import Slug
+from src.domain.entities.skill import Skill
+from src.domain.value_objects.slug import Slug
 
 # 避免
 from ...domain.entities.skill import Skill
@@ -1448,18 +1448,18 @@ from ...domain.entities.skill import Skill
 ```python
 # API 层
 from fastapi import APIRouter, Depends
-from app.api.dependencies.repositories import get_skill_repo
+from src.api.dependencies.repositories import get_skill_repo
 
 # 应用层
-from app.application.handlers.create_skill_handler import handle_create_skill
+from src.application.handlers.create_skill_handler import handle_create_skill
 
 # 领域层
-from app.domain.entities.skill import Skill
-from app.domain.value_objects.slug import Slug
-from app.domain.repositories.skill_repository import SkillRepository
+from src.domain.entities.skill import Skill
+from src.domain.value_objects.slug import Slug
+from src.domain.repositories.skill_repository import SkillRepository
 
 # 基础设施层
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 ```
 
 ---

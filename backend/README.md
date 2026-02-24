@@ -38,7 +38,7 @@ This backend service provides RESTful APIs for the Agent Skills Manager platform
 ### Project Structure
 
 ```
-backend/app/
+backend/src/
 ├── api/                      # API Layer
 │   ├── dependencies/         # FastAPI dependency injection
 │   │   ├── auth.py          # get_current_user dependency

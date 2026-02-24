@@ -15,16 +15,16 @@ import pytest_asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.handlers.delete_skill_handler import handle_delete_skill
-from app.application.handlers.update_skill_handler import handle_update_skill
-from app.domain.exceptions import ForbiddenError, ResourceConflictError
-from app.infra.persistence.models.blob_model import BlobModel
-from app.infra.persistence.models.skill_model import SkillModel
-from app.infra.persistence.models.tree_model import TreeModel
-from app.infra.persistence.models.user_model import UserModel
-from app.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
-from app.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
+from src.application.handlers.delete_skill_handler import handle_delete_skill
+from src.application.handlers.update_skill_handler import handle_update_skill
+from src.domain.exceptions import ForbiddenError, ResourceConflictError
+from src.infra.persistence.models.blob_model import BlobModel
+from src.infra.persistence.models.skill_model import SkillModel
+from src.infra.persistence.models.tree_model import TreeModel
+from src.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
 @pytest_asyncio.fixture
 async def test_skill_no_tree(db_session: AsyncSession, test_user: UserModel) -> SkillModel:

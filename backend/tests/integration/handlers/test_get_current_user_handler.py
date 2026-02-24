@@ -5,9 +5,9 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.get_current_user_handler import handle_get_current_user
-from app.domain.aggregates.user import User
-from app.domain.repositories.user_repository import UserRepository
+from src.application.handlers.get_current_user_handler import handle_get_current_user
+from src.domain.aggregates.user import User
+from src.domain.repositories.user_repository import UserRepository
 
 
 class TestGetCurrentUserHandler:

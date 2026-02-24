@@ -17,8 +17,8 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from app.domain.aggregates.user import User
-from app.domain.value_objects.email import Email
+from src.domain.aggregates.user import User
+from src.domain.value_objects.email import Email
 
 
 class TestUserEmailVerification:

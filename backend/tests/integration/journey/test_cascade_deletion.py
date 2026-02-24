@@ -12,10 +12,10 @@ from httpx import AsyncClient
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.persistence.db.session import get_db
-from app.infra.persistence.models.blob_model import BlobModel
-from app.infra.persistence.models.tree_model import TreeModel
-from app.main import app
+from src.infra.persistence.db.session import get_db
+from src.infra.persistence.models.blob_model import BlobModel
+from src.infra.persistence.models.tree_model import TreeModel
+from src.main import app
 from tests.conftest import create_override_get_db
 
 class TestCascadeDeletion:
@@ -36,7 +36,7 @@ class TestCascadeDeletion:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(password.encode(), salt).decode()
 
-        from app.infra.persistence.models.user_model import UserModel
+        from src.infra.persistence.models.user_model import UserModel
 
         user = UserModel(
             email=email,
@@ -57,7 +57,7 @@ class TestCascadeDeletion:
         cascade_user,
     ) -> AsyncClient:
         """创建认证客户端"""
-        from app.auth import create_access_token
+        from src.auth import create_access_token
 
         app.dependency_overrides[get_db] = create_override_get_db(db_session)
         token = create_access_token({"sub": str(cascade_user.id)})

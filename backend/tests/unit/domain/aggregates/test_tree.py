@@ -16,9 +16,9 @@ from uuid import UUID, uuid4
 
 import pytest
 
-from app.domain.aggregates.tree import ENTRY_TYPE_BLOB, ENTRY_TYPE_TREE, Tree, TreeEntry
-from app.domain.exceptions import ResourceConflictError, ResourceNotFoundError, ValidationError
-from app.domain.value_objects.path import Path
+from src.domain.aggregates.tree import ENTRY_TYPE_BLOB, ENTRY_TYPE_TREE, Tree, TreeEntry
+from src.domain.exceptions import ResourceConflictError, ResourceNotFoundError, ValidationError
+from src.domain.value_objects.path import Path
 
 
 class TestTreeCreation:

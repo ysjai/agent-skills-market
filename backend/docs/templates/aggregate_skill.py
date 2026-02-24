@@ -6,7 +6,7 @@ import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
 
-from app.domain.value_objects.slug import Slug
+from src.domain.value_objects.slug import Slug
 
 
 @dataclass

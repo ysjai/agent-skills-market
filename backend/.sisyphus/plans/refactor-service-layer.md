@@ -13,19 +13,19 @@
 
 ```
 改动文件:
-├── app/routers/skills.py           # 精简为 HTTP 处理
-├── app/routers/trees.py            # 精简为 HTTP 处理
-├── app/services/skill_service.py   # 完善业务逻辑
-├── app/services/tree_service.py     # 完善业务逻辑
-├── app/crud/base.py                # 支持可选提交
-├── app/crud/skill.py               # 使用 commit=False
-├── app/crud/tree.py                # 使用 commit=False
-├── app/crud/blob.py                # 使用 commit=False
-├── app/dependencies/auth.py        # 认证常量
-└── app/schemas/                    # 分页常量
+├── src/routers/skills.py           # 精简为 HTTP 处理
+├── src/routers/trees.py            # 精简为 HTTP 处理
+├── src/services/skill_service.py   # 完善业务逻辑
+├── src/services/tree_service.py     # 完善业务逻辑
+├── src/crud/base.py                # 支持可选提交
+├── src/crud/skill.py               # 使用 commit=False
+├── src/crud/tree.py                # 使用 commit=False
+├── src/crud/blob.py                # 使用 commit=False
+├── src/dependencies/auth.py        # 认证常量
+└── src/schemas/                    # 分页常量
 
 新增文件:
-├── app/services/transactional.py    # @transactional 装饰器
+├── src/services/transactional.py    # @transactional 装饰器
 ```
 
 ---
@@ -156,7 +156,7 @@
 - [ ] 运行所有 API 测试验证无回归
 
 #### 4.2 创建 @transactional 装饰器
-- [ ] 创建 `app/services/transactional.py`
+- [ ] 创建 `src/services/transactional.py`
 - [ ] 实现装饰器（作为备选，不强制使用）
 - [ ] 添加文档说明用法
 
@@ -179,17 +179,17 @@
 ### 任务列表
 
 #### 5.1 认证常量
-- [ ] 将 `TOKEN_EXPIRE_MINUTES` 等移到 `app/dependencies/auth.py` 或 `app/core/auth.py`
+- [ ] 将 `TOKEN_EXPIRE_MINUTES` 等移到 `src/dependencies/auth.py` 或 `src/core/auth.py`
 
 #### 5.2 分页常量
-- [ ] 将默认分页大小移到 `app/schemas/` 或相关 CRUD
+- [ ] 将默认分页大小移到 `src/schemas/` 或相关 CRUD
 
 #### 5.3 模型常量
-- [ ] 将 `NAME_MAX_LENGTH`, `SLUG_MAX_LENGTH` 等移到 `app/models/skill.py`
+- [ ] 将 `NAME_MAX_LENGTH`, `SLUG_MAX_LENGTH` 等移到 `src/models/skill.py`
 - [ ] 检查其他模型的常量
 
 #### 5.4 压缩相关常量
-- [ ] 将 `ZSTD_COMPRESSION_LEVEL` 移到 `app/crud/blob.py`
+- [ ] 将 `ZSTD_COMPRESSION_LEVEL` 移到 `src/crud/blob.py`
 
 ### 验证标准
 - [ ] 无魔法数字

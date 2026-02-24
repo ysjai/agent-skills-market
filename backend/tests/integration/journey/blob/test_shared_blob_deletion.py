@@ -25,7 +25,7 @@ class TestSharedBlobDeletion:
         salt = bcrypt.gensalt()
         password_hash = bcrypt.hashpw(password.encode(), salt).decode()
 
-        from app.infra.persistence.models.user_model import UserModel
+        from src.infra.persistence.models.user_model import UserModel
 
         user = UserModel(
             email=email,
@@ -45,9 +45,9 @@ class TestSharedBlobDeletion:
         db_session: AsyncSession,
         shared_blob_user,
     ) -> AsyncGenerator[AsyncClient, None]:
-        from app.auth import create_access_token
-        from app.infra.persistence.db.session import get_db
-        from app.main import app
+        from src.auth import create_access_token
+        from src.infra.persistence.db.session import get_db
+        from src.main import app
 
         app.dependency_overrides[get_db] = create_override_get_db(db_session)
         token = create_access_token({"sub": str(shared_blob_user.id)})

@@ -4,10 +4,10 @@ from unittest.mock import AsyncMock, Mock, patch
 
 import pytest
 
-from app.application.handlers.register_user_handler import handle_register_user
-from app.domain.aggregates.user import User
-from app.domain.exceptions import ResourceConflictError
-from app.domain.repositories.user_repository import UserRepository
+from src.application.handlers.register_user_handler import handle_register_user
+from src.domain.aggregates.user import User
+from src.domain.exceptions import ResourceConflictError
+from src.domain.repositories.user_repository import UserRepository
 
 
 class TestRegisterUserHandler:

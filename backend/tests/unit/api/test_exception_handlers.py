@@ -8,8 +8,8 @@ from fastapi import FastAPI
 from fastapi.exceptions import HTTPException
 from fastapi.testclient import TestClient
 
-from app.api.exception_handlers import register_exception_handlers
-from app.domain.exceptions import (
+from src.api.exception_handlers import register_exception_handlers
+from src.domain.exceptions import (
     DomainError,
     ForbiddenError,
     ResourceConflictError,

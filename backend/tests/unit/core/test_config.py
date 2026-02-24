@@ -6,7 +6,7 @@ from unittest.mock import patch
 
 import pytest
 
-from app.core.config import Settings, get_settings
+from src.core.config import Settings, get_settings
 
 
 class TestSettingsValidation:

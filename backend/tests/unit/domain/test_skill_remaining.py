@@ -3,8 +3,8 @@
 
 import pytest
 
-from app.domain.aggregates.skill import Skill
-from app.domain.value_objects.slug import Slug
+from src.domain.aggregates.skill import Skill
+from src.domain.value_objects.slug import Slug
 
 
 class TestSkillRemaining:

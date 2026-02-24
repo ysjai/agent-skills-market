@@ -12,10 +12,10 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.handlers.login_handler import handle_login
-from app.domain.exceptions import UnauthorizedError
-from app.infra.persistence.models.user_model import UserModel
-from app.infra.persistence.repositories.sql_user_repository import SqlUserRepository
+from src.application.handlers.login_handler import handle_login
+from src.domain.exceptions import UnauthorizedError
+from src.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.repositories.sql_user_repository import SqlUserRepository
 
 
 @pytest_asyncio.fixture

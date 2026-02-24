@@ -14,12 +14,12 @@ import pytest_asyncio
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.handlers.import_skill_handler import handle_import_skill
-from app.domain.exceptions import ResourceConflictError
-from app.infra.persistence.models.skill_model import SkillModel
-from app.infra.persistence.models.user_model import UserModel
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
-from app.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
+from src.application.handlers.import_skill_handler import handle_import_skill
+from src.domain.exceptions import ResourceConflictError
+from src.infra.persistence.models.skill_model import SkillModel
+from src.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
 
 @pytest_asyncio.fixture

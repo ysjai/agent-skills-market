@@ -5,9 +5,9 @@ from uuid import uuid4
 
 import pytest
 
-from app.application.handlers.create_blob_handler import handle_create_blob
-from app.domain.entities.blob import Blob
-from app.domain.repositories.blob_repository import BlobRepository
+from src.application.handlers.create_blob_handler import handle_create_blob
+from src.domain.entities.blob import Blob
+from src.domain.repositories.blob_repository import BlobRepository
 
 
 class TestCreateBlobHandler:

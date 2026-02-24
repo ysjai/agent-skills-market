@@ -13,11 +13,11 @@ import pytest
 import pytest_asyncio
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.application.handlers.get_skill_handler import handle_get_skill
-from app.domain.exceptions import ForbiddenError, ResourceNotFoundError
-from app.infra.persistence.models.skill_model import SkillModel
-from app.infra.persistence.models.user_model import UserModel
-from app.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
+from src.application.handlers.get_skill_handler import handle_get_skill
+from src.domain.exceptions import ForbiddenError, ResourceNotFoundError
+from src.infra.persistence.models.skill_model import SkillModel
+from src.infra.persistence.models.user_model import UserModel
+from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 
 
 @pytest_asyncio.fixture

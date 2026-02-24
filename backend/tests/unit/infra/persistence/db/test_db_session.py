@@ -5,7 +5,7 @@ from unittest.mock import AsyncMock, patch
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.infra.persistence.db.session import get_db, POOL_SIZE, MAX_OVERFLOW
+from src.infra.persistence.db.session import get_db, POOL_SIZE, MAX_OVERFLOW
 
 
 class TestDatabaseSession:
@@ -121,7 +121,7 @@ class TestEngineConfiguration:
 
     def test_async_session_local_is_callable(self):
         """Test AsyncSessionLocal is properly configured (L26-32)."""
-        from app.infra.persistence.db.session import AsyncSessionLocal
+        from src.infra.persistence.db.session import AsyncSessionLocal
 
         # Verify it's a session maker that returns AsyncSession
         assert AsyncSessionLocal is not None

@@ -12,10 +12,10 @@
 ### 核心原则
 
 1. **DDD 分层架构** - 代码组织为四层：
-   - `app/api/` - FastAPI 路由、DTOs
-   - `app/application/` - 命令、处理器、编排
-   - `app/domain/` - 领域对象（实体、值对象、仓库接口）⭐核心
-   - `app/infra/` - SQLAlchemy 实现、外部服务
+   - `src/api/` - FastAPI 路由、DTOs
+   - `src/application/` - 命令、处理器、编排
+   - `src/domain/` - 领域对象（实体、值对象、仓库接口）⭐核心
+   - `src/infra/` - SQLAlchemy 实现、外部服务
 
 2. **依赖方向** - 只能向内依赖：
    ```
@@ -49,7 +49,7 @@
    ```
 
 6. **禁止事项**：
-   - 禁止领域层（`app/domain/`）导入 SQLAlchemy 或 FastAPI
+   - 禁止领域层（`src/domain/`）导入 SQLAlchemy 或 FastAPI
    - 禁止在路由中写业务逻辑
    - 禁止贫血模型（只 getter/setter 的类）
    - 禁止在路由中手动捕获异常并转换（使用全局处理器）
@@ -60,11 +60,11 @@
 - [ ] 领域对象封装了业务行为（不只是数据）
 - [ ] 值对象在构造时验证数据
 - [ ] 依赖方向正确（domain 不依赖 infra）
-- [ ] 仓库接口在 `app/domain/repositories/`，实现在 `app/infra/persistence/repositories/`
+- [ ] 仓库接口在 `src/domain/repositories/`，实现在 `src/infra/persistence/repositories/`
 - [ ] ORM 模型（PO）包含 `to_domain()` 和 `from_domain()` 映射方法
 - [ ] 业务逻辑在领域层，不在路由或处理器中
 - [ ] 应用层使用函数式风格（`handle_create_skill()`）而非 Handler 类
-- [ ] Repository 通过 `app/api/dependencies/repositories.py` 的 Depends 函数注入
+- [ ] Repository 通过 `src/api/dependencies/repositories.py` 的 Depends 函数注入
 
 ### 规范文档分层
 
@@ -111,7 +111,7 @@
 
 ```
 backend/
-├── app/
+├── src/
 │   ├── api/              # API 路由、DTOs、依赖注入
 │   │   ├── routers/      # FastAPI 路由
 │   │   ├── schemas/      # Pydantic DTOs
