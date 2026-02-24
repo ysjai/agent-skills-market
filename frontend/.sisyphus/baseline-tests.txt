@@ -1,0 +1,33 @@
+bun test v1.3.9 (cf6cdbbb)
+
+lib/file-utils.test.ts:
+13 |   it('should return "pdf" for uppercase PDF extension', () => {
+14 |     expect(getFileType('doc.PDF')).toBe('pdf');
+15 |   });
+16 | 
+17 |   it('should return "text" for markdown files', () => {
+18 |     expect(getFileType('README.md')).toBe('text');
+                                          ^
+error: expect(received).toBe(expected)
+
+Expected: "text"
+Received: "markdown"
+
+      at <anonymous> (/Users/ysj/opensource/agent-skills-pointer/frontend/lib/file-utils.test.ts:18:38)
+(fail) getFileType > should return "text" for markdown files [0.36ms]
+------------------------|---------|---------|-------------------
+File                    | % Funcs | % Lines | Uncovered Line #s
+------------------------|---------|---------|-------------------
+All files               |   86.11 |   86.75 |
+ app/lib/auth.ts        |  100.00 |  100.00 | 
+ lib/api.ts             |   66.67 |   37.34 | 3-45,70,86,103,114,129-132,143,145-152,154-156,158-221,246-269
+ lib/file-tree-utils.ts |  100.00 |   94.90 | 94,99-100,105-106
+ lib/file-utils.ts      |   50.00 |   88.24 | 25-26
+ lib/utils.ts           |  100.00 |  100.00 | 
+ test/setup.ts          |  100.00 |  100.00 | 
+------------------------|---------|---------|-------------------
+
+ 34 pass
+ 1 fail
+ 55 expect() calls
+Ran 35 tests across 6 files. [251.00ms]

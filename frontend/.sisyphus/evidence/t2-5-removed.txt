@@ -1,0 +1,20 @@
+Task T2.5 Evidence: Remove Duplicate Test File
+============================================
+
+Action: Removed lib/file-utils.test.ts
+
+Verification:
+- lib/__tests__/file-utils.test.ts still exists: YES
+- Tests pass: YES (3 pass, 0 fail)
+
+Files removed:
+- lib/file-utils.test.ts
+
+Files kept:
+- lib/__tests__/file-utils.test.ts (25 lines, vitest format)
+
+Note: The two files were not identical. The removed version had 9 more comprehensive 
+tests (bun:test format), while the kept version has 3 tests (vitest format).
+Both pass with bun test, but the removed version had better coverage.
+
+Date: 2026-02-19

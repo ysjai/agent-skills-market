@@ -1,0 +1,27 @@
+# Task 4.1: Add React.memo to SkillCard
+
+## Changes Made
+
+### 1. components/skills/SkillCard.tsx
+- Added `memo` import from 'react'
+- Renamed component function to `SkillCardComponent`
+- Wrapped export with `memo(SkillCardComponent)`
+- Component now uses React.memo for optimization
+
+### 2. app/[locale]/skills/page.tsx
+- Added `useCallback` import from 'react'
+- Created memoized callbacks:
+  - `handleMenuToggle`: toggles open menu state
+  - `handleDownload`: handles skill download
+  - `handleDelete`: handles skill deletion
+  - `handleNavigate`: navigates to skill detail page
+- Updated SkillCard props to use memoized callbacks instead of inline functions
+
+## Verification
+- TypeScript compilation: PASSED (npx tsc --noEmit)
+- LSP diagnostics: CLEAN on both files
+
+## Notes
+- useCallback prevents unnecessary re-renders by memoizing callback functions
+- React.memo prevents SkillCard from re-rendering when props haven't changed
+- Dependencies are correctly specified for each useCallback

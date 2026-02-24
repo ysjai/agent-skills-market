@@ -1,0 +1,36 @@
+Task: T4-2 useMemo Optimization for Skills Filter
+Status: COMPLETED
+Date: 2026-02-19
+
+Changes Made:
+1. Added `useMemo` import to app/[locale]/skills/page.tsx
+2. Wrapped filteredSkills calculation with useMemo hook
+3. Dependency array: [skills, searchQuery]
+
+Before:
+```typescript
+const filteredSkills = skills.filter(skill => 
+  skill.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+  skill.description?.toLowerCase().includes(searchQuery.toLowerCase())
+);
+```
+
+After:
+```typescript
+const filteredSkills = useMemo(() => {
+  if (!searchQuery) return skills;
+  const query = searchQuery.toLowerCase();
+  return skills.filter(skill => 
+    skill.name.toLowerCase().includes(query) ||
+    skill.description?.toLowerCase().includes(query)
+  );
+}, [skills, searchQuery]);
+```
+
+Optimizations:
+- Early return when searchQuery is empty (avoids unnecessary filtering)
+- Cache searchQuery.toLowerCase() to avoid repeated calculations
+- Memoization prevents re-filtering on every render when dependencies unchanged
+
+Verification:
+- npx tsc --noEmit: PASSED

@@ -1,0 +1,52 @@
+# T2.1 i18n 目录结构重组证据
+
+## 目录结构
+
+```
+i18n/
+├── config/
+│   └── request.ts    (从 i18n/request.ts 移动)
+├── locales/
+│   ├── en.json       (从 messages/en.json 移动)
+│   └── zh.json       (从 messages/zh.json 移动)
+└── routing.ts        (未改变)
+
+messages/             (已删除)
+```
+
+## 修改的文件
+
+### 1. i18n/config/request.ts
+- 从: `i18n/request.ts`
+- 路径更新:
+  - `../messages/${locale}.json` → `../locales/${locale}.json`
+  - `./routing` → `../routing`
+
+### 2. next.config.js
+- next-intl 配置路径更新:
+  - `'./i18n/request.ts'` → `'./i18n/config/request.ts'`
+
+### 3. app/[locale]/layout.tsx
+- messages 导入路径更新:
+  - `../../messages/${locale}.json` → `../../i18n/locales/${locale}.json`
+
+## 构建验证
+
+```bash
+$ bun run build
+✓ Compiled successfully
+✓ Generating static pages (4/4)
+```
+
+构建成功，i18n 文件重组完成。
+
+## 删除的文件
+
+- `messages/` 目录及其所有内容
+- `i18n/request.ts` (移动到新位置)
+
+## 新增的文件位置
+
+- `i18n/config/request.ts`
+- `i18n/locales/en.json`
+- `i18n/locales/zh.json`

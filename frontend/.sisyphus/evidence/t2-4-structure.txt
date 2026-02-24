@@ -1,0 +1,110 @@
+# Task T2.4 Evidence: Feature-based Directory Structure
+
+## Task Description
+Reorganize components/ directory into feature-based structure
+
+## Directory Structure (After)
+
+components/
+├── editors/
+│   ├── MarkdownEditor.tsx
+│   ├── MarkdownViewer.tsx
+│   ├── TextEditor.tsx
+│   └── TextViewer.tsx
+├── file-tree/
+│   ├── FilePreview.tsx
+│   ├── FileTree.tsx
+│   ├── FileTreeItem.tsx
+│   ├── FileTreeToolbar.tsx
+│   ├── ImagePreview.tsx
+│   └── PdfPreview.tsx
+├── misc/
+│   ├── DownloadDialog.tsx
+│   └── LanguageSwitcher.tsx
+├── providers/
+│   └── NextIntlProvider.tsx
+├── skills/
+│   ├── CreateSkillDialog.tsx
+│   ├── DeleteConfirmDialog.tsx
+│   ├── DeleteSkillDialog.tsx
+│   ├── ImportSkillDialog.tsx
+│   ├── SkillCard.tsx
+│   ├── SkillEditorArea.tsx
+│   ├── SkillHeader.tsx
+│   ├── SkillPageStates.tsx
+│   ├── SkillSidebar.tsx
+│   └── SkillsPageHeader.tsx
+└── ui/
+    ├── BatchConflictDialog.tsx
+    ├── Button.tsx
+    ├── Card.tsx
+    ├── ConfirmDialog.tsx
+    ├── ConflictDialog.tsx
+    ├── Dialog.tsx
+    ├── DialogPortal.tsx
+    ├── FileIcons.tsx
+    ├── Input.tsx
+    ├── InputDialog.tsx
+    ├── ProgressDialog.tsx
+    └── Toast.tsx
+
+## Files Moved
+
+### To components/file-tree/:
+- FileTree.tsx (from components/)
+- FileTreeItem.tsx (from components/)
+- FilePreview.tsx (from components/)
+- ImagePreview.tsx (from components/)
+- PdfPreview.tsx (from components/)
+- FileTreeToolbar.tsx (from components/ui/)
+
+### To components/editors/:
+- MarkdownEditor.tsx (from components/)
+- MarkdownViewer.tsx (from components/)
+- TextEditor.tsx (from components/)
+- TextViewer.tsx (from components/)
+
+### To components/providers/:
+- NextIntlProvider.tsx (from components/)
+
+### To components/misc/:
+- DownloadDialog.tsx (from components/)
+- LanguageSwitcher.tsx (from components/)
+
+## Import Paths Updated (9 changes)
+
+1. components/skills/SkillEditorArea.tsx
+   - '@components/FilePreview' -> '@components/file-tree/FilePreview'
+
+2. components/skills/SkillsPageHeader.tsx
+   - '@components/LanguageSwitcher' -> '@components/misc/LanguageSwitcher'
+
+3. components/skills/SkillHeader.tsx
+   - '@components/LanguageSwitcher' -> '@components/misc/LanguageSwitcher'
+
+4. components/skills/SkillSidebar.tsx
+   - '@components/FileTree' -> '@components/file-tree/FileTree'
+   - '@components/FileTree' (type) -> '@components/file-tree/FileTree'
+
+5. app/[locale]/skills/[id]/page.tsx
+   - '@components/DownloadDialog' -> '@components/misc/DownloadDialog'
+   - '@components/FileTree' (type) -> '@components/file-tree/FileTree'
+
+6. app/[locale]/skills/page.tsx
+   - '@components/DownloadDialog' -> '@components/misc/DownloadDialog'
+
+7. components/file-tree/FilePreview.tsx
+   - './MarkdownViewer' -> '@components/editors/MarkdownViewer'
+   - './TextViewer' -> '@components/editors/TextViewer'
+
+8. components/file-tree/FileTree.tsx
+   - '@components/ui/FileTreeToolbar' -> './FileTreeToolbar'
+
+## Build Verification
+
+Command: bun run build --no-lint
+Result: SUCCESS ✓
+
+All imports resolved correctly after reorganization.
+
+Note: Pre-existing ESLint warnings/errors are unrelated to this refactoring.

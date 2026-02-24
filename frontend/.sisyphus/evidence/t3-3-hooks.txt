@@ -1,0 +1,65 @@
+# T3-3: useFileTree Hook Refactoring Evidence
+
+## Original File
+- hooks/useFileTree.ts: 434 lines (before refactoring)
+
+## New Structure: hooks/file-tree/
+```
+hooks/file-tree/
+├── index.ts              (14 lines)  - Barrel exports
+├── useFileTree.ts        (172 lines) - Main composition hook
+├── useTreeOperations.ts  (219 lines) - CRUD operations
+├── useTreePersistence.ts (54 lines)  - localStorage persistence
+├── useTreeSelection.ts   (62 lines)  - Selection logic
+└── useTreeState.ts       (47 lines)  - Tree state management
+
+Total: 568 lines across 6 files
+```
+
+## Hook Responsibilities
+
+### 1. useTreeState.ts (47 lines)
+- Manages core state: nodes, selectedPath, loading, error
+- Provides state setters and onFileSelectRef
+
+### 2. useTreePersistence.ts (54 lines)
+- saveSelectedPath: Persist selected path to localStorage
+- loadSelectedPath: Load selected path from localStorage
+- saveExpandedState: Persist expanded state to localStorage
+- loadExpandedState: Load expanded state from localStorage
+
+### 3. useTreeSelection.ts (62 lines)
+- selectNode: Handle file selection with callback
+- handleAutoSelect: Auto-select utility
+- findNodeInTree: Find node by path
+- findSkillMdNode: Find SKILL.md node
+
+### 4. useTreeOperations.ts (219 lines)
+- addNode: Add new node to tree
+- removeNode: Remove node from tree
+- updateNode: Update node path/blobId
+- toggleNode: Toggle expand/collapse
+- checkNameExists: Check for name conflicts
+- updateBlobId: Update blob ID for a node
+
+### 5. useFileTree.ts (172 lines)
+- Composes all above hooks
+- Implements fetchTree for API calls
+- Provides FileTreeRef for external control
+- Maintains backward-compatible API
+
+## Backward Compatibility
+The original hooks/useFileTree.ts now re-exports from hooks/file-tree/:
+```typescript
+export {
+  useFileTree,
+  type FileTreeRef,
+  type UseFileTreeOptions,
+  type UseFileTreeReturn,
+} from './file-tree';
+```
+
+## TypeScript Verification
+- npx tsc --noEmit: PASSED (no errors)
+
+Date: 2026-02-19

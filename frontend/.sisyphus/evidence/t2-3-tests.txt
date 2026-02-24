@@ -1,0 +1,19 @@
+T2.3: Test Results for auth.test.ts
+
+Test output:
+bun test v1.3.9 (cf6cdbbb)
+---------------|---------|---------|-------------------
+File           | % Funcs | % Lines | Uncovered Line #s
+---------------|---------|---------|-------------------
+All files      |   66.67 |   67.40 |
+ lib/api.ts    |    0.00 |   2.19 | 3-269
+ lib/auth.ts   |  100.00 |   100.00 | 
+ test/setup.ts |  100.00 |   100.00 | 
+---------------|---------|---------|-------------------
+
+ 2 pass
+ 0 fail
+ 2 expect() calls
+Ran 2 tests across 1 file. [204.00ms]
+
+Status: PASS

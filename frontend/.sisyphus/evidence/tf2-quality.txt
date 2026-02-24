@@ -1,0 +1,130 @@
+========================================
+TF2: CODE QUALITY AUDIT REPORT
+========================================
+Date: Thu Feb 19 2026
+Project: /Users/ysj/opensource/agent-skills-pointer/frontend
+
+========================================
+1. BUILD STATUS
+========================================
+Status: PASS
+Output: Compiled successfully in 1120ms
+Static pages generated: 4/4
+
+========================================
+2. TYPESCRIPT CHECK
+========================================
+Command: npx tsc --noEmit
+Status: PASS
+Errors: 0
+
+========================================
+3. ESLINT CHECK
+========================================
+Command: bun run lint
+Status: WARN (0 errors, multiple warnings)
+
+Warning Summary:
+- import/order warnings: ~70 (import grouping/ordering issues)
+- react-hooks/exhaustive-deps: 3 (missing dependencies in useEffect/useCallback)
+- @typescript-eslint/no-explicit-any: 10
+- @next/next/no-img-element: 13 (using <img> instead of <Image />)
+- no-console: 1 (in lib/logger.ts:6)
+
+Detailed Warnings:
+
+[import/order] - Import organization issues across multiple files:
+  - app/[locale]/* - Import grouping and ordering warnings
+  - components/editors/* - Import order warnings
+  - components/file-tree/* - Import grouping warnings
+  - components/skills/* - Import grouping and ordering warnings
+  - components/ui/* - Import grouping warnings
+  - lib/__tests__/* - Import grouping warnings
+
+[react-hooks/exhaustive-deps]:
+  - app/[locale]/skills/[id]/page.tsx:58 - useEffect missing 'loadSkill' dependency
+  - app/[locale]/skills/page.tsx:53 - useEffect missing 'loadSkills' dependency
+  - components/editors/MarkdownEditor.tsx:184 - useCallback missing 'saveBlobContent' dependency
+
+[@typescript-eslint/no-explicit-any]:
+  - components/providers/NextIntlProvider.tsx:13:43 - 1 occurrence
+  - lib/__tests__/api.integration.test.ts:20:33,21:47,27:18,35:23 - 4 occurrences
+  - lib/__tests__/file-tree.test.ts:18:30 - 1 occurrence
+  - lib/file-utils.ts:10:40,14:38,18:43,27:46 - 4 occurrences
+
+[@next/next/no-img-element]:
+  - components/file-tree/ImagePreview.tsx:96:11 - Using <img> element
+  - components/ui/FileIcons.tsx - 11 occurrences of <img> elements
+
+[no-console]:
+  - lib/logger.ts:6:7 - Unexpected console statement
+
+========================================
+4. TEST RESULTS
+========================================
+Command: bun test
+Status: PASS (26/26)
+Test Coverage:
+- lib/api.ts: 37.34% lines
+- lib/auth.ts: 100% lines
+- lib/file-tree-utils.ts: 64.63% lines
+- lib/file-utils.ts: 82.35% lines
+- lib/utils.ts: 100% lines
+
+Total: 26 pass, 0 fail, 44 expect() calls
+Duration: 567.00ms
+
+========================================
+5. AI SLOP DETECTION
+========================================
+
+5.1 console.log (non-error/warn):
+  Found: 1
+  Location: lib/logger.ts:6:7
+  Note: This is in a logger utility file, likely intentional
+
+5.2 any types:
+  Found: 10
+  Breakdown:
+    - lib/file-utils.ts: 4 occurrences (intentional for file utilities)
+    - lib/__tests__/api.integration.test.ts: 4 occurrences (test mocks)
+    - lib/__tests__/file-tree.test.ts: 1 occurrence (test mocks)
+    - components/providers/NextIntlProvider.tsx: 1 occurrence
+
+5.3 Unused imports/variables:
+  No issues detected by grep
+
+5.4 Duplicate code:
+  No significant duplicate code patterns detected
+
+========================================
+6. QUALITY SCORE
+========================================
+Build:      PASS
+TypeScript: PASS (0 errors)
+ESLint:     WARN (0 errors, ~100 warnings)
+Tests:      PASS (26/26)
+AI Slop:    WARN (10 any types, 1 console.log)
+
+OVERALL: WARN
+
+REASONING:
+- All core checks pass (build, TypeScript, tests)
+- No ESLint errors, only warnings
+- AI Slop metrics are within acceptable limits:
+  * Most 'any' types are in test files or utility files where type safety is traded for flexibility
+  * The single console.log is in a logger utility (intentional)
+- Import ordering warnings are code style issues, not functional problems
+
+========================================
+VERDICT: APPROVE (with warnings)
+========================================
+
+The codebase is functional and passes all critical quality gates.
+Warnings should be addressed in future refactoring:
+1. Fix import ordering across components
+2. Add missing React hook dependencies
+3. Consider replacing <img> with Next.js Image component
+4. Review 'any' types in non-test files
+
+========================================

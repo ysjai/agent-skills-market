@@ -1,0 +1,42 @@
+T3.1 ParseApiError Unification Evidence
+========================================
+
+1. lib/errors.ts Enhancement
+----------------------------
+Added parseApiError function to lib/errors.ts
+- Handles API error responses with validation details
+- Type-safe error parsing with proper type guards
+- Falls back to existing parseError for non-API errors
+
+2. Updated Files
+----------------
+- components/skills/CreateSkillDialog.tsx
+  * Added: import { parseApiError } from '@/lib/errors'
+  * Removed: Local const parseApiError function (lines 52-78)
+  
+- components/skills/ImportSkillDialog.tsx
+  * Added: import { parseApiError } from '@/lib/errors'
+  * Removed: Local const parseApiError function (lines 69-95)
+
+3. Removed Duplicates
+---------------------
+Before: 2 duplicate parseApiError functions
+After: 0 duplicates (all using lib/errors.ts)
+
+4. TypeScript Check
+-------------------
+Command: npx tsc --noEmit
+Result: PASSED (no errors)
+
+5. Function Signature
+---------------------
+export function parseApiError(err: unknown): string
+
+6. Error Handling Logic Preserved
+---------------------------------
+- API validation errors: extracts field names and messages from array details
+- String details: returned as-is
+- Non-API errors: delegated to parseError function
+- Default fallback: 'Operation failed' (handled by parseError)
+
+Status: COMPLETED ✓

@@ -1,0 +1,10 @@
+T2.3: Move auth.ts from app/lib/ to lib/
+
+Evidence of file move:
+- lib/auth.ts: EXISTS (105 bytes)
+- app/lib/: DELETED
+
+Import path updates:
+- lib/__tests__/auth.test.ts: Updated from '../../app/lib/auth' to '../auth'
+
+Files updated: 1

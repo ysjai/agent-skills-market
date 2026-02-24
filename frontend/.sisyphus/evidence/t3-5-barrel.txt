@@ -1,0 +1,38 @@
+# T3.5 Barrel Exports 完成证据
+
+## 创建的文件
+
+### 1. types/index.ts
+导出所有类型定义：
+
+- Skill types: Skill, SkillListResponse, CreateSkillRequest, UpdateSkillRequest, SkillFile, SkillMetadata, Version, VersionDiff
+- User types: User, LoginRequest, RegisterRequest  
+- Project types: Project, CreateProjectRequest, UpdateProjectRequest, ProjectSkill, SyncProjectSkillRequest
+- File tree types: TreeEntry, TreeStructure, FileTreeNode, CreateFileRequest, RenameFileRequest, FileOperation
+
+### 2. stores/index.ts
+已存在，包含：
+- AuthState, SkillsState, UIState (从 ./types 导出)
+
+## 验证结果
+
+- `npx tsc --noEmit` 通过，无错误
+- 所有类型可以从 `@/types` 简写导入
+- 例如：`import { Skill } from '@/types'` 替代 `@/types/skill`
+
+## 文件结构
+
+```
+types/
+├── index.ts       # 新增 barrel export
+├── skill.ts
+├── user.ts
+├── project.ts
+└── file-tree.ts
+
+stores/
+├── index.ts       # 已存在，确认完整
+└── types.ts
+```
+
+完成时间: $(date)

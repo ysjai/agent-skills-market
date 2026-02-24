@@ -1,0 +1,26 @@
+Task: T2.2 - Move FileIcons component from lib to components/ui
+Completed: $(date '+%Y-%m-%d %H:%M:%S')
+
+Actions taken:
+1. Moved lib/file-icons.tsx → components/ui/FileIcons.tsx
+2. Updated imports in 6 files:
+   - components/TextEditor.tsx
+   - components/TextViewer.tsx
+   - components/MarkdownEditor.tsx
+   - components/FileTreeItem.tsx
+   - components/MarkdownViewer.tsx
+   - components/FilePreview.tsx
+3. Changed import path from '@/lib/file-icons' to '@/components/ui/FileIcons'
+4. Old file removed during move operation
+5. TypeScript compilation passed (tsc --noEmit)
+6. New file location verified: components/ui/FileIcons.tsx
+
+Files changed:
+- D lib/file-icons.tsx (moved)
+- A components/ui/FileIcons.tsx (new location)
+- M components/TextEditor.tsx
+- M components/TextViewer.tsx
+- M components/MarkdownEditor.tsx
+- M components/FileTreeItem.tsx
+- M components/MarkdownViewer.tsx
+- M components/FilePreview.tsx

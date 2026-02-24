@@ -1,0 +1,51 @@
+services:
+  postgres:
+    image: postgres:16-alpine
+    container_name: agent_skills_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-agent_skills_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-agent_skills}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-agent_skills_user} -d ${POSTGRES_DB:-agent_skills}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  backend:
+    image: python:3.11-slim
+    container_name: agent_skills_backend
+    restart: unless-stopped
+    working_dir: /app
+    environment:
+      # 开发环境：不传则自动生成；生产环境：必须在 .env 中设置
+      SECRET_KEY: ${SECRET_KEY:-}
+      ENVIRONMENT: ${ENVIRONMENT:-development}
+      DATABASE_URL: postgresql+asyncpg://${POSTGRES_USER:-agent_skills_user}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-agent_skills}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_USER: ${POSTGRES_USER:-agent_skills_user}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-agent_skills}
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/app
+    depends_on:
+      postgres:
+        condition: service_healthy
+    command: >
+      sh -c "pip install -r requirements.txt && 
+             uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload"
+    env_file:
+      - .env
+
+volumes:
+  postgres_data:
+    driver: local

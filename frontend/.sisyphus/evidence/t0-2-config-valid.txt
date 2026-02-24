@@ -1,0 +1,1 @@
+SUCCESS: eslint.config.mjs syntax is valid

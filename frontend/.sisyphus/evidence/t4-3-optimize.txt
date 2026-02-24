@@ -1,0 +1,47 @@
+# T4.3 FileTree Render Optimization - Evidence
+
+## Date: 2026-02-19
+
+## Changes Made
+
+### 1. FileTreeItem.tsx - Added React.memo
+- Imported `memo` from 'react'
+- Wrapped component export with `memo()`
+- Added `displayName = 'FileTreeItem'` for debugging
+
+### 2. FileTree.tsx - Added useCallback
+- Imported `useCallback` from 'react'
+- Wrapped the following handlers with useCallback:
+  - handleAddFile
+  - handleAddFolder
+  - handleRename
+  - handleMove
+  - handleDeleteWithConfirm
+  - handleDownloadWithConfirm
+  - handleUploadFileToFolder
+  - handleUploadFolderToFolder
+
+## Performance Benefits
+
+1. **React.memo on FileTreeItem**:
+   - Prevents re-renders when props haven't changed
+   - Particularly beneficial for large file trees where only one item changes
+   - Child items won't re-render when parent expands/collapses (if props unchanged)
+
+2. **useCallback on handlers**:
+   - Callbacks maintain stable references across renders
+   - Essential for React.memo to work effectively
+   - Prevents child FileTreeItem components from receiving new function references on every parent render
+
+## TypeScript Check
+
+Command: npx tsc --noEmit
+
+Result: 
+- FileTree.tsx: No errors
+- FileTreeItem.tsx: No errors
+- Other file errors (skills/page.tsx): Pre-existing, unrelated to this task
+
+## Files Modified
+- components/file-tree/FileTreeItem.tsx
+- components/file-tree/FileTree.tsx
