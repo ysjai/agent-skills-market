@@ -5,11 +5,11 @@ import Editor, { type OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
 import { api } from '@/lib/api';
 import { getFileIcon } from '@/components/ui/FileIcons';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage, isAbortError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
 import { Loader2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
-import { configureMonaco } from '@/lib/monaco-config';
+import { configureMonaco, MARKDOWN_EDITOR_OPTIONS } from '@/lib/monaco-config';
 
 interface MarkdownEditorProps {
   blobId?: string;
@@ -76,13 +76,7 @@ export function MarkdownEditor({
       const text = await response.text();
       setContent(text);
     } catch (err) {
-      const isCancelError =
-        (err instanceof Error && err.name === 'AbortError') ||
-        (err instanceof Error && err.message?.includes('aborted')) ||
-        (err && typeof err === 'object' && 'name' in err && (err as { name: string }).name === 'AbortError') ||
-        (err && typeof err === 'object' && 'type' in err && (err as { type: string }).type === 'cancelation');
-
-      if (isCancelError) {
+      if (isAbortError(err)) {
         return;
       }
 
@@ -240,7 +234,6 @@ export function MarkdownEditor({
 
   return (
     <div className={cn('flex flex-col border border-gray-200 rounded-lg overflow-hidden bg-white', className)}>
-      {/* Header */}
       <div className="flex items-center justify-between px-4 py-3 border-b border-gray-200 bg-gray-50">
         <div className="flex items-center gap-2">
           {getFileIcon(fileName, filePath)}
@@ -268,7 +261,6 @@ export function MarkdownEditor({
         </div>
       </div>
 
-      {/* Error message */}
       {error && (
         <div className="flex items-center gap-2 px-4 py-2 bg-red-50 border-b border-red-100">
           <AlertCircle className="w-4 h-4 text-red-500 flex-shrink-0" />
@@ -276,7 +268,6 @@ export function MarkdownEditor({
         </div>
       )}
 
-      {/* Editor */}
       <div className="relative">
         {isLoading ? (
           <div className="flex items-center justify-center" style={{ height }}>
@@ -293,30 +284,7 @@ export function MarkdownEditor({
             theme="markdown-light"
             onChange={handleEditorChange}
             onMount={handleEditorDidMount}
-            options={{
-              readOnly,
-              minimap: { enabled: false },
-              scrollBeyondLastLine: false,
-              wordWrap: 'on',
-              lineNumbers: 'on',
-              folding: true,
-              renderWhitespace: 'selection',
-              automaticLayout: true,
-              fontSize: 14,
-              fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace',
-              lineHeight: 1.6,
-              padding: { top: 16, bottom: 16 },
-              scrollbar: {
-                vertical: 'auto',
-                horizontal: 'auto',
-              },
-              quickSuggestions: true,
-              suggestOnTriggerCharacters: true,
-              acceptSuggestionOnCommitCharacter: true,
-              autoIndent: 'advanced',
-              formatOnPaste: true,
-              formatOnType: true,
-            }}
+            options={MARKDOWN_EDITOR_OPTIONS(readOnly)}
             loading={
               <div className="flex items-center justify-center" style={{ height }}>
                 <div className="flex items-center gap-2 text-gray-500">
@@ -329,7 +297,6 @@ export function MarkdownEditor({
         )}
       </div>
 
-      {/* Footer with keyboard shortcuts */}
       <div className="flex items-center justify-between px-4 py-2 border-t border-gray-200 bg-gray-50 text-xs text-gray-500">
         <div className="flex items-center gap-4">
           <span>Markdown</span>

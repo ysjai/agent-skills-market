@@ -114,6 +114,31 @@ export const MARKDOWN_THEME = {
   },
 } as const;
 
+export const MARKDOWN_EDITOR_OPTIONS = (readOnly = false): editor.IStandaloneEditorConstructionOptions => ({
+  readOnly,
+  minimap: { enabled: false },
+  scrollBeyondLastLine: false,
+  wordWrap: 'on',
+  lineNumbers: 'on',
+  folding: true,
+  renderWhitespace: 'selection',
+  automaticLayout: true,
+  fontSize: 14,
+  fontFamily: 'ui-monospace, SFMono-Regular, "SF Mono", Menlo, Monaco, Consolas, monospace',
+  lineHeight: 1.6,
+  padding: { top: 16, bottom: 16 },
+  scrollbar: {
+    vertical: 'auto',
+    horizontal: 'auto',
+  },
+  quickSuggestions: true,
+  suggestOnTriggerCharacters: true,
+  acceptSuggestionOnCommitCharacter: true,
+  autoIndent: 'advanced',
+  formatOnPaste: true,
+  formatOnType: true,
+});
+
 export function configureMonaco(monaco: Monaco): void {
   if (!monaco) return;
 

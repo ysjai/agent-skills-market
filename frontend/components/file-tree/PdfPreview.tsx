@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { Loader2, FileText } from 'lucide-react';
 import { api } from '@/lib/api';
 import { logger } from '@/lib/logger';
+import { isAbortError, getErrorMessage } from '@/lib/errors';
 
 interface PdfPreviewProps {
   blobId: string;
@@ -32,21 +33,11 @@ export function PdfPreview({ blobId, fileName, height = '80vh' }: PdfPreviewProp
         objectUrl = URL.createObjectURL(blob);
         setPdfUrl(objectUrl);
       } catch (err) {
-        const isCancelError =
-          (err instanceof Error && err.name === 'AbortError') ||
-          (err instanceof Error && err.message?.includes('aborted')) ||
-          (err && typeof err === 'object' && 'name' in err && (err as { name: string }).name === 'AbortError') ||
-          (err && typeof err === 'object' && 'type' in err && (err as { type: string }).type === 'cancelation');
-
-        if (isCancelError) {
+        if (isAbortError(err)) {
           return;
         }
 
-        const errorMessage = err instanceof Error
-          ? err.message
-          : err && typeof err === 'object' && 'message' in err
-            ? String((err as { message: unknown }).message)
-            : 'Failed to load PDF';
+        const errorMessage = getErrorMessage(err, 'Failed to load PDF');
         setError(errorMessage);
         logger.error('Error loading PDF:', err);
         setLoading(false);

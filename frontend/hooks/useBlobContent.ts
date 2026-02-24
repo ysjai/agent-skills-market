@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from 'react';
 import { api } from '@/lib/api';
-import { getErrorMessage } from '@/lib/errors';
+import { getErrorMessage, isAbortError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
 
 export interface UseBlobContentOptions {
@@ -15,17 +15,6 @@ export interface UseBlobContentReturn {
   isLoading: boolean;
   error: string | null;
   reload: () => void;
-}
-
-function isCancelError(err: unknown): boolean {
-  if (err instanceof Error) {
-    return err.name === 'AbortError' || err.message?.includes('aborted') || false;
-  }
-  if (err && typeof err === 'object') {
-    const errObj = err as Record<string, unknown>;
-    return errObj.name === 'AbortError' || errObj.type === 'cancelation';
-  }
-  return false;
 }
 
 export function useBlobContent(options: UseBlobContentOptions): UseBlobContentReturn {
@@ -55,7 +44,7 @@ export function useBlobContent(options: UseBlobContentOptions): UseBlobContentRe
       setContent(text);
     } catch (err) {
       // Handle cancellation errors silently
-      if (isCancelError(err)) {
+      if (isAbortError(err)) {
         return;
       }
 

@@ -9,9 +9,17 @@ export function parseError(err: unknown): string {
 }
 
 export function isAbortError(err: unknown): boolean {
-  return (
-    err instanceof DOMException && err.name === "AbortError"
-  );
+  if (err instanceof DOMException && err.name === "AbortError") {
+    return true;
+  }
+  if (err instanceof Error) {
+    return err.name === "AbortError" || err.message?.includes("aborted") || false;
+  }
+  if (err && typeof err === "object") {
+    const errObj = err as Record<string, unknown>;
+    return errObj.name === "AbortError" || errObj.type === "cancelation" || false;
+  }
+  return false;
 }
 
 export function getErrorMessage(err: unknown, fallback: string): string {

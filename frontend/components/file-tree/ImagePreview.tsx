@@ -5,6 +5,7 @@ import { api } from '@/lib/api';
 import { Loader2, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { logger } from '@/lib/logger';
+import { isAbortError } from '@/lib/errors';
 
 interface ImagePreviewProps {
   blobId: string;
@@ -33,11 +34,7 @@ export function ImagePreview({
         objectUrl = URL.createObjectURL(blob);
         setImageUrl(objectUrl);
       } catch (err) {
-        const isCancelError =
-          (err instanceof Error && err.name === 'AbortError') ||
-          (err instanceof Error && err.message?.includes('aborted'));
-
-        if (isCancelError) {
+        if (isAbortError(err)) {
           return;
         }
 
