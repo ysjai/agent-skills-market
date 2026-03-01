@@ -10,9 +10,10 @@ import { PromptVersion } from '@/types/prompt';
 export interface VersionHistoryProps {
   versions: PromptVersion[];
   onPreview: (version: PromptVersion) => void;
+  activeVersionId?: string;
 }
 
-export function VersionHistory({ versions, onPreview }: VersionHistoryProps) {
+export function VersionHistory({ versions, onPreview, activeVersionId }: VersionHistoryProps) {
   const t = useTranslations('prompts');
 
   return (
@@ -34,11 +35,17 @@ export function VersionHistory({ versions, onPreview }: VersionHistoryProps) {
           versions.map((version) => {
             const dateObj = new Date(version.created_at);
             const dateStr = `${dateObj.toLocaleDateString()} ${dateObj.toLocaleTimeString()}`;
+            const isActive = version.id === activeVersionId;
 
             return (
               <div
                 key={version.id}
-                className="group flex items-center justify-between gap-2 rounded-xl border border-transparent px-3 py-2.5 hover:bg-gray-50 hover:border-gray-200 transition-all duration-150"
+                className={cn(
+                  "group flex items-center justify-between gap-2 rounded-xl border px-3 py-2.5 transition-all duration-150",
+                  isActive
+                    ? "bg-blue-50 border-blue-200"
+                    : "border-transparent hover:bg-gray-50 hover:border-gray-200"
+                )}
               >
                 {/* Left: version info */}
                 <div className="flex flex-col gap-1 min-w-0">

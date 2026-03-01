@@ -269,7 +269,7 @@ export function PromptEditor() {
                 <div className="space-y-1.5">
                   <label htmlFor="description" className="text-sm font-medium text-gray-700 flex justify-between">
                     <span>{tCommon('description')}</span>
-                    <span className="text-xs text-gray-400 font-normal">{description.length}/1000</span>
+                    <span className="text-xs text-gray-400 font-normal">{(previewVersion ? (previewVersion.description || '') : description).length}/1000</span>
                   </label>
                   <textarea
                     id="description"
@@ -342,7 +342,7 @@ export function PromptEditor() {
 
       {/* Version History Panel */}
       {showVersionHistory && (
-        <VersionHistory versions={versions} onPreview={setPreviewVersion} />
+        <VersionHistory versions={versions} onPreview={setPreviewVersion} activeVersionId={previewVersion?.id} />
       )}
     </div>
   );
