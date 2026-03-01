@@ -107,13 +107,13 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
               className={cn(
                 "w-full group flex flex-col items-start gap-1.5 rounded-xl p-3 text-left transition-all duration-200 border border-transparent",
                 selectedPrompt?.id === prompt.id
-                  ? "bg-gray-900 shadow-sm text-white border-gray-800"
+                  ? "bg-slate-200 text-slate-900 border-slate-300 shadow-sm"
                   : "bg-transparent text-gray-700 hover:bg-gray-50 hover:border-gray-200"
               )}
             >
               <div className="flex w-full items-start justify-between gap-2">
                 <span className={cn("font-semibold truncate text-sm",
-                  selectedPrompt?.id === prompt.id ? "text-white" : "text-gray-900"
+                  selectedPrompt?.id === prompt.id ? "text-slate-900" : "text-gray-900"
                 )}>
                   {prompt.title || 'Untitled Prompt'}
                 </span>
@@ -126,7 +126,7 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                           tabIndex={0}
                           onClick={(e) => { e.stopPropagation(); onExportClick(prompt.id); }}
                           onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onExportClick(prompt.id); } }}
-                          className="p-0.5 rounded hover:bg-white/20 text-white/70 hover:text-white cursor-pointer"
+                          className="p-0.5 rounded hover:bg-slate-300 text-slate-500 hover:text-slate-800 cursor-pointer"
                           title="Export"
                         >
                           <Download className="h-3.5 w-3.5" />
@@ -138,7 +138,7 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                           tabIndex={0}
                           onClick={(e) => { e.stopPropagation(); onDeleteClick(prompt.id); }}
                           onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onDeleteClick(prompt.id); } }}
-                          className="p-0.5 rounded hover:bg-red-500/20 text-white/70 hover:text-red-300 cursor-pointer"
+                          className="p-0.5 rounded hover:bg-red-100 text-slate-500 hover:text-red-600 cursor-pointer"
                           title="Delete"
                         >
                           <Trash2 className="h-3.5 w-3.5" />
@@ -149,7 +149,7 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                   <span className={cn(
                     "shrink-0 rounded-full px-2 py-0.5 text-[10px] font-medium tracking-wide shadow-sm",
                     selectedPrompt?.id === prompt.id
-                      ? "bg-white/20 text-white"
+                      ? "bg-slate-300 text-slate-700"
                       : "bg-gray-100 text-gray-600 border border-gray-200/50"
                   )}>
                     v{prompt.version}
@@ -172,7 +172,7 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                         selectedTag === tag
                           ? "bg-blue-500 text-white ring-2 ring-blue-300 ring-inset"
                           : selectedPrompt?.id === prompt.id
-                            ? "bg-white/10 text-white/90 hover:bg-white/20"
+                            ? "bg-slate-300/60 text-slate-700 hover:bg-slate-300"
                             : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                       )}
                     >
@@ -183,7 +183,7 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                     <span className={cn(
                       "inline-flex items-center rounded text-[10px] font-medium px-1.5 py-0.5",
                       selectedPrompt?.id === prompt.id
-                        ? "text-white/70"
+                        ? "text-slate-500"
                         : "text-gray-400"
                     )}>
                       +{prompt.tags.length - 3}

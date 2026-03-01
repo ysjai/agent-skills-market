@@ -135,8 +135,8 @@ export function PromptEditor() {
     <div className="flex flex-1 h-full overflow-hidden">
       <div className="flex flex-1 flex-col h-full bg-white overflow-hidden">
         {/* Header Controls */}
-        <div className="shrink-0 border-b border-gray-100 bg-white/50 backdrop-blur-xl z-10 px-6 py-4">
-          <div className="mx-auto max-w-4xl flex items-center justify-between w-full">
+        <div className="shrink-0 border-b border-gray-100 bg-white/50 backdrop-blur-xl z-10 py-4">
+          <div className="mx-auto max-w-4xl flex items-center justify-between w-full px-6">
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
                 {tCommon('edit')} Prompt
