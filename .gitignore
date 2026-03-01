@@ -56,13 +56,10 @@ Thumbs.db
 *.log
 .ruff_cache
 
-# Sisyphus agent runtime state (keep plans/, ignore everything else)
+# Sisyphus agent runtime state (keep plans/, notepads/, drafts/)
 .sisyphus/boulder.json
 .sisyphus/boulder-security.json
-.sisyphus/notepads/
-.sisyphus/drafts/
 .sisyphus/run-continuation/
-.sisyphus/evidence/
 
 # TypeScript build cache
 frontend/tsconfig.tsbuildinfo
