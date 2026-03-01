@@ -182,7 +182,6 @@
     "saveShortcut": "Ctrl+S 保存",
     "suggestionsShortcut": "Ctrl+Space 建议"
   },
-
   "errors": {
     "loadFailed": "加载失败",
     "saveFailed": "保存失败",
@@ -240,7 +239,10 @@
     "contentPlaceholder": "在此编写提示词模板...\n使用 '{'variable'}' 作为模板变量。",
     "descriptionPlaceholder": "简要描述此提示词的用途...",
     "loadFailed": "加载提示词失败",
-    "untitled": "未命名提示词"
+    "untitled": "未命名提示词",
+    "clickToSelect": "点击或拖拽文件到此区域上传",
+    "changeFile": "更改文件",
+    "selectFile": "选择文件"
   },
   "nav": {
     "skills": "技能",
@@ -298,10 +300,9 @@
     "windowsCompatibility": {
       "title": "Windows 兼容性提示",
       "description": "此技能包含 {count} 个文件，文件名中包含 Windows 不支持的字符（{chars}）。",
-      "renamed": "文件已重命名为 Windows 兼容的名称。",
+      "renamed": "新文件名",
       "filenameChanges": "文件名变更（{count}）",
       "original": "原文件名",
-      "renamed": "新文件名",
       "referenceWarning": "注意：如果其他文件引用了这些文件，引用可能需要更新。"
     },
     "copied": "已复制！",

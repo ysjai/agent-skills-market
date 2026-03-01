@@ -54,33 +54,43 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
 
   return (
     <div className="flex h-full w-[320px] flex-col border-r border-gray-100 bg-white shadow-sm shrink-0">
-      {/* Header */}
-      <div className="flex items-center justify-between p-4 pb-2">
+      {/* Header and Search */}
+      <div className="flex flex-col gap-3 p-4 pb-2">
         <h2 className="text-lg font-bold tracking-tight text-gray-900">{t('title')}</h2>
-        <div className="flex items-center gap-1">
-          {onImportClick && (
-            <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900" title={t('importPrompt')} onClick={onImportClick}>
-              <Upload className="h-4 w-4" />
+        
+        <div className="flex flex-wrap items-center gap-2">
+          <div className="relative flex-1 min-w-[120px]">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
+            <Input
+              className="h-9 w-full bg-gray-50 pl-9 border-none shadow-none ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-gray-900 text-sm rounded-full transition-all"
+              placeholder={t('searchPlaceholder')}
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+            />
+          </div>
+          <div className="flex items-center gap-2">
+            {onImportClick && (
+              <Button
+                onClick={onImportClick}
+                className="h-9 flex items-center justify-center gap-2 px-3"
+              >
+                <Upload className="h-4 w-4" />
+                <span>{t('importPrompt')}</span>
+              </Button>
+            )}
+            <Button
+              variant="outline"
+              onClick={handleNewPrompt}
+              disabled={isCreating}
+              className="h-9 flex items-center justify-center gap-2 px-3"
+            >
+              <Plus className="h-4 w-4" />
+              <span>{t('newPrompt')}</span>
             </Button>
-          )}
-          <Button size="icon" variant="ghost" className="h-8 w-8 rounded-full bg-gray-50 text-gray-600 hover:bg-gray-100 hover:text-gray-900" title={t('newPrompt')} onClick={handleNewPrompt} disabled={isCreating}>
-            <Plus className="h-4 w-4" />
-          </Button>
+          </div>
         </div>
       </div>
 
-      {/* Search Bar */}
-      <div className="px-4 pb-4">
-        <div className="relative">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
-          <Input
-            className="h-9 w-full bg-gray-50 pl-9 border-none shadow-none ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-gray-900 text-sm rounded-full transition-all"
-            placeholder={t('searchPlaceholder')}
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-        </div>
-      </div>
 
       {/* List */}
       <div className="flex-1 overflow-y-auto px-2 pb-4 space-y-1">

@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { Copy, Check } from 'lucide-react';
+import { Copy, Check, Download } from 'lucide-react';
 import { Dialog } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 
@@ -10,9 +10,10 @@ export interface ExportDialogProps {
   isOpen: boolean;
   onClose: () => void;
   content: string;
+  promptTitle?: string;
 }
 
-export function ExportDialog({ isOpen, onClose, content }: ExportDialogProps) {
+export function ExportDialog({ isOpen, onClose, content, promptTitle }: ExportDialogProps) {
   const t = useTranslations('prompts');
   const tCommon = useTranslations('common');
   const [copied, setCopied] = useState(false);
@@ -36,6 +37,18 @@ export function ExportDialog({ isOpen, onClose, content }: ExportDialogProps) {
     }
   };
 
+  const handleDownload = () => {
+    const blob = new Blob([content], { type: 'text/markdown' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${(promptTitle || 'prompt').toLowerCase().replace(/\s+/g, '-')}.md`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   return (
     <Dialog open={isOpen} onClose={onClose} title={t('exportPrompt')}>
       <div className="flex flex-col gap-4">
@@ -51,6 +64,14 @@ export function ExportDialog({ isOpen, onClose, content }: ExportDialogProps) {
             onClick={onClose}
           >
             {tCommon('close')}
+          </Button>
+          <Button
+            type="button"
+            variant="outline"
+            onClick={handleDownload}
+          >
+            <Download className="mr-2 h-4 w-4" />
+            {tCommon('download', { defaultValue: 'Download' })}
           </Button>
           <Button
             type="button"

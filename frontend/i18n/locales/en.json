@@ -182,7 +182,6 @@
     "saveShortcut": "Ctrl+S to save",
     "suggestionsShortcut": "Ctrl+Space for suggestions"
   },
-
   "errors": {
     "loadFailed": "Failed to load",
     "saveFailed": "Failed to save",
@@ -240,7 +239,10 @@
     "contentPlaceholder": "Write your prompt template here...\nUse '{'variable'}' for template variables.",
     "descriptionPlaceholder": "Brief description of this prompt...",
     "loadFailed": "Failed to load prompts",
-    "untitled": "Untitled Prompt"
+    "untitled": "Untitled Prompt",
+    "clickToSelect": "Click or drag file to this area to upload",
+    "changeFile": "Change File",
+    "selectFile": "Select File"
   },
   "nav": {
     "skills": "Skills",
@@ -298,10 +300,9 @@
     "windowsCompatibility": {
       "title": "Windows Compatibility Notice",
       "description": "This skill contains {count} file(s) with characters not supported by Windows ({chars}).",
-      "renamed": "Files have been renamed for Windows compatibility.",
+      "renamed": "Renamed",
       "filenameChanges": "Filename Changes ({count})",
       "original": "Original",
-      "renamed": "Renamed",
       "referenceWarning": "Note: If other files reference these files, the references may need to be updated."
     },
     "copied": "Copied!",

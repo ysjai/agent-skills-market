@@ -130,6 +130,7 @@ export default function PromptsPage() {
         isOpen={showExport}
         onClose={() => setShowExport(false)}
         content={exportContent}
+        promptTitle={selectedPrompt?.title}
       />
     </div>
   );

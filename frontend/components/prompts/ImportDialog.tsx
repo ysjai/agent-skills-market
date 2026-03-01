@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Upload, AlertCircle, Loader2 } from 'lucide-react';
+import { Upload, AlertCircle, Loader2, FolderUp } from 'lucide-react';
 import { Dialog } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 
@@ -16,6 +16,7 @@ export function ImportDialog({ isOpen, onClose, onImport }: ImportDialogProps) {
   const t = useTranslations('prompts');
   const tCommon = useTranslations('common');
   const [content, setContent] = useState('');
+  const [fileName, setFileName] = useState('');
   const [isImporting, setIsImporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -27,6 +28,7 @@ export function ImportDialog({ isOpen, onClose, onImport }: ImportDialogProps) {
     try {
       await onImport(content);
       setContent('');
+      setFileName('');
       onClose();
     } catch (err: unknown) {
       setError(err instanceof Error ? err.message : 'Failed to import prompt');
@@ -38,19 +40,32 @@ export function ImportDialog({ isOpen, onClose, onImport }: ImportDialogProps) {
   const handleClose = () => {
     if (!isImporting) {
       setContent('');
+      setFileName('');
       setError(null);
       onClose();
     }
   };
 
-  const placeholderText = `---
-title: My Prompt Title
-description: Optional description
-tags: [tag1, tag2]
----
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
 
-Prompt content goes here...
-Use {{variable}} for template variables.`;
+    if (!file.name.endsWith('.md')) {
+      setError('Please select a .md file');
+      return;
+    }
+
+    try {
+      const text = await file.text();
+      setContent(text);
+      setFileName(file.name);
+      setError(null);
+    } catch (err) {
+      setError('Failed to read file');
+      setContent('');
+      setFileName('');
+    }
+  };
 
   return (
     <Dialog open={isOpen} onClose={handleClose} title={t('importPrompt')}>
@@ -61,13 +76,22 @@ Use {{variable}} for template variables.`;
             <p>{error}</p>
           </div>
         )}
-        <textarea
-          value={content}
-          onChange={(e) => setContent(e.target.value)}
-          placeholder={placeholderText}
-          className="min-h-[200px] w-full resize-y rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 font-mono placeholder:text-gray-400 focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/20 disabled:cursor-not-allowed disabled:opacity-50"
-          disabled={isImporting}
-        />
+        <div className="relative flex flex-col items-center justify-center rounded-lg border-2 border-dashed border-gray-300 p-6 sm:p-8 hover:bg-gray-50 transition-colors">
+          <FolderUp className="mb-2 h-8 w-8 text-gray-400 sm:h-10 sm:w-10" />
+          <p className="mb-2 text-sm text-gray-500 font-medium">
+            {fileName ? `Selected: ${fileName} ✓` : t('clickToSelect', { defaultValue: 'Click or drag file to this area to upload' })}
+          </p>
+          <input
+            type="file"
+            accept=".md"
+            onChange={handleFileSelect}
+            disabled={isImporting}
+            className="absolute inset-0 cursor-pointer opacity-0 disabled:cursor-not-allowed"
+          />
+          <Button variant="outline" className="pointer-events-none relative z-10" disabled={isImporting}>
+            {fileName ? t('changeFile', { defaultValue: 'Change File' }) : t('selectFile', { defaultValue: 'Select File' })}
+          </Button>
+        </div>
         <div className="flex justify-end gap-2">
           <Button
             type="button"
