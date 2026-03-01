@@ -25,6 +25,8 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
     searchQuery,
     setSearchQuery,
     setSelectedPrompt,
+    selectedTag,
+    setSelectedTag,
     addPrompt,
     getFilteredPrompts
   } = usePromptsStore();
@@ -151,11 +153,17 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                   {prompt.tags.slice(0, 3).map((tag) => (
                     <span
                       key={tag}
+                      onClick={(e) => { e.stopPropagation(); setSelectedTag(selectedTag === tag ? null : tag); }}
+                      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') { e.stopPropagation(); setSelectedTag(selectedTag === tag ? null : tag); } }}
+                      role="button"
+                      tabIndex={0}
                       className={cn(
-                        "inline-flex items-center rounded text-[10px] font-medium px-1.5 py-0.5",
-                        selectedPrompt?.id === prompt.id
-                          ? "bg-white/10 text-white/90"
-                          : "bg-gray-100 text-gray-500"
+                        "inline-flex items-center rounded text-[10px] font-medium px-1.5 py-0.5 cursor-pointer transition-all",
+                        selectedTag === tag
+                          ? "bg-blue-500 text-white ring-2 ring-blue-300 ring-inset"
+                          : selectedPrompt?.id === prompt.id
+                            ? "bg-white/10 text-white/90 hover:bg-white/20"
+                            : "bg-gray-100 text-gray-500 hover:bg-gray-200"
                       )}
                     >
                       {tag}
