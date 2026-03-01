@@ -55,7 +55,7 @@ export function PromptEditor() {
   const loadVersions = async (promptId: string) => {
     try {
       const data = await api.get<PromptVersion[]>(`/prompts/${promptId}/versions`);
-      setVersions(data || []);
+      setVersions((data || []).slice().sort((a, b) => b.version_number - a.version_number));
     } catch {
       setVersions([]);
     }
