@@ -25,7 +25,7 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
 
   return (
     <header className="shrink-0 border-b border-gray-200 bg-white">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+      <div className="px-4 sm:px-6">
         <div className="flex h-14 items-center justify-between gap-8">
           {/* Left: Logo */}
           <Link href={`/${locale}/skills`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">

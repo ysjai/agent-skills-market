@@ -136,7 +136,7 @@ export function PromptEditor() {
       <div className="flex flex-1 flex-col h-full bg-white overflow-hidden">
         {/* Header Controls */}
         <div className="shrink-0 border-b border-gray-100 bg-white/50 backdrop-blur-xl z-10 py-4">
-          <div className="mx-auto max-w-4xl flex items-center justify-between w-full px-6">
+          <div className="flex items-center justify-between w-full px-4 sm:px-6">
             <div className="flex items-center gap-3">
               <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
                 {tCommon('edit')} Prompt
@@ -192,7 +192,7 @@ export function PromptEditor() {
 
         {/* Editor Content Scrollable */}
         <div className="flex-1 overflow-y-auto custom-scrollbar">
-          <div className="mx-auto max-w-4xl p-6 space-y-8">
+          <div className="px-4 sm:px-6 space-y-8">
             
             {/* Metadata Section */}
             <div className="grid grid-cols-1 gap-6 md:grid-cols-[2fr_1fr]">
