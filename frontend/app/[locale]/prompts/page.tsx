@@ -1,24 +1,33 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { TopNav } from '@/components/layout/TopNav';
 import { PromptList } from '@/components/prompts/PromptList';
 import { PromptEditor } from '@/components/prompts/PromptEditor';
+import { ImportDialog } from '@/components/prompts/ImportDialog';
+import { ExportDialog } from '@/components/prompts/ExportDialog';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { api } from '@/lib/api';
-import type { PromptListResponse } from '@/types/prompt';
+import type { Prompt, PromptListResponse } from '@/types/prompt';
 
 export default function PromptsPage() {
   const t = useTranslations('prompts');
   const tCommon = useTranslations('common');
   const [isMounted, setIsMounted] = useState(false);
+  const [showImport, setShowImport] = useState(false);
+  const [exportContent, setExportContent] = useState('');
+  const [showExport, setShowExport] = useState(false);
 
   const {
     isLoading,
     setIsLoading,
     setErrorMessage,
     setPrompts,
+    addPrompt,
+    removePrompt,
+    selectedPrompt,
+    setSelectedPrompt,
     errorMessage
   } = usePromptsStore();
 
@@ -33,8 +42,6 @@ export default function PromptsPage() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      // Mock API call for now if real backend doesn't exist
-      // Will try real API, fallback to empty array if it fails with 404
       const data = await api.get<PromptListResponse>('/prompts');
       setPrompts(data.items);
     } catch (error: unknown) {
@@ -47,6 +54,41 @@ export default function PromptsPage() {
       setIsLoading(false);
     }
   };
+
+  const handleImport = useCallback(async (content: string) => {
+    const imported = await api.post<Prompt>('/prompts/import', { content });
+    addPrompt(imported);
+    setSelectedPrompt(imported);
+  }, [addPrompt, setSelectedPrompt]);
+
+  const handleExport = useCallback(async (promptId: string) => {
+    try {
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const resp = await fetch(`${apiUrl}/prompts/${promptId}/export`, {
+        headers: {
+          'Authorization': `Bearer ${localStorage.getItem('access_token')}`,
+        },
+      });
+      const text = await resp.text();
+      setExportContent(text);
+      setShowExport(true);
+    } catch (err) {
+      console.error('Failed to export prompt', err);
+    }
+  }, []);
+
+  const handleDelete = useCallback(async (promptId: string) => {
+    if (!confirm(t('deleteConfirm'))) return;
+    try {
+      await api.delete(`/prompts/${promptId}`);
+      removePrompt(promptId);
+      if (selectedPrompt?.id === promptId) {
+        setSelectedPrompt(null);
+      }
+    } catch (err) {
+      console.error('Failed to delete prompt', err);
+    }
+  }, [removePrompt, selectedPrompt, setSelectedPrompt, t]);
 
   return (
     <div className={`flex h-screen flex-col bg-gray-50 transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
@@ -69,10 +111,26 @@ export default function PromptsPage() {
         </div>
       ) : (
         <div className="flex flex-1 overflow-hidden">
-          <PromptList />
+          <PromptList
+            onImportClick={() => setShowImport(true)}
+            onExportClick={handleExport}
+            onDeleteClick={handleDelete}
+          />
           <PromptEditor />
         </div>
       )}
+
+      <ImportDialog
+        isOpen={showImport}
+        onClose={() => setShowImport(false)}
+        onImport={handleImport}
+      />
+
+      <ExportDialog
+        isOpen={showExport}
+        onClose={() => setShowExport(false)}
+        content={exportContent}
+      />
     </div>
   );
 }

@@ -237,7 +237,7 @@
     "importError": "导入提示词失败",
     "exportSuccess": "提示词导出成功",
     "titlePlaceholder": "输入提示词标题...",
-    "contentPlaceholder": "在此编写提示词模板...\n使用 {{variable}} 作为模板变量。",
+    "contentPlaceholder": "在此编写提示词模板...\n使用 '{'variable'}' 作为模板变量。",
     "descriptionPlaceholder": "简要描述此提示词的用途...",
     "loadFailed": "加载提示词失败",
     "untitled": "未命名提示词"

@@ -13,12 +13,6 @@ import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
 import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
 import { SkillCard } from '@/components/skills/SkillCard';
 import { TopNav } from '@/components/layout/TopNav';
-import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
-import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
-import { SkillCard } from '@/components/skills/SkillCard';
-import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
-import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
-import { SkillCard } from '@/components/skills/SkillCard';
 import { api } from '@/lib/api';
 import type { Skill, SkillListResponse } from '@/types/skill';
 import { getErrorMessage } from '@/lib/errors';
@@ -52,9 +46,7 @@ export default function SkillsPage() {
   const [downloadSkillId, setDownloadSkillId] = useState<string>('');
   const [downloadSkillName, setDownloadSkillName] = useState<string>('');
 
-  // Alias for backward compatibility
-  const downloadDialogOpen = isDownloadDialogOpen;
-  const setDownloadDialogOpen = setIsDownloadDialogOpen;
+
 
   useEffect(() => {
     loadSkills();

@@ -237,7 +237,7 @@
     "importError": "Failed to import prompt",
     "exportSuccess": "Prompt exported successfully",
     "titlePlaceholder": "Enter prompt title...",
-    "contentPlaceholder": "Write your prompt template here...\nUse {{variable}} for template variables.",
+    "contentPlaceholder": "Write your prompt template here...\nUse '{'variable'}' for template variables.",
     "descriptionPlaceholder": "Brief description of this prompt...",
     "loadFailed": "Failed to load prompts",
     "untitled": "Untitled Prompt"

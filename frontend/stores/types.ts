@@ -1,7 +1,7 @@
 import type { Skill } from '@/types/skill';
 import type { Prompt } from '@/types/prompt';
 import type { User } from '@/types/user';
-import type { User } from '@/types/user';
+
 
 // Auth Store
 export interface AuthState {
