@@ -72,20 +72,20 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
             {onImportClick && (
               <Button
                 onClick={onImportClick}
-                className="h-9 flex items-center justify-center gap-1 px-2 text-xs"
+                className="h-9 w-9 p-0 flex items-center justify-center"
+                title={t('importPrompt')}
               >
-                <Upload className="h-3.5 w-3.5" />
-                <span>{t('importPrompt')}</span>
+                <Upload className="h-4 w-4" />
               </Button>
             )}
             <Button
               variant="outline"
               onClick={handleNewPrompt}
               disabled={isCreating}
-              className="h-9 flex items-center justify-center gap-1 px-2 text-xs"
+              className="h-9 w-9 p-0 flex items-center justify-center"
+              title={t('newPrompt')}
             >
-              <Plus className="h-3.5 w-3.5" />
-              <span>{t('newPrompt')}</span>
+              <Plus className="h-4 w-4" />
             </Button>
           </div>
         </div>

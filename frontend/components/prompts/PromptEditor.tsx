@@ -135,56 +135,58 @@ export function PromptEditor() {
     <div className="flex flex-1 h-full overflow-hidden">
       <div className="flex flex-1 flex-col h-full bg-white overflow-hidden">
         {/* Header Controls */}
-        <div className="flex shrink-0 items-center justify-between border-b border-gray-100 px-6 py-4 bg-white/50 backdrop-blur-xl z-10">
-          <div className="flex items-center gap-3">
-            <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
-              {tCommon('edit')} Prompt
-            </h2>
-            <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-              {t('versionNumber', { number: selectedPrompt.version })}
-            </span>
-            {hasChanges && (
-              <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
-                Unsaved changes
+        <div className="shrink-0 border-b border-gray-100 bg-white/50 backdrop-blur-xl z-10 px-6 py-4">
+          <div className="mx-auto max-w-4xl flex items-center justify-between w-full">
+            <div className="flex items-center gap-3">
+              <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
+                {tCommon('edit')} Prompt
+              </h2>
+              <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                {t('versionNumber', { number: selectedPrompt.version })}
               </span>
-            )}
-          </div>
-          <div className="flex items-center gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setShowVersionHistory(!showVersionHistory)}
-              className="min-w-[100px]"
-              title={t('versionHistory')}
-            >
-              <History className="h-4 w-4 mr-1.5" />
-              {t('versionHistory')}
-            </Button>
-            <Button 
-              variant="outline" 
-              onClick={handleSave} 
-              disabled={!hasChanges || isSaving || isPublishing}
-              className="min-w-[100px]"
-            >
-              {isSaving ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <Save className="h-4 w-4 mr-1.5" />
+              {hasChanges && (
+                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                  Unsaved changes
+                </span>
               )}
-              {tCommon('save')}
-            </Button>
-            <Button 
-              variant="default" 
-              onClick={handlePublish}
-              disabled={isSaving || isPublishing}
-              className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
-            >
-              {isPublishing ? (
-                <Loader2 className="h-4 w-4 animate-spin" />
-              ) : (
-                <UploadCloud className="h-4 w-4 mr-1.5" />
-              )}
-              {t('publishVersion')}
-            </Button>
+            </div>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowVersionHistory(!showVersionHistory)}
+                className="min-w-[100px]"
+                title={t('versionHistory')}
+              >
+                <History className="h-4 w-4 mr-1.5" />
+                {t('versionHistory')}
+              </Button>
+              <Button 
+                variant="outline" 
+                onClick={handleSave} 
+                disabled={!hasChanges || isSaving || isPublishing}
+                className="min-w-[100px]"
+              >
+                {isSaving ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <Save className="h-4 w-4 mr-1.5" />
+                )}
+                {tCommon('save')}
+              </Button>
+              <Button 
+                variant="default" 
+                onClick={handlePublish}
+                disabled={isSaving || isPublishing}
+                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
+              >
+                {isPublishing ? (
+                  <Loader2 className="h-4 w-4 animate-spin" />
+                ) : (
+                  <UploadCloud className="h-4 w-4 mr-1.5" />
+                )}
+                {t('publishVersion')}
+              </Button>
+            </div>
           </div>
         </div>
 
