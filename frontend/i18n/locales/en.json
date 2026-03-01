@@ -242,7 +242,11 @@
     "untitled": "Untitled Prompt",
     "clickToSelect": "Click or drag file to this area to upload",
     "changeFile": "Change File",
-    "selectFile": "Select File"
+    "selectFile": "Select File",
+    "preview": "Preview",
+    "previewingVersion": "Previewing Version {number}",
+    "closePreview": "Close Preview",
+    "restoreThisVersion": "Restore This Version"
   },
   "nav": {
     "skills": "Skills",
