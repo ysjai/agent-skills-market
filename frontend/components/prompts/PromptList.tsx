@@ -58,8 +58,8 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
       <div className="flex flex-col gap-3 p-4 pb-2">
         <h2 className="text-lg font-bold tracking-tight text-gray-900">{t('title')}</h2>
         
-        <div className="flex flex-wrap items-center gap-2">
-          <div className="relative flex-1 min-w-[120px]">
+        <div className="flex items-center gap-2">
+          <div className="relative flex-1 min-w-0">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
             <Input
               className="h-9 w-full bg-gray-50 pl-9 border-none shadow-none ring-1 ring-inset ring-gray-200 focus:ring-2 focus:ring-inset focus:ring-gray-900 text-sm rounded-full transition-all"
@@ -68,13 +68,13 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
               onChange={(e) => setSearchQuery(e.target.value)}
             />
           </div>
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-1 shrink-0">
             {onImportClick && (
               <Button
                 onClick={onImportClick}
-                className="h-9 flex items-center justify-center gap-2 px-3"
+                className="h-9 flex items-center justify-center gap-1 px-2 text-xs"
               >
-                <Upload className="h-4 w-4" />
+                <Upload className="h-3.5 w-3.5" />
                 <span>{t('importPrompt')}</span>
               </Button>
             )}
@@ -82,9 +82,9 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
               variant="outline"
               onClick={handleNewPrompt}
               disabled={isCreating}
-              className="h-9 flex items-center justify-center gap-2 px-3"
+              className="h-9 flex items-center justify-center gap-1 px-2 text-xs"
             >
-              <Plus className="h-4 w-4" />
+              <Plus className="h-3.5 w-3.5" />
               <span>{t('newPrompt')}</span>
             </Button>
           </div>
