@@ -48,7 +48,7 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
               </button>
 
               {isUserMenuOpen && (
-                <div className="absolute right-0 top-12 z-10 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                <div className="absolute right-0 top-12 z-50 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
                   <Link
                     href={`/${locale}/skills`}
                     className="flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"

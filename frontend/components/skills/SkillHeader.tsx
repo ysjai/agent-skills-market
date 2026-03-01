@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { ArrowLeft, Download, Trash2, Menu, User as UserIcon, ChevronDown, LogOut } from 'lucide-react';
+import { ArrowLeft, Download, Trash2, Menu, User as UserIcon, ChevronDown, LogOut, Layers, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/misc/LanguageSwitcher';
 import { getCurrentUser } from '@/app/api/auth';
@@ -30,6 +30,7 @@ export function SkillHeader({
   onUserMenuToggle,
 }: SkillHeaderProps) {
   const t = useTranslations('skills');
+  const tNav = useTranslations('nav');
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
   const router = useRouter();
@@ -163,19 +164,40 @@ export function SkillHeader({
             </button>
 
             {isUserMenuOpen && (
-              <div className="absolute right-0 top-10 z-10 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
-          <button
-            onClick={() => {
-              onUserMenuToggle();
-              if (onNavigate) {
-                onNavigate('/login', {});
-              } else {
-                router.push('/login');
-              }
-            }}
-            className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-red-600 hover:bg-red-50"
-          >
-                  <LogOut className="h-4 w-4" />
+              <div className="absolute right-0 top-10 z-50 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
+                <button
+                  onClick={() => {
+                    onUserMenuToggle();
+                    if (onNavigate) onNavigate('/skills'); else router.push('/skills');
+                  }}
+                  className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <Layers className="h-4 w-4 text-gray-500" />
+                  {tNav('skills')}
+                </button>
+                <button
+                  onClick={() => {
+                    onUserMenuToggle();
+                    if (onNavigate) onNavigate('/prompts'); else router.push('/prompts');
+                  }}
+                  className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <BookOpen className="h-4 w-4 text-gray-500" />
+                  {tNav('prompts')}
+                </button>
+                <div className="my-1 border-t border-gray-100" />
+                <button
+                  onClick={() => {
+                    onUserMenuToggle();
+                    if (onNavigate) {
+                      onNavigate('/login', {});
+                    } else {
+                      router.push('/login');
+                    }
+                  }}
+                  className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                >
+                  <LogOut className="h-4 w-4 text-gray-500" />
                   {tAuth('signOut')}
                 </button>
               </div>
