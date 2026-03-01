@@ -177,7 +177,7 @@ export function PromptEditor() {
                 variant="default" 
                 onClick={handlePublish}
                 disabled={isSaving || isPublishing}
-                className="bg-blue-600 hover:bg-blue-700 text-white min-w-[140px]"
+                className="bg-gray-900 hover:bg-gray-800 text-white min-w-[140px]"
               >
                 {isPublishing ? (
                   <Loader2 className="h-4 w-4 animate-spin" />

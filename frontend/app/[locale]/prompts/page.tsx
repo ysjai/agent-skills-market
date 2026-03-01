@@ -7,6 +7,7 @@ import { PromptList } from '@/components/prompts/PromptList';
 import { PromptEditor } from '@/components/prompts/PromptEditor';
 import { ImportDialog } from '@/components/prompts/ImportDialog';
 import { ExportDialog } from '@/components/prompts/ExportDialog';
+import { DeletePromptDialog } from '@/components/prompts/DeletePromptDialog';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { api } from '@/lib/api';
 import type { Prompt, PromptListResponse } from '@/types/prompt';
@@ -18,7 +19,8 @@ export default function PromptsPage() {
   const [showImport, setShowImport] = useState(false);
   const [exportContent, setExportContent] = useState('');
   const [showExport, setShowExport] = useState(false);
-
+  const [deletePromptId, setDeletePromptId] = useState<string | null>(null);
+  const [isDeleting, setIsDeleting] = useState(false);
   const {
     isLoading,
     setIsLoading,
@@ -77,18 +79,26 @@ export default function PromptsPage() {
     }
   }, []);
 
-  const handleDelete = useCallback(async (promptId: string) => {
-    if (!confirm(t('deleteConfirm'))) return;
+  const handleDelete = useCallback((promptId: string) => {
+    setDeletePromptId(promptId);
+  }, []);
+
+  const confirmDelete = useCallback(async () => {
+    if (!deletePromptId) return;
+    setIsDeleting(true);
     try {
-      await api.delete(`/prompts/${promptId}`);
-      removePrompt(promptId);
-      if (selectedPrompt?.id === promptId) {
+      await api.delete(`/prompts/${deletePromptId}`);
+      removePrompt(deletePromptId);
+      if (selectedPrompt?.id === deletePromptId) {
         setSelectedPrompt(null);
       }
     } catch (err) {
       console.error('Failed to delete prompt', err);
+    } finally {
+      setIsDeleting(false);
+      setDeletePromptId(null);
     }
-  }, [removePrompt, selectedPrompt, setSelectedPrompt, t]);
+  }, [deletePromptId, removePrompt, selectedPrompt, setSelectedPrompt]);
 
   return (
     <div className={`flex h-screen flex-col bg-gray-50 transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
@@ -131,6 +141,13 @@ export default function PromptsPage() {
         onClose={() => setShowExport(false)}
         content={exportContent}
         promptTitle={selectedPrompt?.title}
+      />
+
+      <DeletePromptDialog
+        open={deletePromptId !== null}
+        onClose={() => setDeletePromptId(null)}
+        onConfirm={confirmDelete}
+        isLoading={isDeleting}
       />
     </div>
   );
