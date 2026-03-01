@@ -173,7 +173,7 @@ describe("configureMonaco", () => {
     const registerCompletionItemProvider = mock(
       (language: string, provider: unknown) => provider
     );
-    const defineTheme = mock((name: string, theme: unknown) => undefined);
+    const defineTheme = mock((_name: string, _theme: unknown) => undefined);
 
     return {
       languages: {
