@@ -115,6 +115,9 @@ export function PromptEditor() {
 
   const handleRestoreVersion = () => {
     if (!previewVersion) return;
+    if (hasChanges && !window.confirm('You have unsaved changes. Restoring this version will overwrite them. Continue?')) {
+      return;
+    }
     setTitle(previewVersion.title || '');
     setDescription(previewVersion.description || '');
     setContent(previewVersion.content || '');
