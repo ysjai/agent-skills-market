@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import Editor from '@monaco-editor/react';
-import { Save, UploadCloud, LayoutTemplate, Loader2, History } from 'lucide-react';
+import { Save, UploadCloud, LayoutTemplate, Loader2, History, RotateCcw, X, Clock } from 'lucide-react';
 
 import { usePromptsStore } from '@/stores/promptsStore';
 import { Button } from '@/components/ui/Button';
@@ -29,6 +29,7 @@ export function PromptEditor() {
   const [isPublishing, setIsPublishing] = useState(false);
   const [showVersionHistory, setShowVersionHistory] = useState(false);
   const [versions, setVersions] = useState<PromptVersion[]>([]);
+  const [previewVersion, setPreviewVersion] = useState<PromptVersion | null>(null);
 
   // Sync local state when selected prompt changes
   useEffect(() => {
@@ -39,6 +40,7 @@ export function PromptEditor() {
       setTags(selectedPrompt.tags || []);
       // Load versions when prompt changes
       loadVersions(selectedPrompt.id);
+      setPreviewVersion(null);
     } else {
       setTitle('');
       setDescription('');
@@ -46,6 +48,7 @@ export function PromptEditor() {
       setTags([]);
       setVersions([]);
       setShowVersionHistory(false);
+      setPreviewVersion(null);
     }
   }, [selectedPrompt]);
 
@@ -110,6 +113,15 @@ export function PromptEditor() {
     }
   };
 
+  const handleRestoreVersion = () => {
+    if (!previewVersion) return;
+    setTitle(previewVersion.title || '');
+    setDescription(previewVersion.description || '');
+    setContent(previewVersion.content || '');
+    setTags(previewVersion.tags || []);
+    setPreviewVersion(null);
+  };
+
   const hasChanges = Boolean(selectedPrompt && (
     title !== selectedPrompt.title ||
     description !== (selectedPrompt.description || '') ||
@@ -135,59 +147,98 @@ export function PromptEditor() {
     <div className="flex flex-1 h-full overflow-hidden">
       <div className="flex flex-1 flex-col h-full bg-white overflow-hidden">
         {/* Header Controls */}
-        <div className="shrink-0 border-b border-gray-100 bg-white/50 backdrop-blur-xl z-10 py-4">
-          <div className="flex items-center justify-between w-full px-4 sm:px-6">
-            <div className="flex items-center gap-3">
-              <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
-                {tCommon('edit')} Prompt
-              </h2>
-              <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
-                {t('versionNumber', { number: selectedPrompt.version })}
-              </span>
-              {hasChanges && (
-                <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
-                  Unsaved changes
+        <div className={cn(
+          "shrink-0 border-b z-10 py-4",
+          previewVersion
+            ? "bg-amber-50 border-amber-200"
+            : "bg-white/50 backdrop-blur-xl border-gray-100"
+        )}>
+          {previewVersion ? (
+            /* Preview Banner */
+            <div className="flex items-center justify-between w-full px-4 sm:px-6">
+              <div className="flex items-center gap-2 text-amber-700">
+                <Clock className="h-4 w-4 shrink-0" />
+                <span className="text-sm font-medium">
+                  {t('previewingVersion', { number: previewVersion.version_number })}
                 </span>
-              )}
+                <span className="text-xs text-amber-600">
+                  · {new Date(previewVersion.created_at).toLocaleString()}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button
+                  variant="outline"
+                  onClick={() => setPreviewVersion(null)}
+                  className="min-w-[120px]"
+                >
+                  <X className="h-4 w-4 mr-1.5" />
+                  {t('closePreview')}
+                </Button>
+                <Button
+                  variant="default"
+                  onClick={handleRestoreVersion}
+                  className="bg-gray-900 hover:bg-gray-800 text-white min-w-[170px]"
+                >
+                  <RotateCcw className="h-4 w-4 mr-1.5" />
+                  {t('restoreThisVersion')}
+                </Button>
+              </div>
             </div>
-            <div className="flex items-center gap-2">
-              <Button 
-                variant="outline" 
-                onClick={handleSave} 
-                disabled={!hasChanges || isSaving || isPublishing}
-                className="min-w-[100px]"
-              >
-                {isSaving ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <Save className="h-4 w-4 mr-1.5" />
+          ) : (
+            /* Normal Toolbar */
+            <div className="flex items-center justify-between w-full px-4 sm:px-6">
+              <div className="flex items-center gap-3">
+                <h2 className="text-lg font-semibold text-gray-900 tracking-tight">
+                  {tCommon('edit')} Prompt
+                </h2>
+                <span className="inline-flex items-center rounded-full bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700 ring-1 ring-inset ring-blue-700/10">
+                  {t('versionNumber', { number: selectedPrompt.version })}
+                </span>
+                {hasChanges && (
+                  <span className="text-xs font-medium text-amber-600 bg-amber-50 px-2 py-1 rounded-full">
+                    Unsaved changes
+                  </span>
                 )}
-                {tCommon('save')}
-              </Button>
-              <Button 
-                variant="default" 
-                onClick={handlePublish}
-                disabled={isSaving || isPublishing}
-                className="bg-gray-900 hover:bg-gray-800 text-white min-w-[140px]"
-              >
-                {isPublishing ? (
-                  <Loader2 className="h-4 w-4 animate-spin" />
-                ) : (
-                  <UploadCloud className="h-4 w-4 mr-1.5" />
-                )}
-                {t('publishVersion')}
-              </Button>
-              <Button
-                variant="outline"
-                onClick={() => setShowVersionHistory(!showVersionHistory)}
-                className="min-w-[100px]"
-                title={t('versionHistory')}
-              >
-                <History className="h-4 w-4 mr-1.5" />
-                {t('versionHistory')}
-              </Button>
+              </div>
+              <div className="flex items-center gap-2">
+                <Button 
+                  variant="outline" 
+                  onClick={handleSave} 
+                  disabled={!hasChanges || isSaving || isPublishing}
+                  className="min-w-[100px]"
+                >
+                  {isSaving ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <Save className="h-4 w-4 mr-1.5" />
+                  )}
+                  {tCommon('save')}
+                </Button>
+                <Button 
+                  variant="default" 
+                  onClick={handlePublish}
+                  disabled={isSaving || isPublishing}
+                  className="bg-gray-900 hover:bg-gray-800 text-white min-w-[140px]"
+                >
+                  {isPublishing ? (
+                    <Loader2 className="h-4 w-4 animate-spin" />
+                  ) : (
+                    <UploadCloud className="h-4 w-4 mr-1.5" />
+                  )}
+                  {t('publishVersion')}
+                </Button>
+                <Button
+                  variant="outline"
+                  onClick={() => setShowVersionHistory(!showVersionHistory)}
+                  className="min-w-[100px]"
+                  title={t('versionHistory')}
+                >
+                  <History className="h-4 w-4 mr-1.5" />
+                  {t('versionHistory')}
+                </Button>
+              </div>
             </div>
-          </div>
+          )}
         </div>
 
         {/* Editor Content Scrollable */}
@@ -203,11 +254,12 @@ export function PromptEditor() {
                   </label>
                   <Input
                     id="title"
-                    value={title}
+                    value={previewVersion ? (previewVersion.title || '') : title}
                     onChange={(e) => setTitle(e.target.value)}
                     maxLength={200}
                     placeholder={t('titlePlaceholder')}
                     className="text-lg font-medium h-12 shadow-sm"
+                    disabled={!!previewVersion}
                   />
                 </div>
 
@@ -218,10 +270,11 @@ export function PromptEditor() {
                   </label>
                   <textarea
                     id="description"
-                    value={description}
+                    value={previewVersion ? (previewVersion.description || '') : description}
                     onChange={(e) => setDescription(e.target.value)}
                     maxLength={1000}
                     placeholder={t('descriptionPlaceholder')}
+                    disabled={!!previewVersion}
                     className={cn(
                       "flex w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 placeholder:text-gray-400 shadow-sm",
                       "focus:border-gray-900 focus:outline-none focus:ring-2 focus:ring-gray-900/20 disabled:cursor-not-allowed disabled:opacity-50",
@@ -236,10 +289,12 @@ export function PromptEditor() {
                   {t('tags')}
                 </label>
                 <div className="rounded-xl border border-gray-100 bg-gray-50/50 p-4">
-                  <TagInput 
-                    tags={tags} 
-                    onChange={setTags} 
-                  />
+                  <div className={cn(previewVersion ? "pointer-events-none opacity-60" : "")}>
+                    <TagInput 
+                      tags={previewVersion ? (previewVersion.tags || []) : tags} 
+                      onChange={setTags} 
+                    />
+                  </div>
                 </div>
               </div>
             </div>
@@ -254,8 +309,8 @@ export function PromptEditor() {
                 <Editor
                   height="100%"
                   language="markdown"
-                  value={content}
-                  onChange={(val) => setContent(val || '')}
+                  value={previewVersion ? (previewVersion.content || '') : content}
+                  onChange={(val) => { if (!previewVersion) setContent(val || ''); }}
                   theme="light"
                   options={{
                     minimap: { enabled: false },
@@ -267,6 +322,7 @@ export function PromptEditor() {
                     fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace',
                     padding: { top: 16, bottom: 16 },
                     renderWhitespace: 'selection',
+                    readOnly: !!previewVersion,
                   }}
                   loading={
                     <div className="flex h-full items-center justify-center bg-gray-50">
@@ -283,7 +339,7 @@ export function PromptEditor() {
 
       {/* Version History Panel */}
       {showVersionHistory && (
-        <VersionHistory versions={versions} />
+        <VersionHistory versions={versions} onPreview={setPreviewVersion} />
       )}
     </div>
   );
