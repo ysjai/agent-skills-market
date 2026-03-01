@@ -2,25 +2,33 @@
 
 import { useEffect, useState, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
-import { TopNav } from '@/components/layout/TopNav';
+import { AppHeader } from '@/components/layout/AppHeader';
 import { PromptList } from '@/components/prompts/PromptList';
 import { PromptEditor } from '@/components/prompts/PromptEditor';
 import { ImportDialog } from '@/components/prompts/ImportDialog';
 import { ExportDialog } from '@/components/prompts/ExportDialog';
 import { DeletePromptDialog } from '@/components/prompts/DeletePromptDialog';
+import { Button } from '@/components/ui/Button';
+import { Dialog } from '@/components/ui/Dialog';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { api } from '@/lib/api';
+import { getCurrentUser, logout } from '@/app/api/auth';
 import type { Prompt, PromptListResponse } from '@/types/prompt';
+import type { User } from '@/types/user';
 
 export default function PromptsPage() {
   const t = useTranslations('prompts');
   const tCommon = useTranslations('common');
+  const tAuth = useTranslations('auth');
   const [isMounted, setIsMounted] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [exportContent, setExportContent] = useState('');
   const [showExport, setShowExport] = useState(false);
   const [deletePromptId, setDeletePromptId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
+  const [user, setUser] = useState<User | null>(null);
+  const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
+  const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
   const {
     isLoading,
     setIsLoading,
@@ -35,6 +43,7 @@ export default function PromptsPage() {
 
   useEffect(() => {
     loadPrompts();
+    loadUser();
     const timer = setTimeout(() => setIsMounted(true), 50);
     return () => clearTimeout(timer);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -56,6 +65,32 @@ export default function PromptsPage() {
       setIsLoading(false);
     }
   };
+
+  const loadUser = async () => {
+    try {
+      const userData = await getCurrentUser();
+      setUser(userData);
+    } catch {
+      // Silently ignore
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+  };
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.user-menu-container')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    if (isUserMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [isUserMenuOpen]);
 
   const handleImport = useCallback(async (content: string) => {
     const imported = await api.post<Prompt>('/prompts/import', { content });
@@ -102,7 +137,12 @@ export default function PromptsPage() {
 
   return (
     <div className={`flex h-screen flex-col bg-gray-50 transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
-      <TopNav />
+      <AppHeader
+        user={user}
+        isUserMenuOpen={isUserMenuOpen}
+        onUserMenuToggle={() => setIsUserMenuOpen(!isUserMenuOpen)}
+        onLogoutClick={() => setIsLogoutDialogOpen(true)}
+      />
 
       {errorMessage && (
         <div className="mx-auto mt-4 w-full max-w-7xl px-4 sm:px-6 shrink-0">
@@ -149,6 +189,34 @@ export default function PromptsPage() {
         onConfirm={confirmDelete}
         isLoading={isDeleting}
       />
+
+      <Dialog
+        open={isLogoutDialogOpen}
+        onClose={() => setIsLogoutDialogOpen(false)}
+        title={tAuth('signOut')}
+      >
+        <div className="space-y-4">
+          <p className="text-sm text-gray-600 sm:text-base">
+            {tAuth('logoutConfirm')}
+          </p>
+          <div className="flex flex-col gap-2 sm:flex-row sm:gap-3">
+            <Button
+              variant="outline"
+              className="min-h-[44px] flex-1"
+              onClick={() => setIsLogoutDialogOpen(false)}
+            >
+              {tCommon('cancel')}
+            </Button>
+            <Button
+              variant="default"
+              className="min-h-[44px] flex-1 bg-gray-900 hover:bg-gray-800 text-white"
+              onClick={handleLogout}
+            >
+              {tAuth('signOut')}
+            </Button>
+          </div>
+        </div>
+      </Dialog>
     </div>
   );
 }
