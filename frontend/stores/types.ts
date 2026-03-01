@@ -1,4 +1,6 @@
 import type { Skill } from '@/types/skill';
+import type { Prompt } from '@/types/prompt';
+import type { User } from '@/types/user';
 import type { User } from '@/types/user';
 
 // Auth Store
@@ -25,6 +27,26 @@ export interface SkillsState {
   setErrorMessage: (errorMessage: string | null) => void;
   setSearchQuery: (query: string) => void;
   getFilteredSkills: () => Skill[];
+}
+
+// Prompts Store
+export interface PromptsState {
+  prompts: Prompt[];
+  selectedPrompt: Prompt | null;
+  isLoading: boolean;
+  errorMessage: string | null;
+  searchQuery: string;
+  selectedTag: string | null;
+  setPrompts: (prompts: Prompt[]) => void;
+  addPrompt: (prompt: Prompt) => void;
+  removePrompt: (id: string) => void;
+  updatePrompt: (id: string, updates: Partial<Prompt>) => void;
+  setSelectedPrompt: (prompt: Prompt | null) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setErrorMessage: (errorMessage: string | null) => void;
+  setSearchQuery: (query: string) => void;
+  setSelectedTag: (tag: string | null) => void;
+  getFilteredPrompts: () => Prompt[];
 }
 
 // UI Store (for dialog states, etc.)

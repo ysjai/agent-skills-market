@@ -12,6 +12,13 @@ import { DeleteSkillDialog } from '@/components/skills/DeleteSkillDialog';
 import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
 import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
 import { SkillCard } from '@/components/skills/SkillCard';
+import { TopNav } from '@/components/layout/TopNav';
+import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
+import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
+import { SkillCard } from '@/components/skills/SkillCard';
+import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
+import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
+import { SkillCard } from '@/components/skills/SkillCard';
 import { api } from '@/lib/api';
 import type { Skill, SkillListResponse } from '@/types/skill';
 import { getErrorMessage } from '@/lib/errors';
@@ -144,6 +151,7 @@ export default function SkillsPage() {
 
   return (
     <div className={`flex min-h-screen flex-col bg-gradient-subtle transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
+      <TopNav />
       <SkillsPageHeader
         user={user}
         skillsCount={skills.length}
