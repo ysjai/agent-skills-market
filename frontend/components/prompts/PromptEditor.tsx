@@ -151,15 +151,6 @@ export function PromptEditor() {
               )}
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="outline"
-                onClick={() => setShowVersionHistory(!showVersionHistory)}
-                className="min-w-[100px]"
-                title={t('versionHistory')}
-              >
-                <History className="h-4 w-4 mr-1.5" />
-                {t('versionHistory')}
-              </Button>
               <Button 
                 variant="outline" 
                 onClick={handleSave} 
@@ -185,6 +176,15 @@ export function PromptEditor() {
                   <UploadCloud className="h-4 w-4 mr-1.5" />
                 )}
                 {t('publishVersion')}
+              </Button>
+              <Button
+                variant="outline"
+                onClick={() => setShowVersionHistory(!showVersionHistory)}
+                className="min-w-[100px]"
+                title={t('versionHistory')}
+              >
+                <History className="h-4 w-4 mr-1.5" />
+                {t('versionHistory')}
               </Button>
             </div>
           </div>
