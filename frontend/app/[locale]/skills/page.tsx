@@ -12,7 +12,7 @@ import { DeleteSkillDialog } from '@/components/skills/DeleteSkillDialog';
 import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
 import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
 import { SkillCard } from '@/components/skills/SkillCard';
-import { TopNav } from '@/components/layout/TopNav';
+import { AppHeader } from '@/components/layout/AppHeader';
 import { api } from '@/lib/api';
 import type { Skill, SkillListResponse } from '@/types/skill';
 import { getErrorMessage } from '@/lib/errors';
@@ -143,17 +143,17 @@ export default function SkillsPage() {
 
   return (
     <div className={`flex min-h-screen flex-col bg-gradient-subtle transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
-      <TopNav />
-      <SkillsPageHeader
+      <AppHeader
         user={user}
-        skillsCount={skills.length}
+        isUserMenuOpen={isUserMenuOpen}
+        onUserMenuToggle={() => setIsUserMenuOpen(!isUserMenuOpen)}
+        onLogoutClick={() => setIsLogoutDialogOpen(true)}
+      />
+      <SkillsPageHeader
         searchQuery={searchQuery}
         onSearchChange={setSearchQuery}
         onCreateClick={() => setIsCreateDialogOpen(true)}
         onImportClick={() => setIsImportDialogOpen(true)}
-        isUserMenuOpen={isUserMenuOpen}
-        onUserMenuToggle={() => setIsUserMenuOpen(!isUserMenuOpen)}
-        onLogoutClick={() => setIsLogoutDialogOpen(true)}
       />
 
       <main className="flex-1 p-4 sm:p-6">
@@ -254,8 +254,8 @@ export default function SkillsPage() {
               {tCommon('cancel')}
             </Button>
             <Button
-              variant="destructive"
-              className="min-h-[44px] flex-1"
+              variant="default"
+              className="min-h-[44px] flex-1 bg-gray-900 hover:bg-gray-800 text-white"
               onClick={handleLogout}
             >
               {tAuth('signOut')}
