@@ -4,6 +4,8 @@ import { useEffect, useRef, useState } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Download, Trash2, Menu, User as UserIcon, ChevronDown, LogOut, Layers, BookOpen } from 'lucide-react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/misc/LanguageSwitcher';
 import { getCurrentUser } from '@/app/api/auth';
@@ -34,6 +36,11 @@ export function SkillHeader({
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
   const router = useRouter();
+  const pathname = usePathname();
+
+  // Detect locale from pathname
+  const pathParts = pathname.split('/').filter(Boolean);
+  const locale = pathParts[0] || 'en';
 
   const headerDescRef = useRef<HTMLParagraphElement>(null);
   const [isHeaderDescTruncated, setIsHeaderDescTruncated] = useState(false);
@@ -153,6 +160,27 @@ export function SkillHeader({
 
           <div className="hidden md:block h-5 w-px bg-gray-200 mx-1"></div>
 
+          {/* Navigation links */}
+          <div className="hidden md:flex items-center gap-1">
+            <Link
+              href={`/${locale}/skills`}
+              className="relative flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-900 transition-colors rounded-md"
+            >
+              <Layers className="h-4 w-4 text-gray-900" />
+              <span>{tNav('skills')}</span>
+              <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-gray-900 rounded-full translate-y-[5px]" />
+            </Link>
+            <Link
+              href={`/${locale}/prompts`}
+              className="flex items-center gap-1.5 px-3 py-1.5 text-sm font-medium text-gray-500 hover:text-gray-700 hover:bg-gray-50 transition-colors rounded-md"
+            >
+              <BookOpen className="h-4 w-4 text-gray-400" />
+              <span>{tNav('prompts')}</span>
+            </Link>
+          </div>
+
+          <div className="hidden md:block h-5 w-px bg-gray-200 mx-1"></div>
+
           <div className="relative user-menu-container">
             <button
               onClick={onUserMenuToggle}
@@ -165,27 +193,26 @@ export function SkillHeader({
 
             {isUserMenuOpen && (
               <div className="absolute right-0 top-10 z-50 w-48 rounded-md border border-gray-200 bg-white py-1 shadow-lg">
-                <button
-                  onClick={() => {
-                    onUserMenuToggle();
-                    if (onNavigate) onNavigate('/skills'); else router.push('/skills');
-                  }}
-                  className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  <Layers className="h-4 w-4 text-gray-500" />
-                  {tNav('skills')}
-                </button>
-                <button
-                  onClick={() => {
-                    onUserMenuToggle();
-                    if (onNavigate) onNavigate('/prompts'); else router.push('/prompts');
-                  }}
-                  className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
-                >
-                  <BookOpen className="h-4 w-4 text-gray-500" />
-                  {tNav('prompts')}
-                </button>
-                <div className="my-1 border-t border-gray-100" />
+                {/* Mobile-only: Show navigation links in dropdown */}
+                <div className="md:hidden">
+                  <Link
+                    href={`/${locale}/skills`}
+                    onClick={onUserMenuToggle}
+                    className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <Layers className="h-4 w-4 text-gray-500" />
+                    {tNav('skills')}
+                  </Link>
+                  <Link
+                    href={`/${locale}/prompts`}
+                    onClick={onUserMenuToggle}
+                    className="flex w-full min-h-[40px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <BookOpen className="h-4 w-4 text-gray-500" />
+                    {tNav('prompts')}
+                  </Link>
+                  <div className="my-1 border-t border-gray-100" />
+                </div>
                 <button
                   onClick={() => {
                     onUserMenuToggle();
