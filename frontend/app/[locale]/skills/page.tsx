@@ -11,6 +11,7 @@ import { CreateSkillDialog } from '@/components/skills/CreateSkillDialog';
 import { DeleteSkillDialog } from '@/components/skills/DeleteSkillDialog';
 import { ImportSkillDialog } from '@/components/skills/ImportSkillDialog';
 import { SkillsPageHeader } from '@/components/skills/SkillsPageHeader';
+import { ShareSkillDialog } from '@/components/skills/ShareSkillDialog';
 import { SkillCard } from '@/components/skills/SkillCard';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { api } from '@/lib/api';
@@ -27,6 +28,7 @@ export default function SkillsPage() {
   const tAuth = useTranslations('auth');
   const router = useRouter();
   const [skills, setSkills] = useState<Skill[]>([]);
+  const [sharedMap, setSharedMap] = useState<Record<string, string>>({});
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState('');
@@ -45,8 +47,8 @@ export default function SkillsPage() {
   const [isDownloadDialogOpen, setIsDownloadDialogOpen] = useState(false);
   const [downloadSkillId, setDownloadSkillId] = useState<string>('');
   const [downloadSkillName, setDownloadSkillName] = useState<string>('');
-
-
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [shareSkillId, setShareSkillId] = useState<string>('');
 
   useEffect(() => {
     loadSkills();
@@ -75,8 +77,19 @@ export default function SkillsPage() {
     setIsLoading(true);
     setError('');
     try {
-      const data = await api.get<SkillListResponse>('/skills');
-      setSkills(data.items);
+      const [skillsData, sharedData] = await Promise.all([
+        api.get<SkillListResponse>('/skills'),
+        api.getMySharedSkills(0, 100).catch(() => ({ items: [] }))
+      ]);
+      setSkills(skillsData.items);
+      
+      const newSharedMap: Record<string, string> = {};
+      sharedData.items.forEach(item => {
+        if (item.skill_id) {
+          newSharedMap[item.skill_id] = item.id;
+        }
+      });
+      setSharedMap(newSharedMap);
     } catch {
       setError(t('errors.loadFailed') || 'Failed to load skills');
     } finally {
@@ -141,6 +154,29 @@ export default function SkillsPage() {
     router.push(`/skills/${skillId}`);
   }, [router]);
 
+  const handleShareClick = useCallback((skillId: string) => {
+    setShareSkillId(skillId);
+    setIsShareDialogOpen(true);
+  }, []);
+
+  const handleUnshareClick = useCallback(async (sharedSkillId: string) => {
+    try {
+      await api.unshareSkill(sharedSkillId);
+      setSharedMap(prev => {
+        const next = { ...prev };
+        for (const [k, v] of Object.entries(next)) {
+          if (v === sharedSkillId) delete next[k];
+        }
+        return next;
+      });
+    } catch {
+      // Silently ignore unshare errors
+    }
+  }, []);
+
+  const handleShareSuccess = useCallback(() => {
+    loadSkills();
+  }, []);
   return (
     <div className={`flex min-h-screen flex-col bg-gradient-subtle transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
       <AppHeader
@@ -207,6 +243,10 @@ export default function SkillsPage() {
                   onDownload={handleDownload}
                   onDelete={handleDelete}
                   onNavigate={handleNavigate}
+                  isShared={!!sharedMap[skill.id]}
+                  sharedSkillId={sharedMap[skill.id]}
+                  onShare={handleShareClick}
+                  onUnshare={handleUnshareClick}
                 />
               ))}
             </div>
@@ -270,6 +310,13 @@ export default function SkillsPage() {
         skillName={downloadSkillName}
         onClose={() => setIsDownloadDialogOpen(false)}
         onSuccess={() => {}}
+      />
+
+      <ShareSkillDialog
+        open={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        skillId={shareSkillId}
+        onSuccess={handleShareSuccess}
       />
     </div>
   );

@@ -1,9 +1,8 @@
 'use client';
 
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { Link, usePathname } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen } from 'lucide-react';
+import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Store, Star } from 'lucide-react';
 import { LanguageSwitcher } from '@/components/misc/LanguageSwitcher';
 import type { User } from '@/types/user';
 
@@ -19,15 +18,16 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
   const tAuth = useTranslations('auth');
   const pathname = usePathname();
 
-  // Detect locale and current page from pathname like /en/skills or /zh/prompts
+  // Extract the current page from pathname like /skills or /market
   const parts = pathname.split('/').filter(Boolean);
-  const locale = parts[0] || 'en';
-  const currentPage = parts[1] || 'skills';
+  const currentPage = parts[0] || 'skills';
 
   const navItems = [
-    { key: 'skills', href: `/${locale}/skills`, icon: Layers },
-    { key: 'prompts', href: `/${locale}/prompts`, icon: BookOpen },
-  ] as const;
+    { key: 'market', href: '/market', icon: Store },
+    { key: 'skills', href: '/skills', icon: Layers },
+    { key: 'prompts', href: '/prompts', icon: BookOpen },
+    ...(user ? [{ key: 'favorites', href: '/favorites', icon: Star }] : []),
+  ];
 
   return (
     <header className="shrink-0 border-b border-gray-200 bg-white">
@@ -35,7 +35,7 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
         <div className="flex h-14 items-center justify-between gap-4">
           {/* Left: Logo + Navigation Tabs */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <Link href={`/${locale}/skills`} className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
+            <Link href="/skills" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
               <span className="text-base">🎯</span>
             </Link>
 

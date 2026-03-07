@@ -2,8 +2,9 @@
 
 import { memo } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
-import { Clock, MoreVertical, Trash2, Download } from 'lucide-react';
+import { Clock, MoreVertical, Trash2, Download, Globe } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
+import { Button } from '@/components/ui/Button';
 import type { Skill } from '@/types/skill';
 
 interface SkillCardProps {
@@ -13,6 +14,10 @@ interface SkillCardProps {
   onDownload: (skillId: string, skillName: string) => void;
   onDelete: (skillId: string) => void;
   onNavigate: (skillId: string) => void;
+  isShared?: boolean;
+  sharedSkillId?: string;
+  onShare?: (skillId: string) => void;
+  onUnshare?: (sharedSkillId: string) => void;
 }
 
 function SkillCardComponent({
@@ -22,8 +27,13 @@ function SkillCardComponent({
   onDownload,
   onDelete,
   onNavigate,
+  isShared,
+  sharedSkillId,
+  onShare,
+  onUnshare,
 }: SkillCardProps) {
   const t = useTranslations('skills');
+  const tMarket = useTranslations('market');
   const tCommon = useTranslations('common');
   const format = useFormatter();
 
@@ -86,15 +96,38 @@ function SkillCardComponent({
         <CardDescription className="skill-description-truncate text-sm leading-relaxed flex-1">
           {skill.description || tCommon('description')}
         </CardDescription>
-        <div className="mt-auto flex items-center gap-1 text-xs text-gray-500 sm:text-sm pt-4">
-          <Clock className="h-3.5 w-3.5" />
-          <span>
-            {format.dateTime(new Date(skill.updated_at), {
-              year: 'numeric',
-              month: 'short',
-              day: 'numeric',
-            })}
-          </span>
+        <div className="mt-auto flex items-center justify-between pt-4">
+          <div className="flex items-center gap-1 text-xs text-gray-500 sm:text-sm">
+            <Clock className="h-3.5 w-3.5" />
+            <span>
+              {format.dateTime(new Date(skill.updated_at), {
+                year: 'numeric',
+                month: 'short',
+                day: 'numeric',
+              })}
+            </span>
+          </div>
+          {/* 分享按钮区域 */}
+          {isShared ? (
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-green-600 font-medium flex items-center gap-1">
+                <Globe className="w-3 h-3" /> {tMarket('already_shared')}
+              </span>
+              <Button variant="ghost" size="sm" onClick={(e) => {
+                e.stopPropagation();
+                if (sharedSkillId) { onUnshare?.(sharedSkillId); }
+              }}>
+                {tMarket('unshare')}
+              </Button>
+            </div>
+          ) : (
+            <Button variant="ghost" size="sm" onClick={(e) => {
+              e.stopPropagation();
+              onShare?.(skill.id);
+            }}>
+              <Globe className="w-3 h-3 mr-1" /> {tMarket('share_to_market')}
+            </Button>
+          )}
         </div>
       </CardContent>
     </Card>
