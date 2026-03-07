@@ -15,9 +15,8 @@ interface SkillCardProps {
   onDelete: (skillId: string) => void;
   onNavigate: (skillId: string) => void;
   isShared?: boolean;
-  sharedSkillId?: string;
   onShare?: (skillId: string) => void;
-  onUnshare?: (sharedSkillId: string) => void;
+  onUnshare?: (skillId: string) => void;
 }
 
 function SkillCardComponent({
@@ -28,7 +27,6 @@ function SkillCardComponent({
   onDelete,
   onNavigate,
   isShared,
-  sharedSkillId,
   onShare,
   onUnshare,
 }: SkillCardProps) {
@@ -87,6 +85,31 @@ function SkillCardComponent({
                   <Trash2 className="h-4 w-4" />
                   {t('deleteSkill')}
                 </button>
+                {isShared ? (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onUnshare?.(skill.id);
+                      onMenuToggle(null);
+                    }}
+                    className="flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm text-amber-700 hover:bg-amber-50"
+                  >
+                    <Globe className="h-4 w-4" />
+                    {tMarket('unshare')}
+                  </button>
+                ) : (
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onShare?.(skill.id);
+                      onMenuToggle(null);
+                    }}
+                    className="flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"
+                  >
+                    <Globe className="h-4 w-4" />
+                    {tMarket('share_to_market')}
+                  </button>
+                )}
               </div>
             )}
           </div>
@@ -107,7 +130,6 @@ function SkillCardComponent({
               })}
             </span>
           </div>
-          {/* 分享按钮区域 */}
           {isShared ? (
             <div className="flex items-center gap-2">
               <span className="text-xs text-green-600 font-medium flex items-center gap-1">
@@ -115,7 +137,7 @@ function SkillCardComponent({
               </span>
               <Button variant="ghost" size="sm" onClick={(e) => {
                 e.stopPropagation();
-                if (sharedSkillId) { onUnshare?.(sharedSkillId); }
+                onUnshare?.(skill.id);
               }}>
                 {tMarket('unshare')}
               </Button>

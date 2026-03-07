@@ -87,7 +87,8 @@
     "descriptionPlaceholder": "简要描述此技能的用途...",
     "creating": "创建中...",
     "importing": "导入中...",
-    "createButton": "创建技能"
+    "createButton": "创建技能",
+    "invalidName": "名称只能包含小写字母、数字和连字符"
   },
   "import": {
     "title": "导入本地技能",
@@ -249,8 +250,10 @@
     "restoreThisVersion": "还原至此版本"
   },
   "nav": {
+    "market": "市场",
     "skills": "技能",
-    "prompts": "提示词"
+    "prompts": "提示词",
+    "favorites": "收藏"
   },
   "progress": {
     "uploading": "正在上传",
@@ -384,7 +387,10 @@
     "return_to_market": "返回市场",
     "about_this_skill": "关于此技能",
     "no_description": "暂无描述。",
-    "failed_load": "加载技能详情失败。"
+    "failed_load": "加载技能详情失败。",
+    "prev": "上一页",
+    "next": "下一页",
+    "no_results": "未找到结果"
   },
   "favorites": {
     "title": "我的收藏",
@@ -397,5 +403,8 @@
     "snapshot_warning_withdrawn": "该技能已从市场撤回",
     "snapshot_warning_deleted": "该技能已被作者删除",
     "browse_market": "浏览市场"
+  },
+  "version": {
+    "rollbackWarning": "回退到之前的版本将覆盖当前内容。此操作无法撤销。"
   }
 }

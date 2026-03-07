@@ -56,8 +56,8 @@ export const useMarketStore = create<MarketState>((set, get) => ({
 
   loadCategories: async () => {
     try {
-      const categories = await api.getCategories();
-      set({ categories });
+      const response = await api.getCategories();
+      set({ categories: response.items });
     } catch {}
   },
 

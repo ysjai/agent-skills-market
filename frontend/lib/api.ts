@@ -110,15 +110,20 @@ class ApiClient {
     return responseData;
   }
 
-  private async handleError(response: Response, _url: string): Promise<Error> {
+  private async handleError(response: Response, _url: string, skipAuthRedirect?: boolean): Promise<Error> {
     if (response.status === 401) {
+      if (skipAuthRedirect) {
+        return new Error('Unauthorized');
+      }
       const refreshed = await this.refreshToken();
       if (refreshed) {
         return new Error('Token refreshed, please retry');
       }
 
       this.clearTokens();
-      window.location.href = getLoginUrl();
+      if (typeof window !== 'undefined') {
+        window.location.href = getLoginUrl();
+      }
       return new Error('Unauthorized');
     }
 
@@ -179,7 +184,7 @@ class ApiClient {
       let errorMessage = 'Login failed';
       try {
         const errorData = await response.json();
-        errorMessage = errorData.detail || errorMessage;
+        errorMessage = errorData.detail || errorData.message || errorMessage;
       } catch {
         errorMessage = await response.text() || errorMessage;
       }
@@ -188,6 +193,24 @@ class ApiClient {
 
     const refreshResponse: TokenResponse = await response.json();
     this.setTokens(refreshResponse.access_token, refreshResponse.refresh_token);
+  }
+
+  async getCurrentUserDirect(): Promise<unknown> {
+    const accessToken = this.getAccessToken();
+    if (!accessToken) {
+      throw new Error('Not authenticated');
+    }
+    const response = await fetch(`${API_BASE_URL}/auth/me`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${accessToken}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error('Failed to get user info');
+    }
+    return response.json();
   }
 
   async register(email: string, username: string, password: string): Promise<void> {
@@ -203,7 +226,7 @@ class ApiClient {
       let errorMessage = 'Registration failed';
       try {
         const errorData = await response.json();
-        errorMessage = errorData.detail || errorMessage;
+        errorMessage = errorData.detail || errorData.message || errorMessage;
       } catch {
         errorMessage = await response.text() || errorMessage;
       }
@@ -312,8 +335,8 @@ class ApiClient {
     return this.get<import('@/types/market').FavoriteListResponse>('/favorites', { skip: String(skip), limit: String(limit) });
   }
 
-  async getCategories(): Promise<import('@/types/market').Category[]> {
-    return this.get<import('@/types/market').Category[]>('/categories');
+  async getCategories(): Promise<import('@/types/market').CategoryListResponse> {
+    return this.get<import('@/types/market').CategoryListResponse>('/categories');
   }
 
   async shareSkill(data: import('@/types/market').ShareSkillRequest & { skill_id: string }): Promise<import('@/types/market').SharedSkill> {
@@ -326,7 +349,10 @@ class ApiClient {
 
   async getMySharedSkills(skip: number = 0, limit: number = 20): Promise<import('@/types/market').SharedSkillListResponse> {
     try {
-      return await this.get<import('@/types/market').SharedSkillListResponse>('/sharing/my-skills', { skip: String(skip), limit: String(limit) });
+      return await this.get<import('@/types/market').SharedSkillListResponse>('/market/skills', {
+        skip: String(skip),
+        limit: String(limit),
+      });
     } catch {
       return { items: [], total: 0 };
     }

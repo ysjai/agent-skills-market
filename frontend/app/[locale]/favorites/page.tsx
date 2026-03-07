@@ -127,10 +127,10 @@ export default function FavoritesPage() {
                 {t('subtitle')}
               </p>
             </div>
-            <Button
-              variant="outline"
-              onClick={() => router.push('/market')}
-            >
+              <Button
+                variant="outline"
+                onClick={() => router.push('/market')}
+              >
               {t('browse_market')}
             </Button>
           </div>

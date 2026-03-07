@@ -3,6 +3,7 @@ import {notFound} from 'next/navigation';
 import {routing} from '@/i18n/routing';
 import '../globals.css';
 import {ToastProvider} from '@/components/ui/Toast';
+import SetHtmlLang from '@/components/SetHtmlLang';
 
 export default async function LocaleLayout({
   children,
@@ -22,14 +23,11 @@ export default async function LocaleLayout({
   const messages = (await import(`../../i18n/locales/${locale}.json`)).default;
 
   return (
-    <html lang={locale}>
-      <body>
-        <ToastProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
-          </NextIntlClientProvider>
-        </ToastProvider>
-      </body>
-    </html>
+    <ToastProvider>
+      <NextIntlClientProvider locale={locale} messages={messages}>
+        <SetHtmlLang locale={locale} />
+        {children}
+      </NextIntlClientProvider>
+    </ToastProvider>
   );
 }

@@ -37,12 +37,12 @@ export function ShareSkillDialog({ open, onClose, skillId, onSuccess }: ShareSki
 
   const loadCategories = async () => {
     setLoadingCategories(true);
-    try {
-      const data = await api.getCategories();
-      setCategories(data);
-      if (data.length > 0 && !form.category_id) {
-        setForm((prev) => ({ ...prev, category_id: data[0].id }));
-      }
+      try {
+        const response = await api.getCategories();
+        setCategories(response.items);
+        if (response.items.length > 0 && !form.category_id) {
+          setForm((prev) => ({ ...prev, category_id: response.items[0].id }));
+        }
     } catch (err) {
       setError(parseApiError(err) || 'Failed to load categories');
     } finally {

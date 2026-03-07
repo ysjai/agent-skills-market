@@ -7,6 +7,11 @@ export interface Category {
   is_active: boolean;
 }
 
+export interface CategoryListResponse {
+  items: Category[];
+  total: number;
+}
+
 export interface SharedSkill {
   id: string;
   skill_id: string | null;

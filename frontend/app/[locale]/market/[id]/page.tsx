@@ -1,7 +1,7 @@
 'use client';
 
 import { useState, useEffect, use } from 'react';
-import { useTranslations, useLocale } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
 import { ArrowLeft, Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle } from 'lucide-react';
 import { AppHeader } from '@/components/layout/AppHeader';
@@ -16,7 +16,6 @@ import type { User } from '@/types/user';
 export default function MarketSkillDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
   const router = useRouter();
-  const locale = useLocale();
   const { showToast } = useToast();
   const tMarket = useTranslations('market');
 
@@ -38,7 +37,7 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
     try {
       await logout();
       setUser(null);
-      router.push(`/${locale}/login`);
+      router.push('/login');
     } catch {
       showToast('Logout failed', 'error');
     }
@@ -49,8 +48,17 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
     const fetchUserAndSkill = async () => {
       try {
         setLoading(true);
-        const currentUser = await getCurrentUser();
-        setUser(currentUser);
+
+        if (api.isAuthenticated()) {
+          try {
+            const currentUser = await getCurrentUser();
+            setUser(currentUser);
+          } catch {
+            setUser(null);
+          }
+        } else {
+          setUser(null);
+        }
 
         const data = await api.getMarketSkillDetail(id);
         setSkill(data);
@@ -71,7 +79,7 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
   const handleLike = async () => {
     if (!user) {
       showToast(tMarket('login_to_like'), 'warning');
-      router.push(`/${locale}/login`);
+      router.push('/login');
       return;
     }
 
@@ -104,7 +112,7 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
   const handleFavorite = async () => {
     if (!user) {
       showToast(tMarket('login_to_favorite'), 'warning');
-      router.push(`/${locale}/login`);
+      router.push('/login');
       return;
     }
 
@@ -153,7 +161,6 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
         >
           <ArrowLeft className="w-4 h-4 mr-2" />
           {tMarket('back_to_market')}
-          Back to Market
         </Button>
 
         {loading ? (

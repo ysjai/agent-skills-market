@@ -87,7 +87,8 @@
     "descriptionPlaceholder": "Brief description of what this skill does...",
     "creating": "Creating...",
     "importing": "Importing...",
-    "createButton": "Create Skill"
+    "createButton": "Create Skill",
+    "invalidName": "Name can only contain lowercase letters, numbers, and hyphens"
   },
   "import": {
     "title": "Import Local Skill",
@@ -249,8 +250,10 @@
     "restoreThisVersion": "Restore This Version"
   },
   "nav": {
+    "market": "Market",
     "skills": "Skills",
-    "prompts": "Prompts"
+    "prompts": "Prompts",
+    "favorites": "Favorites"
   },
   "progress": {
     "uploading": "Uploading",
@@ -383,7 +386,10 @@
     "return_to_market": "Return to Market",
     "about_this_skill": "About this skill",
     "no_description": "No description provided.",
-    "failed_load": "Failed to load skill details."
+    "failed_load": "Failed to load skill details.",
+    "prev": "Prev",
+    "next": "Next",
+    "no_results": "No results found"
   },
   "favorites": {
     "title": "My Favorites",
@@ -396,5 +402,8 @@
     "snapshot_warning_withdrawn": "This skill has been withdrawn from the market",
     "snapshot_warning_deleted": "This skill has been deleted by its author",
     "browse_market": "Browse Market"
+  },
+  "version": {
+    "rollbackWarning": "Rolling back to a previous version will overwrite the current content. This action cannot be undone."
   }
 }

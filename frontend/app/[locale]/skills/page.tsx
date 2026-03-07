@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useMemo, useCallback } from 'react';
 import { useRouter } from '@/i18n/routing';
-import { useTranslations } from 'next-intl';
+import { useLocale, useTranslations } from 'next-intl';
 import { FolderGit2, FolderUp } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
@@ -27,6 +27,7 @@ export default function SkillsPage() {
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
   const router = useRouter();
+  const locale = useLocale();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [sharedMap, setSharedMap] = useState<Record<string, string>>({});
   const [user, setUser] = useState<User | null>(null);
@@ -79,19 +80,19 @@ export default function SkillsPage() {
     try {
       const [skillsData, sharedData] = await Promise.all([
         api.get<SkillListResponse>('/skills'),
-        api.getMySharedSkills(0, 100).catch(() => ({ items: [] }))
+        api.getMySharedSkills(0, 100).catch(() => ({ items: [], total: 0 }))
       ]);
       setSkills(skillsData.items);
       
       const newSharedMap: Record<string, string> = {};
       sharedData.items.forEach(item => {
         if (item.skill_id) {
-          newSharedMap[item.skill_id] = item.id;
+          newSharedMap[item.skill_id] = item.skill_id;
         }
       });
       setSharedMap(newSharedMap);
     } catch {
-      setError(t('errors.loadFailed') || 'Failed to load skills');
+      setError(t('loadFailed') || 'Failed to load skills');
     } finally {
       setIsLoading(false);
     }
@@ -152,21 +153,19 @@ export default function SkillsPage() {
 
   const handleNavigate = useCallback((skillId: string) => {
     router.push(`/skills/${skillId}`);
-  }, [router]);
+  }, [locale, router]);
 
   const handleShareClick = useCallback((skillId: string) => {
     setShareSkillId(skillId);
     setIsShareDialogOpen(true);
   }, []);
 
-  const handleUnshareClick = useCallback(async (sharedSkillId: string) => {
+  const handleUnshareClick = useCallback(async (skillId: string) => {
     try {
-      await api.unshareSkill(sharedSkillId);
+      await api.unshareSkill(skillId);
       setSharedMap(prev => {
         const next = { ...prev };
-        for (const [k, v] of Object.entries(next)) {
-          if (v === sharedSkillId) delete next[k];
-        }
+        delete next[skillId];
         return next;
       });
     } catch {
@@ -244,10 +243,9 @@ export default function SkillsPage() {
                   onDelete={handleDelete}
                   onNavigate={handleNavigate}
                   isShared={!!sharedMap[skill.id]}
-                  sharedSkillId={sharedMap[skill.id]}
-                  onShare={handleShareClick}
-                  onUnshare={handleUnshareClick}
-                />
+                   onShare={handleShareClick}
+                   onUnshare={handleUnshareClick}
+                 />
               ))}
             </div>
           )}

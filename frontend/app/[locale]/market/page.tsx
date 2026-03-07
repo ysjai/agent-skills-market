@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from '@/i18n/routing';
-import { useLocale, useTranslations } from 'next-intl';
+import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, Rocket } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
@@ -21,7 +21,6 @@ export default function MarketPage() {
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
   const router = useRouter();
-  const locale = useLocale();
   const { showToast } = useToast();
 
   const {
@@ -47,10 +46,17 @@ export default function MarketPage() {
 
   useEffect(() => {
     const bootstrap = async () => {
+      if (!api.isAuthenticated()) {
+        setUser(null);
+        return;
+      }
+
       try {
         const userData = await getCurrentUser();
         setUser(userData);
-      } catch {}
+      } catch {
+        setUser(null);
+      }
     };
     void bootstrap();
     void loadCategories();
@@ -97,7 +103,7 @@ export default function MarketPage() {
   const handleLike = async (skillId: string) => {
     if (!user) {
       showToast(t('login_to_like'), 'warning');
-      router.push(`/${locale}/login`);
+      router.push('/login');
       return;
     }
 
@@ -218,7 +224,7 @@ export default function MarketPage() {
                       className="h-9 px-3"
                     >
                       <ChevronLeft className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Prev</span>
+                      <span className="hidden sm:inline">{t('prev')}</span>
                     </Button>
                     <div className="text-sm font-medium px-4 text-gray-700 bg-white border border-gray-200 h-9 flex items-center rounded-md shadow-sm">
                       {currentPage} / {totalPages}
@@ -229,7 +235,7 @@ export default function MarketPage() {
                       disabled={currentPage >= totalPages}
                       className="h-9 px-3"
                     >
-                      <span className="hidden sm:inline">Next</span>
+                      <span className="hidden sm:inline">{t('next')}</span>
                       <ChevronRight className="h-4 w-4 sm:ml-1" />
                     </Button>
                   </div>

@@ -18,8 +18,8 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
   const tAuth = useTranslations('auth');
   const pathname = usePathname();
 
-  // Extract the current page from pathname like /skills or /market
   const parts = pathname.split('/').filter(Boolean);
+  // usePathname from next-intl returns path WITHOUT locale prefix (e.g. /market, not /en/market)
   const currentPage = parts[0] || 'skills';
 
   const navItems = [

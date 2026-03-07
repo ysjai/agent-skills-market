@@ -4,12 +4,12 @@ import type { LoginRequest, RegisterRequest, User } from '@/types/user';
 export async function register(data: RegisterRequest): Promise<User> {
   const username = data.username || '';
   await api.register(data.email, username, data.password);
-  return await api.get<User>('/auth/me');
+  return await api.getCurrentUserDirect() as User;
 }
 
 export async function login(data: LoginRequest): Promise<User> {
   await api.login(data.email, data.password);
-  return await api.get<User>('/auth/me');
+  return await api.getCurrentUserDirect() as User;
 }
 
 export async function refreshToken(): Promise<void> {
