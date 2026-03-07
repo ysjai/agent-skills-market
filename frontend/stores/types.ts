@@ -1,7 +1,12 @@
 import type { Skill } from '@/types/skill';
 import type { Prompt } from '@/types/prompt';
 import type { User } from '@/types/user';
-
+import type {
+  SharedSkill,
+  SkillFavorite,
+  Category,
+  MarketSearchParams,
+} from '@/types/market';
 
 // Auth Store
 export interface AuthState {
@@ -57,4 +62,39 @@ export interface UIState {
   setCreateDialogOpen: (open: boolean) => void;
   setImportDialogOpen: (open: boolean) => void;
   setUserMenuOpen: (open: boolean) => void;
+}
+
+// Market Store
+export interface MarketState {
+  skills: SharedSkill[];
+  total: number;
+  categories: Category[];
+  isLoading: boolean;
+  error: string | null;
+  filters: MarketSearchParams;
+  setSkills: (skills: SharedSkill[]) => void;
+  setTotal: (total: number) => void;
+  setCategories: (categories: Category[]) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  setFilters: (filters: Partial<MarketSearchParams>) => void;
+  resetFilters: () => void;
+  loadMarketSkills: (params?: Partial<MarketSearchParams>) => Promise<void>;
+  loadCategories: () => Promise<void>;
+  toggleLikeOptimistic: (skillId: string) => void;
+  toggleFavoriteOptimistic: (skillId: string) => void;
+}
+
+// Favorites Store
+export interface FavoritesState {
+  favorites: SkillFavorite[];
+  total: number;
+  isLoading: boolean;
+  error: string | null;
+  setFavorites: (favorites: SkillFavorite[]) => void;
+  setTotal: (total: number) => void;
+  setIsLoading: (isLoading: boolean) => void;
+  setError: (error: string | null) => void;
+  addFavorite: (favorite: SkillFavorite) => void;
+  removeFavorite: (id: string) => void;
 }

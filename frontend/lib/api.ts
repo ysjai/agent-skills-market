@@ -275,7 +275,62 @@ class ApiClient {
   isAuthenticated(): boolean {
     return !!this.getAccessToken();
   }
-}
 
+  // --- Market & Skill Sharing API ---
+
+  async getMarketSkills(params: import('@/types/market').MarketSearchParams): Promise<import('@/types/market').SharedSkillListResponse> {
+    const queryParams: Record<string, string> = {};
+    if (params.keyword) queryParams.keyword = params.keyword;
+    if (params.category_id) queryParams.category_id = params.category_id;
+    if (params.sort_by) queryParams.sort_by = params.sort_by;
+    if (params.skip !== undefined) queryParams.skip = String(params.skip);
+    if (params.limit !== undefined) queryParams.limit = String(params.limit);
+    return this.get<import('@/types/market').SharedSkillListResponse>('/market/skills', queryParams);
+  }
+
+  async getMarketSkillDetail(id: string): Promise<import('@/types/market').SharedSkill> {
+    return this.get<import('@/types/market').SharedSkill>(`/market/skills/${id}`);
+  }
+
+  async likeSharedSkill(id: string): Promise<void> {
+    return this.post<void>(`/market/skills/${id}/like`);
+  }
+
+  async unlikeSharedSkill(id: string): Promise<void> {
+    return this.delete<void>(`/market/skills/${id}/like`);
+  }
+
+  async favoriteSharedSkill(id: string): Promise<void> {
+    return this.post<void>(`/market/skills/${id}/favorite`);
+  }
+
+  async unfavoriteSharedSkill(id: string): Promise<void> {
+    return this.delete<void>(`/market/skills/${id}/favorite`);
+  }
+
+  async getMyFavorites(skip: number = 0, limit: number = 20): Promise<import('@/types/market').FavoriteListResponse> {
+    return this.get<import('@/types/market').FavoriteListResponse>('/favorites', { skip: String(skip), limit: String(limit) });
+  }
+
+  async getCategories(): Promise<import('@/types/market').Category[]> {
+    return this.get<import('@/types/market').Category[]>('/categories');
+  }
+
+  async shareSkill(data: import('@/types/market').ShareSkillRequest & { skill_id: string }): Promise<import('@/types/market').SharedSkill> {
+    return this.post<import('@/types/market').SharedSkill>(`/skills/${data.skill_id}/share`, { category_id: data.category_id, share_message: data.share_message });
+  }
+
+  async unshareSkill(id: string): Promise<void> {
+    return this.delete<void>(`/skills/${id}/share`);
+  }
+
+  async getMySharedSkills(skip: number = 0, limit: number = 20): Promise<import('@/types/market').SharedSkillListResponse> {
+    try {
+      return await this.get<import('@/types/market').SharedSkillListResponse>('/sharing/my-skills', { skip: String(skip), limit: String(limit) });
+    } catch {
+      return { items: [], total: 0 };
+    }
+  }
+}
 export const api = new ApiClient();
 export { getLoginUrl };
