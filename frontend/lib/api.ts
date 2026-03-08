@@ -369,6 +369,65 @@ class ApiClient {
       return { items: [], total: 0 };
     }
   }
+
+  // --- Prompt Market API ---
+
+  async getMarketPrompts(params: import('@/types/prompt-market').PromptMarketSearchParams = {}): Promise<import('@/types/prompt-market').SharedPromptListResponse> {
+    const queryParams: Record<string, string> = {};
+    if (params.keyword) queryParams.keyword = params.keyword;
+    if (params.tags && params.tags.length > 0) {
+      // Pass tags as comma-separated for now, or as multiple params
+      queryParams.tags = params.tags.join(',');
+    }
+    if (params.sort_by) queryParams.sort_by = params.sort_by;
+    if (params.skip !== undefined) queryParams.skip = String(params.skip);
+    if (params.limit !== undefined) queryParams.limit = String(params.limit);
+    return this.get<import('@/types/prompt-market').SharedPromptListResponse>('/market/prompts', queryParams);
+  }
+
+  async getMarketPromptDetail(id: string): Promise<import('@/types/prompt-market').SharedPrompt> {
+    return this.get<import('@/types/prompt-market').SharedPrompt>(`/market/prompts/${id}`);
+  }
+
+  async likeSharedPrompt(id: string): Promise<void> {
+    return this.post<void>(`/market/prompts/${id}/like`);
+  }
+
+  async unlikeSharedPrompt(id: string): Promise<void> {
+    return this.delete<void>(`/market/prompts/${id}/like`);
+  }
+
+  async favoriteSharedPrompt(id: string): Promise<void> {
+    return this.post<void>(`/market/prompts/${id}/favorite`);
+  }
+
+  async unfavoriteSharedPrompt(id: string): Promise<void> {
+    return this.delete<void>(`/market/prompts/${id}/favorite`);
+  }
+
+  async getMyPromptFavorites(skip: number = 0, limit: number = 20): Promise<import('@/types/prompt-market').PromptFavoriteListResponse> {
+    return this.get<import('@/types/prompt-market').PromptFavoriteListResponse>('/favorites/prompts', { skip: String(skip), limit: String(limit) });
+  }
+
+  async refreshPromptFavorite(favoriteId: string): Promise<import('@/types/prompt-market').PromptFavorite> {
+    return this.post<import('@/types/prompt-market').PromptFavorite>(`/favorites/prompts/${favoriteId}/refresh`);
+  }
+
+  async exportMarketPrompt(id: string): Promise<string> {
+    const response = await this.request<Response>(`/market/prompts/${id}/export`, {
+      method: 'GET',
+      rawResponse: true,
+    });
+    return response.text();
+  }
+
+  async sharePrompt(promptId: string, shareMessage?: string): Promise<import('@/types/prompt-market').SharedPrompt> {
+    return this.post<import('@/types/prompt-market').SharedPrompt>(`/prompts/${promptId}/share`, shareMessage ? { share_message: shareMessage } : undefined);
+  }
+
+  async unsharePrompt(promptId: string): Promise<void> {
+    return this.delete<void>(`/prompts/${promptId}/share`);
+  }
 }
 export const api = new ApiClient();
 export { getLoginUrl };
