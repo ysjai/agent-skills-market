@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { ArrowLeft, Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle } from 'lucide-react';
+import { ArrowLeft, Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle, Download } from 'lucide-react';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
@@ -13,6 +13,7 @@ import { getCurrentUser, logout } from '@/app/api/auth';
 import type { SharedSkill } from '@/types/market';
 import type { User } from '@/types/user';
 import { MarketSkillViewer } from '@/components/market/MarketSkillViewer';
+import { DownloadDialog } from '@/components/misc/DownloadDialog';
 
 interface SharedSkillDetailProps {
   id: string;
@@ -36,6 +37,7 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
   const [isFavorited, setIsFavorited] = useState(false);
   const [favoriteCount, setFavoriteCount] = useState(0);
   const [actionLoading, setActionLoading] = useState(false);
+  const [showDownloadDialog, setShowDownloadDialog] = useState(false);
 
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
 
@@ -231,6 +233,13 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
               </div>
               <div className="flex gap-3">
                 <Button 
+                  variant="outline"
+                  onClick={() => setShowDownloadDialog(true)}
+                >
+                  <Download className="w-4 h-4 mr-2" />
+                  {tMarket('download')}
+                </Button>
+                <Button 
                   variant={isLiked ? "default" : "outline"} 
                   onClick={handleLike}
                   disabled={actionLoading}
@@ -275,6 +284,17 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
           </div>
         )}
       </main>
+
+      {showDownloadDialog && skill && (
+        <DownloadDialog
+          open={showDownloadDialog}
+          skillId={skill.skill_id || ''}
+          skillName={skill.name || 'skill'}
+          sharedSkillId={id}
+          mode="market"
+          onClose={() => setShowDownloadDialog(false)}
+        />
+      )}
     </div>
   );
 }

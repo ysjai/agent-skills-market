@@ -407,7 +407,8 @@
     "prompt_withdrawn_warning": "This prompt has been withdrawn from the market",
     "about_this_prompt": "About this prompt",
     "prompt_content": "Prompt Content",
-    "export_prompt": "Export"
+    "export_prompt": "Export",
+    "download": "Download"
   },
   "favorites": {
     "title": "My Favorites",

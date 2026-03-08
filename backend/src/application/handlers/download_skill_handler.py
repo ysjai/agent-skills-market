@@ -7,20 +7,25 @@ from uuid import UUID
 from src.domain.aggregates.tree import Tree
 from src.domain.exceptions import ForbiddenError, ResourceNotFoundError
 from src.domain.repositories.blob_repository import BlobRepository
+from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
 
 
 async def handle_download_skill(
-    user_id: UUID,
     skill_id: UUID,
     platform: str | None,
     skill_repo: SkillRepository,
     tree_repo: TreeRepository,
     blob_repo: BlobRepository,
+    shared_skill_repo: SharedSkillRepository,
+    user_id: UUID | None = None,
 ) -> tuple[bytes, str, str]:
     """
     Download a skill.
+
+    Permission: owner can always download; non-owner can download only if
+    the skill has been publicly shared (active SharedSkill exists).
 
     Returns: (content_bytes, media_type, filename)
     """
@@ -28,8 +33,12 @@ async def handle_download_skill(
     if skill is None:
         raise ResourceNotFoundError("Skill not found")
 
-    if skill.user_id != user_id:
-        raise ForbiddenError("Not authorized to access this skill")
+    # Permission check: owner OR publicly shared
+    is_owner = user_id is not None and skill.user_id == user_id
+    if not is_owner:
+        shared_skill = await shared_skill_repo.find_by_skill_id(skill_id)
+        if shared_skill is None:
+            raise ForbiddenError("Not authorized to download this skill")
 
     if not skill.tree_id:
         if platform == "claude":

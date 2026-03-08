@@ -8,6 +8,8 @@ import {
   checkFileSystemAccessSupport,
   selectDirectory,
   downloadAndExtractSkill,
+  downloadAndExtractMarketSkill,
+  downloadMarketSkillAsZip,
   formatDirectoryPath,
   checkFileNamesForWindows,
   isWindows,
@@ -23,7 +25,11 @@ interface DownloadDialogProps {
   skillId: string;
   skillName: string;
   onClose: () => void;
-  onSuccess: () => void;
+  onSuccess?: () => void;
+  /** 'private' uses auth-protected endpoints; 'market' uses public market endpoints */
+  mode?: 'private' | 'market';
+  /** Required when mode is 'market' */
+  sharedSkillId?: string;
 }
 
 type DialogState = 'checking' | 'initial' | 'selecting' | 'downloading' | 'success' | 'error' | 'mapping';
@@ -35,6 +41,8 @@ export function DownloadDialog({
   skillName,
   onClose,
   onSuccess,
+  mode = 'private',
+  sharedSkillId,
 }: DownloadDialogProps) {
   const t = useTranslations('download');
   const tCommon = useTranslations('common');
@@ -82,8 +90,15 @@ export function DownloadDialog({
 
   const checkFileNames = async () => {
     try {
-      const response = await api.get<{ files: Array<{ path: string; type: string }> }>(`/skills/${skillId}/files`);
-      const filePaths = response.files.filter(f => f.type === 'blob').map(f => f.path);
+      let filePaths: string[];
+
+      if (mode === 'market' && sharedSkillId) {
+        const tree = await api.getMarketSkillTree(sharedSkillId);
+        filePaths = tree.entries.filter(e => e.type === 'blob').map(e => e.path);
+      } else {
+        const response = await api.get<{ files: Array<{ path: string; type: string }> }>(`/skills/${skillId}/files`);
+        filePaths = response.files.filter(f => f.type === 'blob').map(f => f.path);
+      }
 
       const check = checkFileNamesForWindows(filePaths);
       setHasIllegalChars(check.hasIllegalChars);
@@ -101,41 +116,58 @@ export function DownloadDialog({
     setProgress(0);
 
     try {
-      const response = await api.get<{ files: Array<{ path: string; type: string; blob_id?: string }> }>(`/skills/${skillId}/files`);
-      const files = response.files.filter(f => f.type === 'blob');
-      
-      const zip = new JSZip();
-      const total = files.length;
-      let current = 0;
+      if (mode === 'market' && sharedSkillId) {
+        // Market mode: use public API via downloadMarketSkillAsZip
+        await downloadMarketSkillAsZip(sharedSkillId, skillName, (current, total) => {
+          setProgress(Math.round((current / total) * 100));
+          setCurrentFile(current);
+          setTotalFiles(total);
+        });
 
-      for (const file of files) {
-        if (file.blob_id) {
-          const blob = await api.getBlob(`/blobs/${file.blob_id}`);
-          zip.file(file.path, blob);
+        setDownloadResult({
+          success: true,
+          filesExtracted: totalFiles,
+          targetPath: `${skillName}.zip`,
+        });
+      } else {
+        // Private mode: use auth-protected API
+        const response = await api.get<{ files: Array<{ path: string; type: string; blob_id?: string }> }>(`/skills/${skillId}/files`);
+        const files = response.files.filter(f => f.type === 'blob');
+        
+        const zip = new JSZip();
+        const total = files.length;
+        let current = 0;
+
+        for (const file of files) {
+          if (file.blob_id) {
+            const blob = await api.getBlob(`/blobs/${file.blob_id}`);
+            zip.file(file.path, blob);
+          }
+          current++;
+          setProgress(Math.round((current / total) * 100));
+          setCurrentFile(current);
+          setTotalFiles(total);
         }
-        current++;
-        setProgress(Math.round((current / total) * 100));
-        setCurrentFile(current);
-        setTotalFiles(total);
+
+        const zipBlob = await zip.generateAsync({ type: 'blob' });
+        const url = window.URL.createObjectURL(zipBlob);
+        const downloadLink = document.createElement('a');
+        downloadLink.href = url;
+        downloadLink.download = `${skillName}.zip`;
+        document.body.appendChild(downloadLink);
+        downloadLink.click();
+        document.body.removeChild(downloadLink);
+        window.URL.revokeObjectURL(url);
+
+        setDownloadResult({
+          success: true,
+          filesExtracted: files.length,
+          targetPath: `${skillName}.zip`,
+        });
       }
 
-      const zipBlob = await zip.generateAsync({ type: 'blob' });
-      const url = window.URL.createObjectURL(zipBlob);
-      const downloadLink = document.createElement('a');
-      downloadLink.href = url;
-      downloadLink.download = `${skillName}.zip`;
-      document.body.appendChild(downloadLink);
-      downloadLink.click();
-      document.body.removeChild(downloadLink);
-      window.URL.revokeObjectURL(url);
-
-      setDownloadResult({
-        success: true,
-        filesExtracted: files.length,
-        targetPath: `${skillName}.zip`,
-      });
       setDialogState('success');
-      onSuccess();
+      onSuccess?.();
     } catch {
       setError(t('errors.createZipFailed'));
       setDialogState('error');
@@ -168,18 +200,35 @@ export function DownloadDialog({
     setProgress(0);
     setCurrentFile(0);
 
-    const result = await downloadAndExtractSkill({
-      skillId,
-      platform,
-      dirHandle: targetHandle,
-      skillName,
-      preserveNames: false,
-      onProgress: (progressPercent, current, total) => {
-        setProgress(progressPercent);
-        if (current !== undefined) setCurrentFile(current);
-        if (total !== undefined) setTotalFiles(total);
-      },
-    });
+    let result: DownloadResult;
+
+    if (mode === 'market' && sharedSkillId) {
+      result = await downloadAndExtractMarketSkill({
+        sharedSkillId,
+        skillName,
+        platform,
+        dirHandle: targetHandle,
+        preserveNames: false,
+        onProgress: (progressPercent, current, total) => {
+          setProgress(progressPercent);
+          if (current !== undefined) setCurrentFile(current);
+          if (total !== undefined) setTotalFiles(total);
+        },
+      });
+    } else {
+      result = await downloadAndExtractSkill({
+        skillId,
+        platform,
+        dirHandle: targetHandle,
+        skillName,
+        preserveNames: false,
+        onProgress: (progressPercent, current, total) => {
+          setProgress(progressPercent);
+          if (current !== undefined) setCurrentFile(current);
+          if (total !== undefined) setTotalFiles(total);
+        },
+      });
+    }
 
     if (result.success) {
       setDownloadResult(result);
@@ -188,7 +237,7 @@ export function DownloadDialog({
       } else {
         setDialogState('success');
       }
-      onSuccess();
+      onSuccess?.();
     } else {
       setError(result.error || 'Download failed');
       setDialogState('error');
@@ -482,7 +531,7 @@ export function DownloadDialog({
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <span className="font-medium text-gray-900">{t('options.replace.title')}</span>
-                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t('options.recommended')}</span>
+                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t('recommended')}</span>
                             </div>
                             <p className="mt-1 text-xs text-gray-500">
                               {t('options.replace.description')}
@@ -531,7 +580,7 @@ export function DownloadDialog({
                           <div className="flex-1">
                             <div className="flex items-center gap-2">
                               <span className="font-medium text-gray-900">{t('options.zip.title')}</span>
-                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t('options.recommended')}</span>
+                              <span className="text-xs bg-green-100 text-green-700 px-2 py-0.5 rounded-full">{t('recommended')}</span>
                             </div>
                             <p className="mt-1 text-xs text-gray-500">
                               {t('options.zip.description')}

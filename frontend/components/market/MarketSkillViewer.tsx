@@ -92,6 +92,7 @@ export function MarketSkillViewer({ sharedSkillId }: MarketSkillViewerProps) {
           error={error}
           onSelect={selectNode}
           onToggle={toggleNode}
+          sharedSkillId={sharedSkillId}
         />
       </div>
       <div className="flex-1 overflow-hidden">

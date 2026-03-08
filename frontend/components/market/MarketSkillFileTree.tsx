@@ -1,11 +1,12 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { FolderTree, ChevronRight, ChevronDown, Folder, FolderOpen } from 'lucide-react';
+import { FolderTree, ChevronRight, ChevronDown, Folder, FolderOpen, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import type { MarketFileNode } from '@/hooks/useMarketFileTree';
 import { getFileIcon } from '@/components/ui/FileIcons';
+import { api } from '@/lib/api';
 
 interface MarketSkillFileTreeProps {
   nodes: MarketFileNode[];
@@ -14,6 +15,7 @@ interface MarketSkillFileTreeProps {
   error: string | null;
   onSelect: (path: string, blobId?: string) => void;
   onToggle: (path: string) => void;
+  sharedSkillId: string;
   className?: string;
 }
 
@@ -22,54 +24,83 @@ function FileTreeNode({
   selectedPath,
   onSelect,
   onToggle,
+  sharedSkillId,
 }: {
   node: MarketFileNode;
   selectedPath: string;
   onSelect: (path: string, blobId?: string) => void;
   onToggle: (path: string) => void;
+  sharedSkillId: string;
 }) {
   const isSelected = node.path === selectedPath;
   const isFolder = node.type === 'tree';
 
+  const handleDownloadFile = async (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (!node.blob_id) return;
+    try {
+      const blob = await api.getMarketSkillBlob(sharedSkillId, node.blob_id);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = node.name;
+      a.click();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Failed to download file:', err);
+    }
+  };
+
   return (
     <div>
-      <button
-        onClick={() => {
-          if (isFolder) {
-            onToggle(node.path);
-          } else {
-            onSelect(node.path, node.blob_id);
-          }
-        }}
-        className={cn(
-          'flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
-          isSelected
-            ? 'bg-blue-50 text-blue-700'
-            : 'text-gray-700 hover:bg-gray-50'
+      <div className="group relative flex items-center">
+        <button
+          onClick={() => {
+            if (isFolder) {
+              onToggle(node.path);
+            } else {
+              onSelect(node.path, node.blob_id);
+            }
+          }}
+          className={cn(
+            'flex w-full items-center gap-1.5 rounded-md px-2 py-1.5 text-left text-sm transition-colors',
+            isSelected
+              ? 'bg-blue-50 text-blue-700'
+              : 'text-gray-700 hover:bg-gray-50'
+          )}
+          style={{ paddingLeft: `${node.depth * 16 + 8}px` }}
+        >
+          {isFolder ? (
+            <>
+              {node.isExpanded ? (
+                <ChevronDown className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+              ) : (
+                <ChevronRight className="h-3.5 w-3.5 shrink-0 text-gray-400" />
+              )}
+              {node.isExpanded ? (
+                <FolderOpen className="h-4 w-4 shrink-0 text-amber-500" />
+              ) : (
+                <Folder className="h-4 w-4 shrink-0 text-amber-500" />
+              )}
+            </>
+          ) : (
+            <>
+              <span className="h-3.5 w-3.5 shrink-0" />
+              {getFileIcon(node.name, node.path)}
+            </>
+          )}
+          <span className="truncate">{node.name}</span>
+        </button>
+        {!isFolder && node.blob_id && (
+          <button
+            onClick={handleDownloadFile}
+            className="absolute right-1 opacity-0 group-hover:opacity-100 p-1 hover:bg-gray-200 rounded transition-opacity"
+            title="Download file"
+          >
+            <Download className="h-3.5 w-3.5 text-gray-500" />
+          </button>
         )}
-        style={{ paddingLeft: `${node.depth * 16 + 8}px` }}
-      >
-        {isFolder ? (
-          <>
-            {node.isExpanded ? (
-              <ChevronDown className="h-3.5 w-3.5 shrink-0 text-gray-400" />
-            ) : (
-              <ChevronRight className="h-3.5 w-3.5 shrink-0 text-gray-400" />
-            )}
-            {node.isExpanded ? (
-              <FolderOpen className="h-4 w-4 shrink-0 text-amber-500" />
-            ) : (
-              <Folder className="h-4 w-4 shrink-0 text-amber-500" />
-            )}
-          </>
-        ) : (
-          <>
-            <span className="h-3.5 w-3.5 shrink-0" />
-            {getFileIcon(node.name, node.path)}
-          </>
-        )}
-        <span className="truncate">{node.name}</span>
-      </button>
+      </div>
 
       {isFolder && node.isExpanded && node.children.length > 0 && (
         <div>
@@ -80,6 +111,7 @@ function FileTreeNode({
               selectedPath={selectedPath}
               onSelect={onSelect}
               onToggle={onToggle}
+              sharedSkillId={sharedSkillId}
             />
           ))}
         </div>
@@ -95,6 +127,7 @@ export function MarketSkillFileTree({
   error,
   onSelect,
   onToggle,
+  sharedSkillId,
   className,
 }: MarketSkillFileTreeProps) {
   const t = useTranslations('files');
@@ -142,6 +175,7 @@ export function MarketSkillFileTree({
                 selectedPath={selectedPath}
                 onSelect={onSelect}
                 onToggle={onToggle}
+                sharedSkillId={sharedSkillId}
               />
             ))}
           </div>

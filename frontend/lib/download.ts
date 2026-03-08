@@ -247,6 +247,116 @@ interface SkillFileResponse {
   }>;
 }
 
+// ===== Market download functions (using public API) =====
+
+export interface MarketDownloadAndExtractOptions {
+  sharedSkillId: string;
+  skillName: string;
+  platform: Platform;
+  dirHandle: FileSystemDirectoryHandle;
+  onProgress?: (progress: number, currentFile?: number, totalFiles?: number) => void;
+  preserveNames?: boolean;
+}
+
+export async function downloadAndExtractMarketSkill(
+  options: MarketDownloadAndExtractOptions
+): Promise<DownloadResult> {
+  const { sharedSkillId, skillName, platform, dirHandle, onProgress, preserveNames } = options;
+
+  try {
+    const tree = await api.getMarketSkillTree(sharedSkillId);
+    const files = tree.entries.filter((e) => e.type === 'blob');
+
+    if (files.length === 0) {
+      return {
+        success: false,
+        filesExtracted: 0,
+        targetPath: '',
+        error: 'No files found in this skill',
+      };
+    }
+
+    const platformDir = PLATFORM_DIRS[platform];
+    const dirParts = platformDir.split('/');
+    let currentHandle = dirHandle;
+
+    for (const part of dirParts) {
+      if (part) {
+        currentHandle = await currentHandle.getDirectoryHandle(part, { create: true });
+      }
+    }
+
+    const finalSkillName = preserveNames ? skillName : sanitizeFileName(skillName);
+    const skillHandle = await currentHandle.getDirectoryHandle(finalSkillName, { create: true });
+
+    let filesExtracted = 0;
+    const totalFiles = files.length;
+
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+
+      if (!file.blob_id) {
+        filesExtracted++;
+        const progress = Math.round((filesExtracted / totalFiles) * 100);
+        onProgress?.(progress, filesExtracted, totalFiles);
+        continue;
+      }
+
+      const blob = await api.getMarketSkillBlob(sharedSkillId, file.blob_id);
+      await writeFileToDirectory(skillHandle, file.path, blob, preserveNames);
+
+      filesExtracted++;
+      const progress = Math.round((filesExtracted / totalFiles) * 100);
+      onProgress?.(progress, filesExtracted, totalFiles);
+    }
+
+    return {
+      success: true,
+      filesExtracted,
+      targetPath: `${platformDir}/${skillName}`,
+    };
+  } catch (error) {
+    const errorMessage = error instanceof Error ? error.message : 'Download failed';
+    return {
+      success: false,
+      filesExtracted: 0,
+      targetPath: '',
+      error: errorMessage,
+    };
+  }
+}
+
+export async function downloadMarketSkillAsZip(
+  sharedSkillId: string,
+  skillName: string,
+  onProgress?: (current: number, total: number) => void
+): Promise<void> {
+  const tree = await api.getMarketSkillTree(sharedSkillId);
+  const files = tree.entries.filter((e) => e.type === 'blob' && e.blob_id);
+
+  if (files.length === 0) {
+    throw new Error('No files found in this skill');
+  }
+
+  const JSZip = (await import('jszip')).default;
+  const zip = new JSZip();
+
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const blob = await api.getMarketSkillBlob(sharedSkillId, file.blob_id!);
+    zip.file(file.path, blob);
+    onProgress?.(i + 1, files.length);
+  }
+
+  const zipBlob = await zip.generateAsync({ type: 'blob' });
+  const url = URL.createObjectURL(zipBlob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${skillName}.zip`;
+  a.click();
+  URL.revokeObjectURL(url);
+}
+
 export async function downloadSkill(
   skillId: string,
   skillName: string,

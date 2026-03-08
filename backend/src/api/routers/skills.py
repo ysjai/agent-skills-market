@@ -5,7 +5,7 @@ from pydantic import BaseModel
 from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import StreamingResponse
 
-from src.api.dependencies.auth import get_current_user
+from src.api.dependencies.auth import get_current_user, get_optional_current_user
 from src.api.dependencies.repositories import (
     SkillFavoriteRepository,
     get_blob_repo,
@@ -180,15 +180,17 @@ async def download_skill(
     skill_repo: SkillRepository = Depends(get_skill_repo),
     tree_repo: TreeRepository = Depends(get_tree_repo),
     blob_repo: BlobRepository = Depends(get_blob_repo),
-    current_user: User = Depends(get_current_user),
+    shared_skill_repo: SharedSkillRepository = Depends(get_shared_skill_repo),
+    optional_user: User | None = Depends(get_optional_current_user),
 ) -> StreamingResponse:
     content, media_type, filename = await handle_download_skill(
-        user_id=current_user.id,
         skill_id=skill_id,
         platform=platform,
         skill_repo=skill_repo,
         tree_repo=tree_repo,
         blob_repo=blob_repo,
+        shared_skill_repo=shared_skill_repo,
+        user_id=optional_user.id if optional_user else None,
     )
     return StreamingResponse(
         iter([content]),

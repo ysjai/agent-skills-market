@@ -408,7 +408,8 @@
     "prompt_withdrawn_warning": "该提示词已从市场撤回",
     "about_this_prompt": "关于此提示词",
     "prompt_content": "提示词内容",
-    "export_prompt": "导出"
+    "export_prompt": "导出",
+    "download": "下载"
   },
   "favorites": {
     "title": "我的收藏",
