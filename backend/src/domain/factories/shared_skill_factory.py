@@ -28,9 +28,6 @@ class SharedSkillFactory:
             user_id=user.id,
             category_id=category_id,
             share_message=share_message,
-            snapshot_name=skill.name,
-            snapshot_description=skill.description,
-            snapshot_author_name=user.username,
             created_at=now,
             updated_at=now,
         )

@@ -17,9 +17,6 @@ class SharedSkill:
     like_count: int = 0
     favorite_count: int = 0
     status: str = "active"
-    snapshot_name: str = ""
-    snapshot_description: str | None = None
-    snapshot_author_name: str = ""
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
     updated_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
 
@@ -36,9 +33,8 @@ class SharedSkill:
         self._mark_updated()
 
     def mark_skill_deleted(self) -> None:
-        if self.skill_id is None:
-            return
         self.skill_id = None
+        self.status = "withdrawn"
         self._mark_updated()
 
     def increment_like_count(self) -> None:
