@@ -60,7 +60,7 @@ export function ImportDialog({ isOpen, onClose, onImport }: ImportDialogProps) {
       setContent(text);
       setFileName(file.name);
       setError(null);
-    } catch (err) {
+    } catch {
       setError('Failed to read file');
       setContent('');
       setFileName('');
