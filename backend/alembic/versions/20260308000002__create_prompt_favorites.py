@@ -1,7 +1,7 @@
 """create prompt_favorites table
 
-Revision ID: v11_prompt_favorites
-Revises: v10_shared_prompts
+Revision ID: v10_prompt_favorites
+Revises: v9_shared_prompts
 Create Date: 2026-03-08
 """
 
@@ -9,8 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID, ARRAY
 
-revision = "v11_prompt_favorites"
-down_revision = "v10_shared_prompts"
+revision = "v10_prompt_favorites"
+down_revision = "v9_shared_prompts"
 branch_labels = None
 depends_on = None
 

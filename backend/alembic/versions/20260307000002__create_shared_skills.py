@@ -27,9 +27,6 @@ def upgrade() -> None:
         sa.Column("like_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("favorite_count", sa.Integer(), nullable=False, server_default="0"),
         sa.Column("status", sa.String(length=20), nullable=False, server_default="active"),
-        sa.Column("snapshot_name", sa.String(length=255), nullable=False),
-        sa.Column("snapshot_description", sa.Text(), nullable=True),
-        sa.Column("snapshot_author_name", sa.String(length=255), nullable=False),
         sa.Column(
             "created_at",
             sa.DateTime(timezone=True),

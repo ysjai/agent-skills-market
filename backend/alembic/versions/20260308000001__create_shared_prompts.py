@@ -1,7 +1,7 @@
 """create shared_prompts and prompt_likes tables
 
-Revision ID: v10_shared_prompts
-Revises: v9_remove_shared_skill_snapshots
+Revision ID: v9_shared_prompts
+Revises: v8_skill_favorites
 Create Date: 2026-03-08
 """
 
@@ -9,8 +9,8 @@ from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
 
-revision = "v10_shared_prompts"
-down_revision = "v9_remove_shared_skill_snapshots"
+revision = "v9_shared_prompts"
+down_revision = "v8_skill_favorites"
 branch_labels = None
 depends_on = None
 
