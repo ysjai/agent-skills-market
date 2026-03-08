@@ -222,7 +222,7 @@ export default function FavoritesPage() {
                         variant="secondary"
                         size="sm"
                         disabled={fav.snapshot_status !== 'active'}
-                        onClick={() => fav.snapshot_status === 'active' && router.push(`/market/${fav.shared_skill_id}`)}
+                        onClick={() => fav.snapshot_status === 'active' && router.push(`/favorites/${fav.shared_skill_id}`)}
                         className="gap-1.5 bg-white hover:bg-gray-50 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-white"
                       >
                         <ExternalLink className="h-3.5 w-3.5" />
