@@ -72,19 +72,6 @@ function MarketPromptCardComponent({
           </div>
           <div className="relative shrink-0 flex items-center gap-1.5">
             <button
-              onClick={handleFavoriteClick}
-              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
-                currentFavorited
-                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
-                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
-              }`}
-              title={currentFavorited ? t('unfavorite') : t('favorite')}
-            >
-              <Star
-                className={`h-3.5 w-3.5 ${currentFavorited ? 'fill-amber-600' : ''}`}
-              />
-            </button>
-            <button
               onClick={handleLikeClick}
               className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${
                 currentLiked
@@ -97,6 +84,19 @@ function MarketPromptCardComponent({
                 className={`h-4 w-4 ${currentLiked ? 'fill-rose-600' : ''}`}
               />
               <span>{currentLikeCount}</span>
+            </button>
+            <button
+              onClick={handleFavoriteClick}
+              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
+                currentFavorited
+                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              }`}
+              title={currentFavorited ? t('unfavorite') : t('favorite')}
+            >
+              <Star
+                className={`h-3.5 w-3.5 ${currentFavorited ? 'fill-amber-600' : ''}`}
+              />
             </button>
           </div>
         </div>
