@@ -248,7 +248,15 @@
     "preview": "Preview",
     "previewingVersion": "Previewing Version {number}",
     "closePreview": "Close Preview",
-    "restoreThisVersion": "Restore This Version"
+    "restoreThisVersion": "Restore This Version",
+    "share": "Share to Market",
+    "unshare": "Unshare",
+    "shared": "Shared",
+    "sharing": "Sharing...",
+    "share_success": "Prompt shared to market successfully",
+    "unshare_success": "Prompt removed from market",
+    "share_message_label": "Share Message (optional)",
+    "share_message_placeholder": "Tell the community about this prompt..."
   },
   "nav": {
     "market": "Market",
@@ -391,7 +399,15 @@
     "failed_load": "Failed to load skill details.",
     "prev": "Prev",
     "next": "Next",
-    "no_results": "No results found"
+    "no_results": "No results found",
+    "tabs_skills": "Skills",
+    "tabs_prompts": "Prompts",
+    "prompt_not_found": "Prompt Not Found",
+    "prompt_unavailable_desc": "This prompt has been withdrawn by the author or is no longer available.",
+    "prompt_withdrawn_warning": "This prompt has been withdrawn from the market",
+    "about_this_prompt": "About this prompt",
+    "prompt_content": "Prompt Content",
+    "export_prompt": "Export"
   },
   "favorites": {
     "title": "My Favorites",
@@ -403,7 +419,16 @@
     "add_success": "Added to favorites",
     "snapshot_warning_withdrawn": "This skill has been withdrawn from the market",
     "snapshot_warning_deleted": "This skill has been deleted by its author",
-    "browse_market": "Browse Market"
+    "browse_market": "Browse Market",
+    "tabs_skills": "Skills",
+    "tabs_prompts": "Prompts",
+    "no_prompt_favorites": "No prompt favorites yet",
+    "no_prompt_favorites_desc": "Browse the market and favorite prompts to save them here",
+    "prompt_changed": "Content has been updated",
+    "refresh_prompt": "Refresh",
+    "snapshot_warning_prompt_withdrawn": "This prompt has been withdrawn from the market",
+    "snapshot_warning_prompt_deleted": "This prompt has been deleted by its author",
+    "load_more": "Load More"
   },
   "version": {
     "rollbackWarning": "Rolling back to a previous version will overwrite the current content. This action cannot be undone."

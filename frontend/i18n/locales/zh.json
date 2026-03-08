@@ -248,7 +248,15 @@
     "preview": "预览",
     "previewingVersion": "正在预览版本 {number}",
     "closePreview": "关闭预览",
-    "restoreThisVersion": "还原至此版本"
+    "restoreThisVersion": "还原至此版本",
+    "share": "分享到市场",
+    "unshare": "取消分享",
+    "shared": "已分享",
+    "sharing": "分享中...",
+    "share_success": "提示词已成功分享到市场",
+    "unshare_success": "提示词已从市场移除",
+    "share_message_label": "分享寄语（可选）",
+    "share_message_placeholder": "向社区介绍一下这个提示词..."
   },
   "nav": {
     "market": "市场",
@@ -392,7 +400,15 @@
     "failed_load": "加载技能详情失败。",
     "prev": "上一页",
     "next": "下一页",
-    "no_results": "未找到结果"
+    "no_results": "未找到结果",
+    "tabs_skills": "技能",
+    "tabs_prompts": "提示词",
+    "prompt_not_found": "提示词未找到",
+    "prompt_unavailable_desc": "该提示词已被作者撤回或不再可用。",
+    "prompt_withdrawn_warning": "该提示词已从市场撤回",
+    "about_this_prompt": "关于此提示词",
+    "prompt_content": "提示词内容",
+    "export_prompt": "导出"
   },
   "favorites": {
     "title": "我的收藏",
@@ -404,7 +420,16 @@
     "add_success": "已添加到收藏",
     "snapshot_warning_withdrawn": "该技能已从市场撤回",
     "snapshot_warning_deleted": "该技能已被作者删除",
-    "browse_market": "浏览市场"
+    "browse_market": "浏览市场",
+    "tabs_skills": "技能",
+    "tabs_prompts": "提示词",
+    "no_prompt_favorites": "暂无提示词收藏",
+    "no_prompt_favorites_desc": "浏览市场并收藏提示词以保存在此",
+    "prompt_changed": "内容已更新",
+    "refresh_prompt": "刷新",
+    "snapshot_warning_prompt_withdrawn": "该提示词已从市场撤回",
+    "snapshot_warning_prompt_deleted": "该提示词已被作者删除",
+    "load_more": "加载更多"
   },
   "version": {
     "rollbackWarning": "回退到之前的版本将覆盖当前内容。此操作无法撤销。"
