@@ -12,6 +12,7 @@ import { api } from '@/lib/api';
 import { getCurrentUser, logout } from '@/app/api/auth';
 import type { SharedSkill } from '@/types/market';
 import type { User } from '@/types/user';
+import { MarketSkillViewer } from '@/components/market/MarketSkillViewer';
 
 export default function MarketSkillDetailPage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = use(params);
@@ -263,6 +264,10 @@ export default function MarketSkillDetailPage({ params }: { params: Promise<{ id
                 )}
               </CardContent>
             </Card>
+
+            {!isWithdrawn && (
+              <MarketSkillViewer sharedSkillId={id} />
+            )}
           </div>
         )}
       </main>
