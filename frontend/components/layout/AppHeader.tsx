@@ -1,9 +1,8 @@
 'use client';
 
-import { Link, usePathname } from '@/i18n/routing';
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Store, Star } from 'lucide-react';
-import { LanguageSwitcher } from '@/components/misc/LanguageSwitcher';
+import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Store, Star, Settings } from 'lucide-react';
 import type { User } from '@/types/user';
 
 interface AppHeaderProps {
@@ -17,17 +16,26 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
   const t = useTranslations('nav');
   const tAuth = useTranslations('auth');
   const pathname = usePathname();
+  const router = useRouter();
 
   const parts = pathname.split('/').filter(Boolean);
   // usePathname from next-intl returns path WITHOUT locale prefix (e.g. /market, not /en/market)
-  const currentPage = parts[0] || 'skills';
+  const currentPage = parts[0] || 'market';
 
   const navItems = [
     { key: 'market', href: '/market', icon: Store },
-    { key: 'skills', href: '/skills', icon: Layers },
-    { key: 'prompts', href: '/prompts', icon: BookOpen },
-    { key: 'favorites', href: '/favorites', icon: Star },
   ];
+
+  const userMenuItems = [
+    { key: 'my_skills', href: '/skills', icon: Layers },
+    { key: 'my_prompts', href: '/prompts', icon: BookOpen },
+    { key: 'my_favorites', href: '/favorites', icon: Star },
+  ];
+
+  const handleMenuItemClick = (href: string) => {
+    onUserMenuToggle();
+    router.push(href);
+  };
 
   return (
     <header className="shrink-0 border-b border-gray-200 bg-white">
@@ -35,7 +43,7 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
         <div className="flex h-14 items-center justify-between gap-4">
           {/* Left: Logo + Navigation Tabs */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <Link href="/skills" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
+            <Link href="/market" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
               <span className="text-base">🎯</span>
             </Link>
 
@@ -64,9 +72,8 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
             </nav>
           </div>
 
-          {/* Right: Language + User Menu */}
+          {/* Right: User Menu */}
           <div className="flex items-center gap-2">
-            <LanguageSwitcher />
             <div className="relative user-menu-container">
               <button
                 onClick={onUserMenuToggle}
@@ -81,6 +88,46 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
 
               {isUserMenuOpen && (
                 <div className="absolute right-0 top-12 z-50 w-48 rounded-lg border border-gray-200 bg-white py-1 shadow-lg">
+                  {/* My Skills / Prompts / Favorites */}
+                  {userMenuItems.map((item) => {
+                    const Icon = item.icon;
+                    const isActive = currentPage === item.key.replace('my_', '');
+                    return (
+                      <button
+                        key={item.key}
+                        onClick={() => handleMenuItemClick(item.href)}
+                        className={`flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                          isActive
+                            ? 'text-gray-900 bg-gray-50 font-medium'
+                            : 'text-gray-700 hover:bg-gray-50'
+                        }`}
+                      >
+                        <Icon className={`h-4 w-4 ${isActive ? 'text-gray-900' : 'text-gray-500'}`} />
+                        {t(item.key)}
+                      </button>
+                    );
+                  })}
+
+                  {/* Divider */}
+                  <div className="my-1 border-t border-gray-100" />
+
+                  {/* Settings */}
+                  <button
+                    onClick={() => handleMenuItemClick('/settings')}
+                    className={`flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm transition-colors ${
+                      currentPage === 'settings'
+                        ? 'text-gray-900 bg-gray-50 font-medium'
+                        : 'text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Settings className={`h-4 w-4 ${currentPage === 'settings' ? 'text-gray-900' : 'text-gray-500'}`} />
+                    {t('settings')}
+                  </button>
+
+                  {/* Divider */}
+                  <div className="my-1 border-t border-gray-100" />
+
+                  {/* Sign Out */}
                   <button
                     onClick={onLogoutClick}
                     className="flex w-full min-h-[44px] items-center gap-2 px-3 py-2 text-left text-sm text-gray-700 hover:bg-gray-50"

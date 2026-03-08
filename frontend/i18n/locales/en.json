@@ -262,7 +262,11 @@
     "market": "Market",
     "skills": "Skills",
     "prompts": "Prompts",
-    "favorites": "Favorites"
+    "favorites": "Favorites",
+    "my_skills": "My Skills",
+    "my_prompts": "My Prompts",
+    "my_favorites": "My Favorites",
+    "settings": "Settings"
   },
   "progress": {
     "uploading": "Uploading",
@@ -433,5 +437,11 @@
   },
   "version": {
     "rollbackWarning": "Rolling back to a previous version will overwrite the current content. This action cannot be undone."
+  },
+  "settings": {
+    "title": "Settings",
+    "subtitle": "Manage your account preferences",
+    "language_title": "Language",
+    "language_description": "Choose your preferred display language"
   }
 }

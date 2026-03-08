@@ -262,7 +262,11 @@
     "market": "市场",
     "skills": "技能",
     "prompts": "提示词",
-    "favorites": "收藏"
+    "favorites": "收藏",
+    "my_skills": "我的技能",
+    "my_prompts": "我的提示词",
+    "my_favorites": "我的收藏",
+    "settings": "设置"
   },
   "progress": {
     "uploading": "正在上传",
@@ -434,5 +438,11 @@
   },
   "version": {
     "rollbackWarning": "回退到之前的版本将覆盖当前内容。此操作无法撤销。"
+  },
+  "settings": {
+    "title": "设置",
+    "subtitle": "管理您的账户偏好设置",
+    "language_title": "语言",
+    "language_description": "选择您偏好的显示语言"
   }
 }
