@@ -37,6 +37,7 @@ export default function MarketPage() {
     loadMarketSkills,
     loadCategories,
     toggleLikeOptimistic,
+    toggleFavoriteOptimistic,
   } = useMarketStore();
 
   const {
@@ -49,6 +50,7 @@ export default function MarketPage() {
     setFilters: setPromptFilters,
     loadMarketPrompts,
     toggleLikeOptimistic: togglePromptLikeOptimistic,
+    toggleFavoriteOptimistic: togglePromptFavoriteOptimistic,
   } = useMarketPromptStore();
 
   const [activeTab, setActiveTab] = useState<'skills' | 'prompts'>('skills');
@@ -165,6 +167,33 @@ export default function MarketPage() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
+  const handleFavorite = async (skillId: string) => {
+    if (!user) {
+      showToast(t('login_to_like'), 'warning');
+      router.push('/login');
+      return;
+    }
+
+    const skillIndex = skills.findIndex(s => s.id === skillId);
+    if (skillIndex === -1) return;
+
+    const skill = skills[skillIndex];
+    const wasFavorited = skill.is_favorited;
+    const previousSkills = skills;
+    toggleFavoriteOptimistic(skillId);
+
+    try {
+      if (wasFavorited) {
+        await api.unfavoriteSharedSkill(skillId);
+      } else {
+        await api.favoriteSharedSkill(skillId);
+      }
+    } catch {
+      setSkills(previousSkills);
+      showToast(tCommon('failed'), 'error');
+    }
+  };
+
   const handlePromptNavigate = useCallback((promptId: string) => {
     router.push(`/market/prompts/${promptId}`);
   }, [router]);
@@ -199,6 +228,33 @@ export default function MarketPage() {
   const handlePromptPageChange = (newSkip: number) => {
     setPromptFilters({ skip: newSkip });
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handlePromptFavorite = async (promptId: string) => {
+    if (!user) {
+      showToast(t('login_to_like'), 'warning');
+      router.push('/login');
+      return;
+    }
+
+    const promptIndex = marketPrompts.findIndex(p => p.id === promptId);
+    if (promptIndex === -1) return;
+
+    const prompt = marketPrompts[promptIndex];
+    const wasFavorited = prompt.is_favorited;
+    const previousPrompts = marketPrompts;
+    togglePromptFavoriteOptimistic(promptId);
+
+    try {
+      if (wasFavorited) {
+        await api.unfavoriteSharedPrompt(promptId);
+      } else {
+        await api.favoriteSharedPrompt(promptId);
+      }
+    } catch {
+      setMarketPrompts(previousPrompts);
+      showToast(tCommon('failed'), 'error');
+    }
   };
 
   const currentLimit = filters.limit || 20;
@@ -293,6 +349,8 @@ export default function MarketPage() {
                         skill={skill}
                         onLike={handleLike}
                         isLiked={skill.is_liked}
+                        onFavorite={handleFavorite}
+                        isFavorited={skill.is_favorited}
                         onNavigate={handleNavigate}
                       />
                     ))}
@@ -382,6 +440,8 @@ export default function MarketPage() {
                         prompt={prompt}
                         onLike={handlePromptLike}
                         isLiked={prompt.is_liked}
+                        onFavorite={handlePromptFavorite}
+                        isFavorited={prompt.is_favorited}
                         onNavigate={handlePromptNavigate}
                       />
                     ))}

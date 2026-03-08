@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
-import { Heart, User, Clock, MessageSquare } from 'lucide-react';
+import { Heart, Star, User, Clock, MessageSquare } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import type { SharedSkill } from '@/types/market';
 
@@ -10,6 +10,8 @@ interface MarketSkillCardProps {
   skill: SharedSkill;
   onLike?: (id: string) => void;
   isLiked?: boolean;
+  onFavorite?: (id: string) => void;
+  isFavorited?: boolean;
   onNavigate?: (id: string) => void;
 }
 
@@ -17,6 +19,8 @@ function MarketSkillCardComponent({
   skill,
   onLike,
   isLiked,
+  onFavorite,
+  isFavorited,
   onNavigate,
 }: MarketSkillCardProps) {
   const t = useTranslations('market');
@@ -29,8 +33,16 @@ function MarketSkillCardComponent({
     }
   };
 
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onFavorite) {
+      onFavorite(skill.id);
+    }
+  };
+
   const currentLiked = isLiked ?? skill.is_liked ?? false;
   const currentLikeCount = skill.like_count;
+  const currentFavorited = isFavorited ?? skill.is_favorited ?? false;
 
   return (
     <Card
@@ -54,7 +66,20 @@ function MarketSkillCardComponent({
               )}
             </div>
           </div>
-          <div className="relative shrink-0 flex items-center">
+          <div className="relative shrink-0 flex items-center gap-1.5">
+            <button
+              onClick={handleFavoriteClick}
+              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
+                currentFavorited
+                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              }`}
+              title={currentFavorited ? t('unfavorite') : t('favorite')}
+            >
+              <Star
+                className={`h-3.5 w-3.5 ${currentFavorited ? 'fill-amber-600' : ''}`}
+              />
+            </button>
             <button
               onClick={handleLikeClick}
               className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${

@@ -181,8 +181,8 @@ export default function FavoritesPage() {
         onLogoutClick={() => setIsLogoutDialogOpen(true)}
       />
 
-      <div className="border-b bg-white dark:bg-gray-900">
-        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+      <div className="border-b bg-white dark:bg-gray-900 py-6 px-4 sm:px-6">
+        <div className="mx-auto max-w-7xl">
           <div className="flex items-center justify-between">
             <div>
               <h1 className="text-2xl font-bold text-gray-900 dark:text-white">

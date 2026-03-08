@@ -2,7 +2,7 @@
 
 import { memo } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
-import { Heart, User, Clock, MessageSquare, FileText, Tag } from 'lucide-react';
+import { Heart, Star, User, Clock, MessageSquare, FileText, Tag } from 'lucide-react';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import type { SharedPrompt } from '@/types/prompt-market';
 
@@ -10,6 +10,8 @@ interface MarketPromptCardProps {
   prompt: SharedPrompt;
   onLike?: (id: string) => void;
   isLiked?: boolean;
+  onFavorite?: (id: string) => void;
+  isFavorited?: boolean;
   onNavigate?: (id: string) => void;
 }
 
@@ -17,6 +19,8 @@ function MarketPromptCardComponent({
   prompt,
   onLike,
   isLiked,
+  onFavorite,
+  isFavorited,
   onNavigate,
 }: MarketPromptCardProps) {
   const t = useTranslations('market');
@@ -29,8 +33,16 @@ function MarketPromptCardComponent({
     }
   };
 
+  const handleFavoriteClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (onFavorite) {
+      onFavorite(prompt.id);
+    }
+  };
+
   const currentLiked = isLiked ?? prompt.is_liked ?? false;
   const currentLikeCount = prompt.like_count;
+  const currentFavorited = isFavorited ?? prompt.is_favorited ?? false;
 
   return (
     <Card
@@ -58,7 +70,20 @@ function MarketPromptCardComponent({
               )}
             </div>
           </div>
-          <div className="relative shrink-0 flex items-center">
+          <div className="relative shrink-0 flex items-center gap-1.5">
+            <button
+              onClick={handleFavoriteClick}
+              className={`flex items-center gap-1 rounded-full px-2 py-1 text-xs font-medium transition-colors ${
+                currentFavorited
+                  ? 'bg-amber-50 text-amber-600 hover:bg-amber-100'
+                  : 'bg-gray-50 text-gray-500 hover:bg-gray-100 hover:text-gray-700'
+              }`}
+              title={currentFavorited ? t('unfavorite') : t('favorite')}
+            >
+              <Star
+                className={`h-3.5 w-3.5 ${currentFavorited ? 'fill-amber-600' : ''}`}
+              />
+            </button>
             <button
               onClick={handleLikeClick}
               className={`flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium transition-colors ${

@@ -9,6 +9,7 @@ from src.domain.exceptions import ResourceConflictError, ResourceNotFoundError
 from src.domain.factories.skill_favorite_factory import SkillFavoriteFactory
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.repositories.user_repository import UserRepository
 
 
 class FavoriteRepository(Protocol):
@@ -31,6 +32,7 @@ async def handle_favorite_skill(
     shared_skill_repo: SharedSkillRepository,
     favorite_repo: FavoriteRepository,
     skill_repo: SkillRepository,
+    user_repo: UserRepository,
 ) -> SkillFavorite:
     shared_skill = await shared_skill_repo.find_by_id(shared_skill_id)
     if shared_skill is None or shared_skill.status != "active":
@@ -44,7 +46,11 @@ async def handle_favorite_skill(
     if shared_skill.skill_id is not None:
         skill = await skill_repo.get_by_id(shared_skill.skill_id)
 
-    favorite = SkillFavoriteFactory.create(user_id=user.id, shared_skill=shared_skill, skill=skill)
+    shared_by = await user_repo.get_by_id(shared_skill.user_id)
+
+    favorite = SkillFavoriteFactory.create(
+        user_id=user.id, shared_skill=shared_skill, skill=skill, shared_by=shared_by
+    )
     saved_favorite = await favorite_repo.save(favorite)
     await shared_skill_repo.increment_favorite_count(shared_skill_id)
     return saved_favorite

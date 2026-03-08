@@ -222,6 +222,7 @@ async def favorite_skill(
     shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
     favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
     skill_repo: Annotated[SkillRepository, Depends(get_skill_repo)],
+    user_repo: Annotated[UserRepository, Depends(get_user_repo)],
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> FavoriteResp:
     favorite = await handle_favorite_skill(
@@ -230,6 +231,7 @@ async def favorite_skill(
         shared_skill_repo,
         favorite_repo,
         skill_repo,
+        user_repo,
     )
     return FavoriteResp.from_domain(favorite)
 
