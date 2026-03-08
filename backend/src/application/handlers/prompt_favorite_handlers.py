@@ -40,7 +40,7 @@ async def handle_favorite_prompt(
     author = None
     if shared_prompt.prompt_id is not None:
         prompt = await prompt_repo.get_by_id(shared_prompt.prompt_id)
-        author = await user_repo.find_by_id(shared_prompt.user_id)
+        author = await user_repo.get_by_id(shared_prompt.user_id)
 
     if prompt is None or author is None:
         raise ResourceNotFoundError("Original prompt or author not found")
