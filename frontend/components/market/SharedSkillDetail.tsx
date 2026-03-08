@@ -210,12 +210,12 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
             <div className="flex justify-between items-start">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 mb-2">
-                  {skill.snapshot_name}
+                  {skill.name}
                 </h1>
                 <div className="flex items-center gap-4 text-sm text-gray-500 flex-wrap">
                   <span className="flex items-center gap-1">
                     <UserIcon className="w-4 h-4" />
-                    {skill.snapshot_author_name}
+                    {skill.author_name}
                   </span>
                   <span className="flex items-center gap-1">
                     <Clock className="w-4 h-4" />
@@ -261,8 +261,8 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
                 )}
               </CardHeader>
               <CardContent className="prose max-w-none text-gray-700">
-                {skill.snapshot_description ? (
-                  <div className="whitespace-pre-wrap">{skill.snapshot_description}</div>
+                {skill.description ? (
+                  <div className="whitespace-pre-wrap">{skill.description}</div>
                 ) : (
                   <p className="text-gray-400 italic">{tMarket('no_description')}</p>
                 )}

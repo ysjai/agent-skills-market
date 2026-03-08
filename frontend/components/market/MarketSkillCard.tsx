@@ -45,7 +45,7 @@ function MarketSkillCardComponent({
             </div>
             <div className="min-w-0 flex-1">
               <CardTitle className="truncate text-base font-semibold leading-tight text-gray-900 sm:text-lg">
-                {skill.snapshot_name}
+                {skill.name}
               </CardTitle>
               {skill.category && (
                 <div className="mt-1 text-xs font-medium text-indigo-600">
@@ -75,7 +75,7 @@ function MarketSkillCardComponent({
       
       <CardContent className="flex flex-1 flex-col pt-0">
         <CardDescription className="skill-description-truncate text-sm leading-relaxed flex-1 text-gray-600">
-          {skill.snapshot_description || <span className="italic opacity-70">No description provided</span>}
+          {skill.description || <span className="italic opacity-70">No description provided</span>}
         </CardDescription>
 
         {skill.share_message && (
@@ -88,7 +88,7 @@ function MarketSkillCardComponent({
         <div className="mt-4 flex items-center justify-between text-xs text-gray-500 border-t border-gray-100 pt-3">
           <div className="flex items-center gap-1.5 truncate">
             <User className="h-3.5 w-3.5 shrink-0" />
-            <span className="truncate">{skill.snapshot_author_name}</span>
+            <span className="truncate">{skill.author_name}</span>
           </div>
           <div className="flex items-center gap-1.5 shrink-0">
             <Clock className="h-3.5 w-3.5" />

@@ -22,9 +22,9 @@ export interface SharedSkill {
   like_count: number;
   favorite_count: number;
   status: "active" | "withdrawn";
-  snapshot_name: string;
-  snapshot_description: string | null;
-  snapshot_author_name: string;
+  name: string;
+  description: string | null;
+  author_name: string;
   created_at: string;
   updated_at: string;
   // For market listing responses with auth

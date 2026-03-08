@@ -30,9 +30,9 @@ const mockSkill = (id: string, name: string): SharedSkill => ({
   like_count: 0,
   favorite_count: 0,
   status: 'active',
-  snapshot_name: name,
-  snapshot_description: `${name} description`,
-  snapshot_author_name: 'tester',
+  name,
+  description: `${name} description`,
+  author_name: 'tester',
   created_at: '2024-01-01T00:00:00Z',
   updated_at: '2024-01-01T00:00:00Z',
 });
