@@ -112,6 +112,7 @@
   },
   "files": {
     "title": "技能",
+    "loading": "加载文件树中...",
     "newFile": "新建文件",
     "newFolder": "新建文件夹",
     "noFiles": "暂无文件",
