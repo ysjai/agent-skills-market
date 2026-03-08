@@ -74,6 +74,7 @@ interface MarkdownViewerProps {
   onDownload?: () => void;
   className?: string;
   height?: string;
+  blobUrl?: string;
 }
 
 type ViewMode = 'preview' | 'source';
@@ -86,6 +87,7 @@ export function MarkdownViewer({
   onDownload,
   className,
   height = '500px',
+  blobUrl,
 }: MarkdownViewerProps) {
   const [rawContent, setRawContent] = useState(initialContent);
   const [viewMode, setViewMode] = useState<ViewMode>('preview');
@@ -108,7 +110,8 @@ export function MarkdownViewer({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.getBlob(`/blobs/${id}`);
+      const url = blobUrl || `/blobs/${id}`;
+      const response = await api.getBlob(url);
       const text = await response.text();
       setRawContent(text);
     } catch (err) {

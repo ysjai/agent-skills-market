@@ -19,6 +19,7 @@ interface TextViewerProps {
   onDownload?: () => void;
   className?: string;
   height?: string;
+  blobUrl?: string;
 }
 
 export function TextViewer({
@@ -29,6 +30,7 @@ export function TextViewer({
   onDownload,
   className,
   height = '500px',
+  blobUrl,
 }: TextViewerProps) {
   const [content, setContent] = useState(initialContent);
   const [isLoading, setIsLoading] = useState(false);
@@ -47,7 +49,8 @@ export function TextViewer({
     setIsLoading(true);
     setError(null);
     try {
-      const response = await api.getBlob(`/blobs/${id}`);
+      const url = blobUrl || `/blobs/${id}`;
+      const response = await api.getBlob(url);
       const text = await response.text();
       setContent(text);
     } catch (err) {

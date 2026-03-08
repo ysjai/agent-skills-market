@@ -7,6 +7,7 @@ import { logger } from '@/lib/logger';
 
 export interface UseBlobContentOptions {
   blobId?: string;
+  blobUrl?: string;
   onError?: (error: string) => void;
 }
 
@@ -18,7 +19,7 @@ export interface UseBlobContentReturn {
 }
 
 export function useBlobContent(options: UseBlobContentOptions): UseBlobContentReturn {
-  const { blobId, onError } = options;
+  const { blobId, blobUrl, onError } = options;
   const [content, setContent] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -37,7 +38,8 @@ export function useBlobContent(options: UseBlobContentOptions): UseBlobContentRe
     setError(null);
 
     try {
-      const response = await api.getBlob(`/blobs/${id}`, {
+      const url = blobUrl || `/blobs/${id}`;
+      const response = await api.getBlob(url, {
         signal: controller.signal,
       });
       const text = await response.text();
@@ -55,7 +57,7 @@ export function useBlobContent(options: UseBlobContentOptions): UseBlobContentRe
     } finally {
       setIsLoading(false);
     }
-  }, [onError]);
+  }, [blobUrl, onError]);
 
   const reload = useCallback(() => {
     if (blobId) {
