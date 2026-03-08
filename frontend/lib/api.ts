@@ -315,6 +315,18 @@ class ApiClient {
     return this.get<import('@/types/market').SharedSkill>(`/market/skills/${id}`);
   }
 
+  async getMarketSkillTree(sharedSkillId: string): Promise<{
+    id: string;
+    entries: Array<{ path: string; blob_id: string | null; type: string }>;
+    created_at: string;
+  }> {
+    return this.get(`/market/skills/${sharedSkillId}/tree`);
+  }
+
+  async getMarketSkillBlob(sharedSkillId: string, blobId: string): Promise<Blob> {
+    return this.getBlob(`/market/skills/${sharedSkillId}/blobs/${blobId}`);
+  }
+
   async likeSharedSkill(id: string): Promise<void> {
     return this.post<void>(`/market/skills/${id}/like`);
   }

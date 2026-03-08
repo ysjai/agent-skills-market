@@ -10,9 +10,10 @@ interface PdfPreviewProps {
   blobId: string;
   fileName: string;
   height?: string;
+  blobUrl?: string;
 }
 
-export function PdfPreview({ blobId, fileName, height = '80vh' }: PdfPreviewProps) {
+export function PdfPreview({ blobId, fileName, height = '80vh', blobUrl }: PdfPreviewProps) {
   const [pdfUrl, setPdfUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -26,7 +27,8 @@ export function PdfPreview({ blobId, fileName, height = '80vh' }: PdfPreviewProp
       setError(null);
 
       try {
-        const blob = await api.getBlob(`/blobs/${blobId}`, {
+        const url = blobUrl || `/blobs/${blobId}`;
+        const blob = await api.getBlob(url, {
           signal: controller.signal,
           params: { content_type: 'application/pdf' },
         });
@@ -52,7 +54,7 @@ export function PdfPreview({ blobId, fileName, height = '80vh' }: PdfPreviewProp
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [blobId]);
+  }, [blobId, blobUrl]);
 
   const handleIframeLoad = () => {
     setLoading(false);

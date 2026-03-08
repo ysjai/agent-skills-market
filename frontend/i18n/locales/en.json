@@ -112,6 +112,7 @@
   },
   "files": {
     "title": "Skill",
+    "loading": "Loading file tree...",
     "newFile": "New File",
     "newFolder": "New Folder",
     "noFiles": "No files yet",

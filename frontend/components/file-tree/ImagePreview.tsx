@@ -11,12 +11,14 @@ interface ImagePreviewProps {
   blobId: string;
   fileName: string;
   height?: string;
+  blobUrl?: string;
 }
 
 export function ImagePreview({
   blobId,
   fileName,
   height = '500px',
+  blobUrl,
 }: ImagePreviewProps) {
   const [imageUrl, setImageUrl] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
@@ -28,7 +30,8 @@ export function ImagePreview({
 
     const loadImage = async () => {
       try {
-        const blob = await api.getBlob(`/blobs/${blobId}`, {
+        const url = blobUrl || `/blobs/${blobId}`;
+        const blob = await api.getBlob(url, {
           signal: controller.signal,
         });
         objectUrl = URL.createObjectURL(blob);
@@ -52,7 +55,7 @@ export function ImagePreview({
         URL.revokeObjectURL(objectUrl);
       }
     };
-  }, [blobId]);
+  }, [blobId, blobUrl]);
 
   const handleImageLoad = () => {
     setLoading(false);
