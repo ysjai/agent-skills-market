@@ -1,5 +1,5 @@
 from uuid import UUID
-from backend.src.domain.aggregates.shared_prompt import SharedPrompt
+from src.domain.aggregates.shared_prompt import SharedPrompt
 
 
 class SharedPromptFactory:

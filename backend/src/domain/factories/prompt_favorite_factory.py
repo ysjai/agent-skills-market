@@ -1,6 +1,6 @@
 from uuid import UUID
-from backend.src.domain.aggregates.prompt_favorite import PromptFavorite
-from backend.src.domain.aggregates.prompt import Prompt
+from src.domain.aggregates.prompt_favorite import PromptFavorite
+from src.domain.aggregates.prompt import Prompt
 
 
 class PromptFavoriteFactory:

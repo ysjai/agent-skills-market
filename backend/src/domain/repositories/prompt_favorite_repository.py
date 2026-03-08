@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
-from backend.src.domain.aggregates.prompt_favorite import PromptFavorite
+from src.domain.aggregates.prompt_favorite import PromptFavorite
 
 
 class PromptFavoriteRepository(ABC):

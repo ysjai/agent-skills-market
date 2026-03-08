@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
-from backend.src.domain.aggregates.prompt_favorite import PromptFavorite
-from backend.src.domain.factories.prompt_favorite_factory import PromptFavoriteFactory
+from src.domain.aggregates.prompt_favorite import PromptFavorite
+from src.domain.factories.prompt_favorite_factory import PromptFavoriteFactory
 from unittest.mock import MagicMock
 
 

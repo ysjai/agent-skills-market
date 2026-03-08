@@ -1,7 +1,7 @@
 import pytest
 from uuid import uuid4
-from backend.src.domain.aggregates.shared_prompt import SharedPrompt
-from backend.src.domain.factories.shared_prompt_factory import SharedPromptFactory
+from src.domain.aggregates.shared_prompt import SharedPrompt
+from src.domain.factories.shared_prompt_factory import SharedPromptFactory
 
 
 def test_create_shared_prompt():

@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from uuid import UUID
-from backend.src.domain.aggregates.shared_prompt import SharedPrompt
-from backend.src.domain.entities.prompt_like import PromptLike
+from src.domain.aggregates.shared_prompt import SharedPrompt
+from src.domain.entities.prompt_like import PromptLike
 
 
 class SharedPromptRepository(ABC):
