@@ -80,7 +80,18 @@ export function useMarketFileTree({ sharedSkillId }: UseMarketFileTreeOptions) {
       .getMarketSkillTree(sharedSkillId)
       .then((data) => {
         if (!cancelled) {
-          setNodes(buildTree(data.entries));
+          const tree = buildTree(data.entries);
+          setNodes(tree);
+
+          // Auto-select SKILL.md if it exists
+          const skillEntry = data.entries.find(
+            (e: { path: string; type: string }) =>
+              e.type === 'blob' && e.path.toUpperCase() === 'SKILL.MD'
+          );
+          if (skillEntry) {
+            setSelectedPath(skillEntry.path);
+            setSelectedBlobId(skillEntry.blob_id || '');
+          }
         }
       })
       .catch((err) => {
