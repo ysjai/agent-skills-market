@@ -13,6 +13,8 @@ from src.domain.repositories.blob_repository import BlobRepository
 from src.domain.repositories.category_repository import CategoryRepository
 from src.domain.repositories.prompt_repository import PromptRepository
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
+from src.domain.repositories.shared_prompt_repository import SharedPromptRepository
+from src.domain.repositories.prompt_favorite_repository import PromptFavoriteRepository
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
 from src.domain.repositories.user_repository import UserRepository
@@ -20,6 +22,12 @@ from src.infra.persistence.db.session import get_db
 from src.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
 from src.infra.persistence.repositories.sql_category_repository import SqlCategoryRepository
 from src.infra.persistence.repositories.sql_prompt_repository import SqlPromptRepository
+from src.infra.persistence.repositories.sql_shared_prompt_repository import (
+    SqlSharedPromptRepository,
+)
+from src.infra.persistence.repositories.sql_prompt_favorite_repository import (
+    SqlPromptFavoriteRepository,
+)
 from src.infra.persistence.repositories.sql_shared_skill_repository import SqlSharedSkillRepository
 from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
@@ -85,3 +93,15 @@ async def get_skill_favorite_repo(
         getattr(module, "SqlSkillFavoriteRepository"),
     )
     return repository_class(db)
+
+
+async def get_shared_prompt_repo(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> SharedPromptRepository:
+    return SqlSharedPromptRepository(db)
+
+
+async def get_prompt_favorite_repo(
+    db: Annotated[AsyncSession, Depends(get_db)],
+) -> PromptFavoriteRepository:
+    return SqlPromptFavoriteRepository(db)
