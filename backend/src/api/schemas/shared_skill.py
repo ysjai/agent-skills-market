@@ -29,9 +29,6 @@ class ShareSkillResp(BaseModel):
     like_count: int
     favorite_count: int
     status: str
-    snapshot_name: str
-    snapshot_description: str | None
-    snapshot_author_name: str
     created_at: datetime
     updated_at: datetime
 
@@ -45,9 +42,6 @@ class ShareSkillResp(BaseModel):
             like_count=shared_skill.like_count,
             favorite_count=shared_skill.favorite_count,
             status=shared_skill.status,
-            snapshot_name=shared_skill.snapshot_name,
-            snapshot_description=shared_skill.snapshot_description,
-            snapshot_author_name=shared_skill.snapshot_author_name,
             created_at=shared_skill.created_at,
             updated_at=shared_skill.updated_at,
         )
@@ -71,9 +65,6 @@ class SharedSkillDetailResp(ShareSkillResp):
             like_count=base.like_count,
             favorite_count=base.favorite_count,
             status=base.status,
-            snapshot_name=base.snapshot_name,
-            snapshot_description=base.snapshot_description,
-            snapshot_author_name=base.snapshot_author_name,
             created_at=base.created_at,
             updated_at=base.updated_at,
             category=CategoryResp.from_domain(category),
@@ -91,9 +82,9 @@ class MarketSkillResp(BaseModel):
     like_count: int
     favorite_count: int
     status: str
-    snapshot_name: str
-    snapshot_description: str | None
-    snapshot_author_name: str
+    name: str  # live data from Skill
+    description: str | None  # live data from Skill
+    author_name: str  # live data from User
     is_liked: bool = False
     is_favorited: bool = False
     created_at: datetime
@@ -103,6 +94,9 @@ class MarketSkillResp(BaseModel):
     def from_domain(
         cls,
         shared_skill: SharedSkill,
+        name: str = "",
+        description: str | None = None,
+        author_name: str = "",
         is_liked: bool = False,
         is_favorited: bool = False,
     ) -> MarketSkillResp:
@@ -115,9 +109,9 @@ class MarketSkillResp(BaseModel):
             like_count=shared_skill.like_count,
             favorite_count=shared_skill.favorite_count,
             status=shared_skill.status,
-            snapshot_name=shared_skill.snapshot_name,
-            snapshot_description=shared_skill.snapshot_description,
-            snapshot_author_name=shared_skill.snapshot_author_name,
+            name=name,
+            description=description,
+            author_name=author_name,
             is_liked=is_liked,
             is_favorited=is_favorited,
             created_at=shared_skill.created_at,

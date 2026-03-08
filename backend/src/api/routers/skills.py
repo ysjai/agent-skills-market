@@ -6,7 +6,14 @@ from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import StreamingResponse
 
 from src.api.dependencies.auth import get_current_user
-from src.api.dependencies.repositories import get_blob_repo, get_skill_repo, get_tree_repo
+from src.api.dependencies.repositories import (
+    SkillFavoriteRepository,
+    get_blob_repo,
+    get_shared_skill_repo,
+    get_skill_favorite_repo,
+    get_skill_repo,
+    get_tree_repo,
+)
 from src.api.schemas.skill import (
     CreateSkillReq,
     CreateSkillResp,
@@ -26,6 +33,7 @@ from src.application.handlers.list_skills_handler import handle_list_skills
 from src.application.handlers.update_skill_handler import handle_update_skill
 from src.domain.aggregates.user import User
 from src.domain.repositories.blob_repository import BlobRepository
+from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
 
@@ -150,6 +158,8 @@ async def delete_skill(
     skill_repo: SkillRepository = Depends(get_skill_repo),
     tree_repo: TreeRepository = Depends(get_tree_repo),
     blob_repo: BlobRepository = Depends(get_blob_repo),
+    shared_skill_repo: SharedSkillRepository = Depends(get_shared_skill_repo),
+    favorite_repo: SkillFavoriteRepository = Depends(get_skill_favorite_repo),
     current_user: User = Depends(get_current_user),
 ) -> None:
     await handle_delete_skill(
@@ -158,6 +168,8 @@ async def delete_skill(
         skill_repo=skill_repo,
         tree_repo=tree_repo,
         blob_repo=blob_repo,
+        shared_skill_repo=shared_skill_repo,
+        favorite_repo=favorite_repo,
     )
 
 

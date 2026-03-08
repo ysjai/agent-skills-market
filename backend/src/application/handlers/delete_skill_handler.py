@@ -1,9 +1,20 @@
+from __future__ import annotations
+
+from typing import Protocol
 from uuid import UUID
 
+from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.exceptions import ForbiddenError, ResourceNotFoundError
 from src.domain.repositories.blob_repository import BlobRepository
+from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
+
+
+class SkillFavoriteRepository(Protocol):
+    async def update_snapshot_status_batch(
+        self, shared_skill_id: UUID, new_status: str
+    ) -> None: ...
 
 
 async def handle_delete_skill(
@@ -12,12 +23,22 @@ async def handle_delete_skill(
     skill_repo: SkillRepository,
     tree_repo: TreeRepository,
     blob_repo: BlobRepository,
+    shared_skill_repo: SharedSkillRepository | None = None,
+    favorite_repo: SkillFavoriteRepository | None = None,
 ) -> None:
     skill = await skill_repo.get_by_id(skill_id)
     if not skill:
         raise ResourceNotFoundError()
     if skill.user_id != user_id:
         raise ForbiddenError("Not authorized to delete this skill")
+
+    # Cascade: mark associated SharedSkills as withdrawn and update favorites
+    if shared_skill_repo and favorite_repo:
+        shared_skills = await shared_skill_repo.find_all_by_skill_id(skill.id)
+        for ss in shared_skills:
+            ss.mark_skill_deleted()
+            await shared_skill_repo.save(ss)
+            await favorite_repo.update_snapshot_status_batch(ss.id, "skill_deleted")
 
     if skill.tree_id:
         tree = await tree_repo.get_by_id(skill.tree_id)

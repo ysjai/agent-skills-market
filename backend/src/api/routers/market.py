@@ -16,6 +16,7 @@ from src.api.dependencies.repositories import (
     get_skill_favorite_repo,
     get_skill_repo,
     get_tree_repo,
+    get_user_repo,
 )
 from src.api.schemas.shared_skill import (
     FavoriteResp,
@@ -33,13 +34,33 @@ from src.domain.repositories.shared_skill_repository import SharedSkillRepositor
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
 from src.domain.repositories.blob_repository import BlobRepository
+from src.domain.repositories.user_repository import UserRepository
 
 MarketListHandler = Callable[
-    [str | None, UUID | None, str, int, int, User | None, SharedSkillRepository, object | None],
+    [
+        str | None,
+        UUID | None,
+        str,
+        int,
+        int,
+        User | None,
+        SharedSkillRepository,
+        object | None,
+        SkillRepository | None,
+        UserRepository | None,
+    ],
     Awaitable[MarketSkillListData],
 ]
 MarketDetailHandler = Callable[
-    [UUID, User | None, SharedSkillRepository, object | None], Awaitable[MarketSkillData]
+    [
+        UUID,
+        User | None,
+        SharedSkillRepository,
+        object | None,
+        SkillRepository | None,
+        UserRepository | None,
+    ],
+    Awaitable[MarketSkillData],
 ]
 LikeHandler = Callable[[UUID, User, SharedSkillRepository], Awaitable[SharedSkill]]
 FavoriteHandler = Callable[
@@ -81,9 +102,9 @@ def _to_market_skill_resp(data: MarketSkillData) -> MarketSkillResp:
         like_count=data.like_count,
         favorite_count=data.favorite_count,
         status=data.status,
-        snapshot_name=data.snapshot_name,
-        snapshot_description=data.snapshot_description,
-        snapshot_author_name=data.snapshot_author_name,
+        name=data.name,
+        description=data.description,
+        author_name=data.author_name,
         is_liked=data.is_liked,
         is_favorited=data.is_favorited,
         created_at=data.created_at,
@@ -95,6 +116,8 @@ def _to_market_skill_resp(data: MarketSkillData) -> MarketSkillResp:
 async def list_market_skills(
     shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
     favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
+    skill_repo: Annotated[SkillRepository, Depends(get_skill_repo)],
+    user_repo: Annotated[UserRepository, Depends(get_user_repo)],
     current_user: Annotated[User | None, Depends(get_optional_current_user)],
     keyword: Annotated[str | None, Query()] = None,
     category_id: Annotated[UUID | None, Query()] = None,
@@ -111,6 +134,8 @@ async def list_market_skills(
         current_user,
         shared_skill_repo,
         favorite_repo,
+        skill_repo,
+        user_repo,
     )
     return MarketSkillListResp(
         items=[_to_market_skill_resp(item) for item in data.items],
@@ -123,6 +148,8 @@ async def get_market_skill_detail(
     shared_skill_id: UUID,
     shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
     favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
+    skill_repo: Annotated[SkillRepository, Depends(get_skill_repo)],
+    user_repo: Annotated[UserRepository, Depends(get_user_repo)],
     current_user: Annotated[User | None, Depends(get_optional_current_user)],
 ) -> MarketSkillResp:
     data = await handle_get_market_skill_detail(
@@ -130,6 +157,8 @@ async def get_market_skill_detail(
         current_user,
         shared_skill_repo,
         favorite_repo,
+        skill_repo,
+        user_repo,
     )
     return _to_market_skill_resp(data)
 
@@ -193,7 +222,9 @@ async def unfavorite_skill(
     return {"message": "ok"}
 
 
-@market_router.get("/favorites", response_model=ListFavoritesResp, status_code=status.HTTP_200_OK)
+@market_router.get(
+    "/favorites/skills", response_model=ListFavoritesResp, status_code=status.HTTP_200_OK
+)
 async def list_favorites(
     favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
     current_user: Annotated[User, Depends(get_current_user)],

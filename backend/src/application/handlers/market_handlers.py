@@ -9,6 +9,8 @@ from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.aggregates.user import User
 from src.domain.exceptions import ResourceNotFoundError
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
+from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.repositories.user_repository import UserRepository
 
 
 @dataclass
@@ -21,9 +23,9 @@ class MarketSkillData:
     like_count: int
     favorite_count: int
     status: str
-    snapshot_name: str
-    snapshot_description: str | None
-    snapshot_author_name: str
+    name: str
+    description: str | None
+    author_name: str
     is_liked: bool = False
     is_favorited: bool = False
     created_at: datetime = field(default_factory=lambda: datetime.now(timezone.utc))
@@ -51,6 +53,8 @@ async def handle_list_market_skills(
     current_user: User | None,
     shared_skill_repo: SharedSkillRepository,
     favorite_repo: SkillFavoriteRepository | None = None,
+    skill_repo: SkillRepository | None = None,
+    user_repo: UserRepository | None = None,
 ) -> MarketSkillListData:
     shared_skills = await shared_skill_repo.find_active_by_filters(
         keyword=keyword,
@@ -71,6 +75,8 @@ async def handle_list_market_skills(
                 current_user=current_user,
                 shared_skill_repo=shared_skill_repo,
                 favorite_repo=favorite_repo,
+                skill_repo=skill_repo,
+                user_repo=user_repo,
             )
         )
 
@@ -82,6 +88,8 @@ async def handle_get_market_skill_detail(
     current_user: User | None,
     shared_skill_repo: SharedSkillRepository,
     favorite_repo: SkillFavoriteRepository | None = None,
+    skill_repo: SkillRepository | None = None,
+    user_repo: UserRepository | None = None,
 ) -> MarketSkillData:
     shared_skill = await shared_skill_repo.find_by_id(shared_skill_id)
     if shared_skill is None:
@@ -92,6 +100,8 @@ async def handle_get_market_skill_detail(
         current_user=current_user,
         shared_skill_repo=shared_skill_repo,
         favorite_repo=favorite_repo,
+        skill_repo=skill_repo,
+        user_repo=user_repo,
     )
 
 
@@ -100,9 +110,27 @@ async def _build_market_skill_resp(
     current_user: User | None,
     shared_skill_repo: SharedSkillRepository,
     favorite_repo: SkillFavoriteRepository | None,
+    skill_repo: SkillRepository | None = None,
+    user_repo: UserRepository | None = None,
 ) -> MarketSkillData:
+    # Resolve live data from Skill and User
+    name = ""
+    description: str | None = None
+    author_name = ""
+
+    if shared_skill.skill_id and skill_repo:
+        skill = await skill_repo.get_by_id(shared_skill.skill_id)
+        if skill:
+            name = skill.name
+            description = skill.description
+
+    if user_repo:
+        user_obj = await user_repo.get_by_id(shared_skill.user_id)
+        if user_obj:
+            author_name = user_obj.username
+
     if current_user is None:
-        return _make_market_skill_data(shared_skill)
+        return _make_market_skill_data(shared_skill, name, description, author_name)
 
     like = await shared_skill_repo.find_like(current_user.id, shared_skill.id)
     is_favorited = await _find_favorite(
@@ -112,6 +140,9 @@ async def _build_market_skill_resp(
     )
     return _make_market_skill_data(
         shared_skill,
+        name,
+        description,
+        author_name,
         is_liked=like is not None,
         is_favorited=is_favorited,
     )
@@ -119,6 +150,9 @@ async def _build_market_skill_resp(
 
 def _make_market_skill_data(
     shared_skill: SharedSkill,
+    name: str = "",
+    description: str | None = None,
+    author_name: str = "",
     is_liked: bool = False,
     is_favorited: bool = False,
 ) -> MarketSkillData:
@@ -131,9 +165,9 @@ def _make_market_skill_data(
         like_count=shared_skill.like_count,
         favorite_count=shared_skill.favorite_count,
         status=shared_skill.status,
-        snapshot_name=shared_skill.snapshot_name,
-        snapshot_description=shared_skill.snapshot_description,
-        snapshot_author_name=shared_skill.snapshot_author_name,
+        name=name,
+        description=description,
+        author_name=author_name,
         is_liked=is_liked,
         is_favorited=is_favorited,
         created_at=shared_skill.created_at,
