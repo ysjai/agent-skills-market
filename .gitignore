@@ -63,3 +63,6 @@ Thumbs.db
 
 # TypeScript build cache
 frontend/tsconfig.tsbuildinfo
+
+# Git worktrees
+.worktrees/
