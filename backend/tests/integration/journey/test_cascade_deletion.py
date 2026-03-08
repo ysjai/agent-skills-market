@@ -18,6 +18,7 @@ from src.infra.persistence.models.tree_model import TreeModel
 from src.main import app
 from tests.conftest import create_override_get_db
 
+
 class TestCascadeDeletion:
     """测试Skill删除时的级联行为"""
 
@@ -71,16 +72,12 @@ class TestCascadeDeletion:
 
     async def _get_tree(self, db_session: AsyncSession, tree_id: UUID) -> TreeModel | None:
         """查询Tree是否存在"""
-        result = await db_session.execute(
-            select(TreeModel).where(TreeModel.id == tree_id)
-        )
+        result = await db_session.execute(select(TreeModel).where(TreeModel.id == tree_id))
         return result.scalar_one_or_none()
 
     async def _get_blob(self, db_session: AsyncSession, blob_id: UUID) -> BlobModel | None:
         """查询Blob是否存在"""
-        result = await db_session.execute(
-            select(BlobModel).where(BlobModel.id == blob_id)
-        )
+        result = await db_session.execute(select(BlobModel).where(BlobModel.id == blob_id))
         return result.scalar_one_or_none()
 
     async def _get_blob_ref_count(self, db_session: AsyncSession, blob_id: UUID) -> int:
@@ -120,7 +117,6 @@ class TestCascadeDeletion:
         # Then: Tree应该被删除
         tree = await self._get_tree(db_session, UUID(tree_id))
         assert tree is None, f"Tree {tree_id} 应该被级联删除"
-
 
     @pytest.mark.asyncio
     async def test_blob_ref_count_decreases_after_skill_deletion(
@@ -175,7 +171,7 @@ class TestCascadeDeletion:
         if blob is not None:
             new_ref_count = await self._get_blob_ref_count(db_session, UUID(blob_id))
         else:
-
+            pass  # Blob was already cleaned up
 
     @pytest.mark.asyncio
     async def test_shared_blob_ref_count_accuracy(
@@ -247,8 +243,9 @@ class TestCascadeDeletion:
         blob = await self._get_blob(db_session, UUID(shared_blob_id))
         assert blob is not None, "共享Blob应该仍然存在"
         ref_count_after_skill1 = await self._get_blob_ref_count(db_session, UUID(shared_blob_id))
-        assert ref_count_after_skill1 == initial_ref_count - 1, \
+        assert ref_count_after_skill1 == initial_ref_count - 1, (
             f"引用计数应该减少1，从{initial_ref_count}变为{initial_ref_count - 1}，实际为{ref_count_after_skill1}"
+        )
 
         # Tree 1应该被删除
         tree1 = await self._get_tree(db_session, UUID(tree1_id))
@@ -265,4 +262,3 @@ class TestCascadeDeletion:
         # Tree 2应该也被删除
         tree2 = await self._get_tree(db_session, UUID(tree2_id))
         assert tree2 is None, "Tree 2应该被删除"
-
