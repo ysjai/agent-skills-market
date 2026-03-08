@@ -13,6 +13,7 @@ from src.api.dependencies.repositories import (
     get_shared_skill_repo,
     get_skill_favorite_repo,
     get_skill_repo,
+    get_tree_repo,
 )
 from src.api.schemas.shared_skill import (
     FavoriteResp,
@@ -21,12 +22,14 @@ from src.api.schemas.shared_skill import (
     MarketSkillListResp,
     MarketSkillResp,
 )
+from src.api.schemas.tree import GetTreeResp
 from src.application.handlers.market_handlers import MarketSkillData, MarketSkillListData
 from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.aggregates.skill_favorite import SkillFavorite
 from src.domain.aggregates.user import User
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
+from src.domain.repositories.tree_repository import TreeRepository
 
 MarketListHandler = Callable[
     [str | None, UUID | None, str, int, int, User | None, SharedSkillRepository, object | None],
@@ -47,6 +50,7 @@ ListFavoritesHandler = Callable[
 _market_handlers = import_module("src.application.handlers.market_handlers")
 _like_handlers = import_module("src.application.handlers.like_handlers")
 _favorite_handlers = import_module("src.application.handlers.favorite_handlers")
+_market_tree_handler = import_module("src.application.handlers.get_market_skill_tree_handler")
 
 handle_list_market_skills = cast(MarketListHandler, _market_handlers.handle_list_market_skills)
 handle_get_market_skill_detail = cast(
@@ -57,6 +61,7 @@ handle_unlike_skill = cast(LikeHandler, _like_handlers.handle_unlike_skill)
 handle_favorite_skill = cast(FavoriteHandler, _favorite_handlers.handle_favorite_skill)
 handle_unfavorite_skill = cast(UnfavoriteHandler, _favorite_handlers.handle_unfavorite_skill)
 handle_list_favorites = cast(ListFavoritesHandler, _favorite_handlers.handle_list_favorites)
+handle_get_market_skill_tree = _market_tree_handler.handle_get_market_skill_tree
 
 market_router = APIRouter(tags=["market"])
 
@@ -195,6 +200,26 @@ async def list_favorites(
         items=[FavoriteResp.from_domain(favorite) for favorite in favorites],
         total=total,
     )
+
+
+@market_router.get(
+    "/market/skills/{shared_skill_id}/tree",
+    response_model=GetTreeResp,
+    status_code=status.HTTP_200_OK,
+)
+async def get_market_skill_tree(
+    shared_skill_id: UUID,
+    shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
+    skill_repo: Annotated[SkillRepository, Depends(get_skill_repo)],
+    tree_repo: Annotated[TreeRepository, Depends(get_tree_repo)],
+) -> GetTreeResp:
+    tree = await handle_get_market_skill_tree(
+        shared_skill_id=shared_skill_id,
+        shared_skill_repo=shared_skill_repo,
+        skill_repo=skill_repo,
+        tree_repo=tree_repo,
+    )
+    return GetTreeResp.from_domain(tree)
 
 
 router = market_router
