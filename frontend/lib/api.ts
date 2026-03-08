@@ -421,6 +421,18 @@ class ApiClient {
     return response.text();
   }
 
+  async getMySharedPrompts(skip: number = 0, limit: number = 100): Promise<import('@/types/prompt-market').SharedPromptListResponse> {
+    try {
+      return await this.get<import('@/types/prompt-market').SharedPromptListResponse>('/market/prompts', {
+        skip: String(skip),
+        limit: String(limit),
+        my_only: 'true',
+      });
+    } catch {
+      return { items: [], total: 0 };
+    }
+  }
+
   async sharePrompt(promptId: string, shareMessage?: string): Promise<import('@/types/prompt-market').SharedPrompt> {
     return this.post<import('@/types/prompt-market').SharedPrompt>(`/prompts/${promptId}/share`, shareMessage ? { share_message: shareMessage } : undefined);
   }

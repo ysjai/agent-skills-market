@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Search, Plus, LayoutTemplate, Trash2, Download, Upload } from 'lucide-react';
+import { Search, Plus, LayoutTemplate, Trash2, Download, Upload, Globe, GlobeLock } from 'lucide-react';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -14,9 +14,12 @@ interface PromptListProps {
   onImportClick?: () => void;
   onExportClick?: (promptId: string) => void;
   onDeleteClick?: (promptId: string) => void;
+  onShareClick?: (promptId: string) => void;
+  onUnshareClick?: (promptId: string) => void;
+  sharedSet?: Set<string>;
 }
 
-export function PromptList({ onImportClick, onExportClick, onDeleteClick }: PromptListProps) {
+export function PromptList({ onImportClick, onExportClick, onDeleteClick, onShareClick, onUnshareClick, sharedSet }: PromptListProps) {
   const t = useTranslations('prompts');
   const [isCreating, setIsCreating] = useState(false);
 
@@ -131,6 +134,33 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick }: Prom
                         >
                           <Download className="h-3.5 w-3.5" />
                         </span>
+                      )}
+                      {sharedSet?.has(prompt.id) ? (
+                        onUnshareClick && (
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => { e.stopPropagation(); onUnshareClick(prompt.id); }}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onUnshareClick(prompt.id); } }}
+                            className="p-0.5 rounded hover:bg-orange-100 text-green-600 hover:text-orange-600 cursor-pointer"
+                            title={t('unshare')}
+                          >
+                            <Globe className="h-3.5 w-3.5" />
+                          </span>
+                        )
+                      ) : (
+                        onShareClick && (
+                          <span
+                            role="button"
+                            tabIndex={0}
+                            onClick={(e) => { e.stopPropagation(); onShareClick(prompt.id); }}
+                            onKeyDown={(e) => { if (e.key === 'Enter') { e.stopPropagation(); onShareClick(prompt.id); } }}
+                            className="p-0.5 rounded hover:bg-slate-300 text-slate-500 hover:text-slate-800 cursor-pointer"
+                            title={t('share')}
+                          >
+                            <GlobeLock className="h-3.5 w-3.5" />
+                          </span>
+                        )
                       )}
                       {onDeleteClick && (
                         <span

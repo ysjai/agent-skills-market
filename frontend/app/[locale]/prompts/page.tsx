@@ -8,8 +8,10 @@ import { PromptEditor } from '@/components/prompts/PromptEditor';
 import { ImportDialog } from '@/components/prompts/ImportDialog';
 import { ExportDialog } from '@/components/prompts/ExportDialog';
 import { DeletePromptDialog } from '@/components/prompts/DeletePromptDialog';
+import { SharePromptDialog } from '@/components/prompts/SharePromptDialog';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
+import { useToast } from '@/components/ui/Toast';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { api } from '@/lib/api';
 import { getCurrentUser, logout } from '@/app/api/auth';
@@ -20,6 +22,7 @@ export default function PromptsPage() {
   const t = useTranslations('prompts');
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
+  const { showToast } = useToast();
   const [isMounted, setIsMounted] = useState(false);
   const [showImport, setShowImport] = useState(false);
   const [exportContent, setExportContent] = useState('');
@@ -29,6 +32,9 @@ export default function PromptsPage() {
   const [user, setUser] = useState<User | null>(null);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
   const [isLogoutDialogOpen, setIsLogoutDialogOpen] = useState(false);
+  const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
+  const [sharePromptId, setSharePromptId] = useState<string>('');
+  const [sharedSet, setSharedSet] = useState<Set<string>>(new Set());
   const {
     isLoading,
     setIsLoading,
@@ -53,8 +59,19 @@ export default function PromptsPage() {
     setIsLoading(true);
     setErrorMessage(null);
     try {
-      const data = await api.get<PromptListResponse>('/prompts');
+      const [data, sharedData] = await Promise.all([
+        api.get<PromptListResponse>('/prompts'),
+        api.getMySharedPrompts(0, 100).catch(() => ({ items: [], total: 0 })),
+      ]);
       setPrompts(data.items);
+
+      const newSharedSet = new Set<string>();
+      sharedData.items.forEach(item => {
+        if (item.prompt_id) {
+          newSharedSet.add(item.prompt_id);
+        }
+      });
+      setSharedSet(newSharedSet);
     } catch (error: unknown) {
       if (error instanceof Error && error.message.includes('404')) {
         setPrompts([]);
@@ -135,6 +152,31 @@ export default function PromptsPage() {
     }
   }, [deletePromptId, removePrompt, selectedPrompt, setSelectedPrompt]);
 
+  const handleShareClick = useCallback((promptId: string) => {
+    setSharePromptId(promptId);
+    setIsShareDialogOpen(true);
+  }, []);
+
+  const handleUnshareClick = useCallback(async (promptId: string) => {
+    try {
+      await api.unsharePrompt(promptId);
+      setSharedSet(prev => {
+        const next = new Set(prev);
+        next.delete(promptId);
+        return next;
+      });
+      showToast(t('unshare_success'), 'success');
+    } catch {
+      showToast(tCommon('failed'), 'error');
+    }
+  }, [showToast, t, tCommon]);
+
+  const handleShareSuccess = useCallback(() => {
+    showToast(t('share_success'), 'success');
+    loadPrompts();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [showToast, t]);
+
   return (
     <div className={`flex h-screen flex-col bg-gray-50 transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
       <AppHeader
@@ -165,6 +207,9 @@ export default function PromptsPage() {
             onImportClick={() => setShowImport(true)}
             onExportClick={handleExport}
             onDeleteClick={handleDelete}
+            onShareClick={handleShareClick}
+            onUnshareClick={handleUnshareClick}
+            sharedSet={sharedSet}
           />
           <PromptEditor />
         </div>
@@ -188,6 +233,13 @@ export default function PromptsPage() {
         onClose={() => setDeletePromptId(null)}
         onConfirm={confirmDelete}
         isLoading={isDeleting}
+      />
+
+      <SharePromptDialog
+        open={isShareDialogOpen}
+        onClose={() => setIsShareDialogOpen(false)}
+        promptId={sharePromptId}
+        onSuccess={handleShareSuccess}
       />
 
       <Dialog
