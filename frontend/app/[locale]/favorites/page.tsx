@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { Bookmark, AlertTriangle, ExternalLink, BookmarkMinus, FileText, RefreshCw } from 'lucide-react';
+import { Bookmark, Star, AlertTriangle, ExternalLink, BookmarkMinus, FileText, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
 import { Dialog } from '@/components/ui/Dialog';
@@ -181,16 +181,16 @@ export default function FavoritesPage() {
         onLogoutClick={() => setIsLogoutDialogOpen(true)}
       />
 
-      <div className="border-b bg-white dark:bg-gray-900 py-6 px-4 sm:px-6">
+      <div className="bg-white border-b border-gray-200 py-8 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between">
-            <div>
-              <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center gap-3">
+              <div className="bg-amber-100 p-2 rounded-lg">
+                <Star className="h-6 w-6 text-amber-600" />
+              </div>
+              <h1 className="text-2xl font-bold text-gray-900 dark:text-white sm:text-3xl">
                 {t('title')}
               </h1>
-              <p className="mt-1 text-sm text-gray-500 dark:text-gray-400">
-                {t('subtitle')}
-              </p>
             </div>
               <Button
                 variant="outline"
@@ -199,6 +199,9 @@ export default function FavoritesPage() {
               {t('browse_market')}
             </Button>
           </div>
+          <p className="text-gray-500 dark:text-gray-400 mt-1">
+            {t('subtitle')}
+          </p>
           {/* Tab Switch */}
           <div className="mt-4 flex gap-1 bg-gray-100 dark:bg-gray-800 rounded-lg p-1 w-fit">
             <button
