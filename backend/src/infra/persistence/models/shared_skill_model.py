@@ -54,9 +54,6 @@ class SharedSkillModel(Base):
         server_default=text("0"),
     )
     status: Mapped[str] = mapped_column(String(20), nullable=False, server_default=text("'active'"))
-    snapshot_name: Mapped[str] = mapped_column(String(255), nullable=False)
-    snapshot_description: Mapped[str | None] = mapped_column(Text, nullable=True)
-    snapshot_author_name: Mapped[str] = mapped_column(String(255), nullable=False)
     created_at: Mapped[datetime] = mapped_column(
         DateTime(timezone=True),
         server_default=text("NOW()"),
@@ -81,9 +78,6 @@ class SharedSkillModel(Base):
             like_count=self.like_count,
             favorite_count=self.favorite_count,
             status=self.status,
-            snapshot_name=self.snapshot_name,
-            snapshot_description=self.snapshot_description,
-            snapshot_author_name=self.snapshot_author_name,
             created_at=self.created_at,
             updated_at=self.updated_at,
         )
@@ -99,9 +93,6 @@ class SharedSkillModel(Base):
             like_count=shared_skill.like_count,
             favorite_count=shared_skill.favorite_count,
             status=shared_skill.status,
-            snapshot_name=shared_skill.snapshot_name,
-            snapshot_description=shared_skill.snapshot_description,
-            snapshot_author_name=shared_skill.snapshot_author_name,
             created_at=shared_skill.created_at,
             updated_at=shared_skill.updated_at,
         )

@@ -11,6 +11,7 @@ from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.entities.skill_like import SkillLike
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.infra.persistence.models.shared_skill_model import SharedSkillModel, SkillLikeModel
+from src.infra.persistence.models.skill_model import SkillModel
 
 
 @final
@@ -74,10 +75,12 @@ class SqlSharedSkillRepository(SharedSkillRepository):
 
         if keyword:
             search = f"%{keyword.strip()}%"
-            stmt = stmt.where(
+            stmt = stmt.join(
+                SkillModel, SharedSkillModel.skill_id == SkillModel.id, isouter=True
+            ).where(
                 or_(
-                    SharedSkillModel.snapshot_name.ilike(search),
-                    SharedSkillModel.snapshot_description.ilike(search),
+                    SkillModel.name.ilike(search),
+                    SkillModel.description.ilike(search),
                 )
             )
 
@@ -104,10 +107,12 @@ class SqlSharedSkillRepository(SharedSkillRepository):
 
         if keyword:
             search = f"%{keyword.strip()}%"
-            stmt = stmt.where(
+            stmt = stmt.join(
+                SkillModel, SharedSkillModel.skill_id == SkillModel.id, isouter=True
+            ).where(
                 or_(
-                    SharedSkillModel.snapshot_name.ilike(search),
-                    SharedSkillModel.snapshot_description.ilike(search),
+                    SkillModel.name.ilike(search),
+                    SkillModel.description.ilike(search),
                 )
             )
 
