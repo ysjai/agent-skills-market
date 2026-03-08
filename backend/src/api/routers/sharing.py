@@ -32,6 +32,7 @@ async def share_skill(
     skill_repo: Annotated[SkillRepository, Depends(get_skill_repo)],
     shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
     category_repo: Annotated[CategoryRepository, Depends(get_category_repo)],
+    favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
     current_user: Annotated[User, Depends(get_current_user)],
 ) -> ShareSkillResp:
     shared_skill = await handle_share_skill(
@@ -42,6 +43,7 @@ async def share_skill(
         skill_repo=skill_repo,
         shared_skill_repo=shared_skill_repo,
         category_repo=category_repo,
+        favorite_repo=favorite_repo,
     )
     return ShareSkillResp.from_domain(shared_skill)
 

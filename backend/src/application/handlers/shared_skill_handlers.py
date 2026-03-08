@@ -26,6 +26,7 @@ async def handle_share_skill(
     skill_repo: SkillRepository,
     shared_skill_repo: SharedSkillRepository,
     category_repo: CategoryRepository,
+    favorite_repo: SkillFavoriteRepository | None = None,
 ) -> SharedSkill:
     skill = await skill_repo.get_by_id(skill_id)
     if skill is None:
@@ -40,6 +41,20 @@ async def handle_share_skill(
     existing = await shared_skill_repo.find_by_skill_id(skill_id)
     if existing is not None:
         raise ResourceConflictError("Active shared skill already exists for this skill")
+
+    # Check for a previously withdrawn SharedSkill and reactivate it
+    all_shared = await shared_skill_repo.find_all_by_skill_id(skill_id)
+    withdrawn = next(
+        (s for s in all_shared if s.status == "withdrawn" and s.user_id == user.id),
+        None,
+    )
+    if withdrawn is not None:
+        withdrawn.reactivate(category_id=category_id, share_message=share_message)
+        saved = await shared_skill_repo.save(withdrawn)
+        # Restore all favorites that were marked as withdrawn
+        if favorite_repo is not None:
+            await favorite_repo.update_snapshot_status_batch(saved.id, "active")
+        return saved
 
     shared_skill = SharedSkillFactory.create(
         skill=skill,

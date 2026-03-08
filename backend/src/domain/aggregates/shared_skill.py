@@ -31,6 +31,12 @@ class SharedSkill:
         self.status = "withdrawn"
         self._mark_updated()
 
+    def reactivate(self, category_id: UUID, share_message: str | None) -> None:
+        self.status = "active"
+        self.category_id = category_id
+        self.share_message = share_message
+        self._mark_updated()
+
     def mark_skill_deleted(self) -> None:
         self.skill_id = None
         self.status = "withdrawn"
