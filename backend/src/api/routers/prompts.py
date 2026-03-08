@@ -4,7 +4,11 @@ from uuid import UUID
 from fastapi import APIRouter, Depends, Query, Response, status
 
 from src.api.dependencies.auth import get_current_user
-from src.api.dependencies.repositories import get_prompt_repo
+from src.api.dependencies.repositories import (
+    get_prompt_favorite_repo,
+    get_prompt_repo,
+    get_shared_prompt_repo,
+)
 from src.api.schemas.prompt import (
     CreatePromptReq,
     CreatePromptResp,
@@ -16,6 +20,7 @@ from src.api.schemas.prompt import (
     UpdatePromptReq,
     UpdatePromptResp,
 )
+from src.api.schemas.shared_prompt import SharePromptResp
 from src.application.handlers.create_prompt_handler import handle_create_prompt
 from src.application.handlers.delete_prompt_handler import handle_delete_prompt
 from src.application.handlers.export_prompt_handler import handle_export_prompt
@@ -25,9 +30,15 @@ from src.application.handlers.import_prompt_handler import handle_import_prompt
 from src.application.handlers.list_prompt_versions_handler import handle_list_prompt_versions
 from src.application.handlers.list_prompts_handler import handle_list_prompts
 from src.application.handlers.publish_prompt_version_handler import handle_publish_prompt_version
+from src.application.handlers.shared_prompt_handlers import (
+    handle_share_prompt,
+    handle_unshare_prompt,
+)
 from src.application.handlers.update_prompt_handler import handle_update_prompt
 from src.domain.aggregates.user import User
+from src.domain.repositories.prompt_favorite_repository import PromptFavoriteRepository
 from src.domain.repositories.prompt_repository import PromptRepository
+from src.domain.repositories.shared_prompt_repository import SharedPromptRepository
 
 router = APIRouter(prefix="/prompts", tags=["prompts"])
 
@@ -122,12 +133,16 @@ async def update_prompt(
 async def delete_prompt(
     prompt_id: UUID,
     prompt_repo: PromptRepository = Depends(get_prompt_repo),
+    shared_prompt_repo: SharedPromptRepository = Depends(get_shared_prompt_repo),
+    favorite_repo: PromptFavoriteRepository = Depends(get_prompt_favorite_repo),
     current_user: User = Depends(get_current_user),
 ) -> None:
     await handle_delete_prompt(
         prompt_id=prompt_id,
         user_id=current_user.id,
         prompt_repo=prompt_repo,
+        shared_prompt_repo=shared_prompt_repo,
+        favorite_repo=favorite_repo,
     )
 
 
@@ -193,3 +208,46 @@ async def export_prompt(
         media_type="text/plain; charset=utf-8",
         headers={"Content-Disposition": "attachment; filename=prompt.md"},
     )
+
+
+# ---------------------------------------------------------------------------
+# Share / Unshare
+# ---------------------------------------------------------------------------
+
+
+@router.post(
+    "/{prompt_id}/share", response_model=SharePromptResp, status_code=status.HTTP_201_CREATED
+)
+async def share_prompt(
+    prompt_id: UUID,
+    share_message: str | None = None,
+    current_user: User = Depends(get_current_user),
+    prompt_repo: PromptRepository = Depends(get_prompt_repo),
+    shared_prompt_repo: SharedPromptRepository = Depends(get_shared_prompt_repo),
+) -> SharePromptResp:
+    shared_prompt = await handle_share_prompt(
+        prompt_id=prompt_id,
+        user=current_user,
+        prompt_repo=prompt_repo,
+        shared_prompt_repo=shared_prompt_repo,
+        share_message=share_message,
+    )
+    return SharePromptResp.from_domain(shared_prompt)
+
+
+@router.delete("/{prompt_id}/share", response_model=SharePromptResp, status_code=status.HTTP_200_OK)
+async def unshare_prompt(
+    prompt_id: UUID,
+    current_user: User = Depends(get_current_user),
+    prompt_repo: PromptRepository = Depends(get_prompt_repo),
+    shared_prompt_repo: SharedPromptRepository = Depends(get_shared_prompt_repo),
+    favorite_repo: PromptFavoriteRepository = Depends(get_prompt_favorite_repo),
+) -> SharePromptResp:
+    shared_prompt = await handle_unshare_prompt(
+        prompt_id=prompt_id,
+        user=current_user,
+        prompt_repo=prompt_repo,
+        shared_prompt_repo=shared_prompt_repo,
+        favorite_repo=favorite_repo,
+    )
+    return SharePromptResp.from_domain(shared_prompt)

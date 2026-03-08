@@ -21,6 +21,13 @@ class SqlPromptFavoriteRepository(PromptFavoriteRepository):
         await self._db.flush()
         return model.to_domain()
 
+    async def find_by_id(self, favorite_id: UUID) -> PromptFavorite | None:
+        result = await self._db.execute(
+            select(PromptFavoriteModel).where(PromptFavoriteModel.id == favorite_id)
+        )
+        model = result.scalar_one_or_none()
+        return model.to_domain() if model is not None else None
+
     async def delete(self, user_id: UUID, shared_prompt_id: UUID) -> None:
         result = await self._db.execute(
             select(PromptFavoriteModel).where(

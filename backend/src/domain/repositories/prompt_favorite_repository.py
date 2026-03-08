@@ -11,6 +11,9 @@ class PromptFavoriteRepository(ABC):
     async def delete(self, user_id: UUID, shared_prompt_id: UUID) -> None: ...
 
     @abstractmethod
+    async def find_by_id(self, favorite_id: UUID) -> PromptFavorite | None: ...
+
+    @abstractmethod
     async def find_by_user_and_shared_prompt(
         self, user_id: UUID, shared_prompt_id: UUID
     ) -> PromptFavorite | None: ...
