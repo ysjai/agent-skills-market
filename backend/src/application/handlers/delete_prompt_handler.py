@@ -9,7 +9,7 @@ from src.domain.repositories.shared_prompt_repository import SharedPromptReposit
 
 
 class PromptFavoriteRepository(Protocol):
-    async def update_batch_status(self, shared_prompt_id: UUID, new_status: str) -> None: ...
+    async def update_batch_status(self, shared_prompt_id: UUID, status: str) -> None: ...
 
 
 async def handle_delete_prompt(

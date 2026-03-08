@@ -25,7 +25,6 @@ class SharedPrompt:
 
     def withdraw(self):
         self.status = "withdrawn"
-        self.prompt_id = None
         self._mark_updated()
 
     def mark_prompt_deleted(self):

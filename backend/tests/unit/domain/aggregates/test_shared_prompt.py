@@ -24,10 +24,11 @@ def test_factory_create():
 
 
 def test_withdraw():
-    sp = SharedPrompt(prompt_id=uuid4(), user_id=uuid4())
+    pid = uuid4()
+    sp = SharedPrompt(prompt_id=pid, user_id=uuid4())
     sp.withdraw()
     assert sp.status == "withdrawn"
-    assert sp.prompt_id is None
+    assert sp.prompt_id == pid  # withdraw keeps prompt_id
 
 
 def test_mark_prompt_deleted():

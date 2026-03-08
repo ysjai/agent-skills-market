@@ -24,11 +24,19 @@ class SharedPromptRepository(ABC):
 
     @abstractmethod
     async def find_active_by_filters(
-        self, keyword: str | None, tags: list[str] | None, sort_by: str, skip: int, limit: int
+        self,
+        keyword: str | None,
+        tags: list[str] | None,
+        sort_by: str,
+        skip: int,
+        limit: int,
+        user_id: UUID | None = None,
     ) -> list[SharedPrompt]: ...
 
     @abstractmethod
-    async def count_active_by_filters(self, keyword: str | None, tags: list[str] | None) -> int: ...
+    async def count_active_by_filters(
+        self, keyword: str | None, tags: list[str] | None, user_id: UUID | None = None
+    ) -> int: ...
 
     @abstractmethod
     async def delete(self, shared_prompt_id: UUID) -> None: ...

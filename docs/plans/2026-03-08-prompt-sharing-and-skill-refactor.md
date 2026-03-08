@@ -1,5 +1,7 @@
 # Prompt 分享 + Skill 分享改造 实施计划
 
+> **Status:** ✅ Completed (2026-03-08)
+
 > **For Claude:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task.
 
 **Goal:** 实现 Prompt 的分享/点赞/收藏功能（实时橱窗 + 收藏快照 + 变更提醒），同时将 Skill 分享改造为实时模式（去掉 SharedSkill 快照字段），并在市场页和收藏页增加 Skills/Prompts tab 切换。

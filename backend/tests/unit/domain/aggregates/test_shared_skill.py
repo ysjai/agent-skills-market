@@ -23,19 +23,21 @@ def test_create_shared_skill_without_snapshots():
     assert "snapshot_name" not in ss.__dataclass_fields__
 
 
-def test_withdraw_sets_status_and_clears_skill_id():
-    ss = SharedSkill(skill_id=uuid4(), user_id=uuid4(), category_id=uuid4())
+def test_withdraw_sets_status_and_keeps_skill_id():
+    sid = uuid4()
+    ss = SharedSkill(skill_id=sid, user_id=uuid4(), category_id=uuid4())
     ss.withdraw()
     assert ss.status == "withdrawn"
-    assert ss.skill_id is None
+    assert ss.skill_id == sid  # withdraw keeps skill_id
 
 
 def test_withdraw_is_idempotent():
-    ss = SharedSkill(skill_id=uuid4(), user_id=uuid4(), category_id=uuid4())
+    sid = uuid4()
+    ss = SharedSkill(skill_id=sid, user_id=uuid4(), category_id=uuid4())
     ss.withdraw()
     ss.withdraw()
     assert ss.status == "withdrawn"
-    assert ss.skill_id is None
+    assert ss.skill_id == sid  # withdraw keeps skill_id
 
 
 def test_mark_skill_deleted_clears_skill_id_and_withdraws():

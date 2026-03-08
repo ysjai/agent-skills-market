@@ -344,7 +344,7 @@ class ApiClient {
   }
 
   async getMyFavorites(skip: number = 0, limit: number = 20): Promise<import('@/types/market').FavoriteListResponse> {
-    return this.get<import('@/types/market').FavoriteListResponse>('/favorites', { skip: String(skip), limit: String(limit) });
+    return this.get<import('@/types/market').FavoriteListResponse>('/favorites/skills', { skip: String(skip), limit: String(limit) });
   }
 
   async getCategories(): Promise<import('@/types/market').CategoryListResponse> {

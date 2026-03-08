@@ -323,11 +323,15 @@ async def list_market_prompts(
     sort_by: Annotated[Literal["newest", "popular"], Query()] = "newest",
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
+    my_only: Annotated[bool, Query()] = False,
 ) -> MarketPromptListResp:
+    filter_user_id = current_user.id if my_only and current_user else None
     shared_prompts = await shared_prompt_repo.find_active_by_filters(
-        keyword=keyword, tags=tags, sort_by=sort_by, skip=skip, limit=limit
+        keyword=keyword, tags=tags, sort_by=sort_by, skip=skip, limit=limit, user_id=filter_user_id
     )
-    total = await shared_prompt_repo.count_active_by_filters(keyword=keyword, tags=tags)
+    total = await shared_prompt_repo.count_active_by_filters(
+        keyword=keyword, tags=tags, user_id=filter_user_id
+    )
 
     items: list[MarketPromptResp] = []
     for sp in shared_prompts:

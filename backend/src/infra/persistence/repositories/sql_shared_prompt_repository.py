@@ -70,8 +70,12 @@ class SqlSharedPromptRepository(SharedPromptRepository):
         sort_by: str,
         skip: int,
         limit: int,
+        user_id: UUID | None = None,
     ) -> list[SharedPrompt]:
         stmt = select(SharedPromptModel).where(SharedPromptModel.status == "active")
+
+        if user_id:
+            stmt = stmt.where(SharedPromptModel.user_id == user_id)
 
         if keyword or tags:
             stmt = stmt.join(
@@ -103,12 +107,17 @@ class SqlSharedPromptRepository(SharedPromptRepository):
         return [model.to_domain() for model in result.scalars().all()]
 
     @override
-    async def count_active_by_filters(self, keyword: str | None, tags: list[str] | None) -> int:
+    async def count_active_by_filters(
+        self, keyword: str | None, tags: list[str] | None, user_id: UUID | None = None
+    ) -> int:
         stmt = (
             select(func.count())
             .select_from(SharedPromptModel)
             .where(SharedPromptModel.status == "active")
         )
+
+        if user_id:
+            stmt = stmt.where(SharedPromptModel.user_id == user_id)
 
         if keyword or tags:
             stmt = stmt.join(

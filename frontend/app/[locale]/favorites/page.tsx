@@ -304,7 +304,7 @@ export default function FavoritesPage() {
                           </p>
                         </CardContent>
                         
-                        <CardFooter className="pt-0 border-t dark:border-gray-800 mt-auto flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 p-4 rounded-b-xl">
+                        <CardFooter className="pt-0 border-t dark:border-gray-800 mt-auto flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 px-6 py-4 rounded-b-xl">
                           <div className="text-xs text-gray-500 dark:text-gray-400">
                             {new Date(fav.created_at).toLocaleDateString()}
                           </div>
@@ -450,7 +450,7 @@ export default function FavoritesPage() {
                           </p>
                         </CardContent>
                         
-                        <CardFooter className="pt-0 border-t dark:border-gray-800 mt-auto flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 p-4 rounded-b-xl">
+                        <CardFooter className="pt-0 border-t dark:border-gray-800 mt-auto flex justify-between items-center bg-gray-50/50 dark:bg-gray-800/50 px-6 py-4 rounded-b-xl">
                           <div className="text-xs text-gray-500 dark:text-gray-400">
                             v{fav.snapshot_version} · {new Date(fav.created_at).toLocaleDateString()}
                           </div>

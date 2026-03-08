@@ -29,7 +29,6 @@ class SharedSkill:
         if self.status == "withdrawn":
             return
         self.status = "withdrawn"
-        self.skill_id = None
         self._mark_updated()
 
     def mark_skill_deleted(self) -> None:

@@ -10,6 +10,10 @@ from src.domain.aggregates.shared_prompt import SharedPrompt
 from src.domain.aggregates.prompt_favorite import PromptFavorite
 
 
+class SharePromptReq(BaseModel):
+    share_message: str | None = None
+
+
 class SharePromptResp(BaseModel):
     model_config: ClassVar[ConfigDict] = ConfigDict(from_attributes=True)
 

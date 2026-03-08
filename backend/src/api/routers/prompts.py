@@ -20,7 +20,7 @@ from src.api.schemas.prompt import (
     UpdatePromptReq,
     UpdatePromptResp,
 )
-from src.api.schemas.shared_prompt import SharePromptResp
+from src.api.schemas.shared_prompt import SharePromptReq, SharePromptResp
 from src.application.handlers.create_prompt_handler import handle_create_prompt
 from src.application.handlers.delete_prompt_handler import handle_delete_prompt
 from src.application.handlers.export_prompt_handler import handle_export_prompt
@@ -220,7 +220,7 @@ async def export_prompt(
 )
 async def share_prompt(
     prompt_id: UUID,
-    share_message: str | None = None,
+    request: SharePromptReq,
     current_user: User = Depends(get_current_user),
     prompt_repo: PromptRepository = Depends(get_prompt_repo),
     shared_prompt_repo: SharedPromptRepository = Depends(get_shared_prompt_repo),
@@ -230,7 +230,7 @@ async def share_prompt(
         user=current_user,
         prompt_repo=prompt_repo,
         shared_prompt_repo=shared_prompt_repo,
-        share_message=share_message,
+        share_message=request.share_message,
     )
     return SharePromptResp.from_domain(shared_prompt)
 
