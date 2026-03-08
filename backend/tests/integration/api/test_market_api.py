@@ -9,7 +9,7 @@ from src.infra.persistence.models.category_model import CategoryModel
 
 
 MARKET_SKILLS_URL = "/api/market/skills"
-FAVORITES_URL = "/api/favorites"
+FAVORITES_URL = "/api/favorites/skills"
 
 
 class CategoryItemPayload(TypedDict):
@@ -23,12 +23,12 @@ class CategoriesPayload(TypedDict):
 
 class SharedSkillPayload(TypedDict):
     id: str
-    snapshot_name: str
+    name: str
 
 
 class MarketSkillItemPayload(TypedDict):
     id: str
-    snapshot_name: str
+    name: str
 
 
 class MarketSkillListPayload(TypedDict):
@@ -38,7 +38,7 @@ class MarketSkillListPayload(TypedDict):
 
 class MarketSkillDetailPayload(TypedDict):
     id: str
-    snapshot_name: str
+    name: str
 
 
 class ErrorPayload(TypedDict):
@@ -134,7 +134,10 @@ async def _create_shared_skill(
         },
     )
     assert share_response.status_code == 201
-    return cast(SharedSkillPayload, share_response.json())
+    result = cast(SharedSkillPayload, share_response.json())
+    # ShareSkillResp doesn't include name; attach it from the skill we created
+    result["name"] = skill_name  # type: ignore[typeddict-unknown-key]
+    return result
 
 
 class TestListMarketSkills:
@@ -176,7 +179,7 @@ class TestListMarketSkills:
         data = cast(MarketSkillListPayload, response.json())
         assert data["total"] >= 1
         assert any(item["id"] == shared_skill["id"] for item in data["items"])
-        assert all(keyword in item["snapshot_name"] for item in data["items"])
+        assert all(keyword in item["name"] for item in data["items"])
 
 
 class TestGetMarketSkillDetail:
@@ -194,7 +197,7 @@ class TestGetMarketSkillDetail:
         assert response.status_code == 200
         data = cast(MarketSkillDetailPayload, response.json())
         assert data["id"] == shared_skill["id"]
-        assert data["snapshot_name"] == shared_skill["snapshot_name"]
+        assert data["name"] == shared_skill["name"]
 
     @pytest.mark.asyncio
     async def test_should_return_404_when_get_market_skill_detail_given_nonexistent_id(
@@ -265,7 +268,7 @@ class TestFavoriteMarketSkill:
         assert response.status_code == 201
         data = cast(FavoritePayload, response.json())
         assert data["shared_skill_id"] == shared_skill["id"]
-        assert data["snapshot_name"] == shared_skill["snapshot_name"]
+        assert data["snapshot_name"] == shared_skill["name"]
 
     @pytest.mark.asyncio
     async def test_should_return_200_when_unfavorite_market_skill_given_existing_favorite(

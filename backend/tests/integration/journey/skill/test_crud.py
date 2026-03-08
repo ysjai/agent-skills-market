@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.conftest import create_override_get_db
 
+
 class TestSkillCRUD:
     @pytest_asyncio.fixture
     async def crud_user(self, db_session: AsyncSession):
@@ -162,7 +163,6 @@ class TestSkillCRUD:
         assert response.status_code == 200
         assert b"hello updated" in response.content, "文件内容应该已更新"
 
-
     @pytest.mark.asyncio
     async def test_should_cleanup_resources_when_delete_skill_given_existing_skill(
         self, crud_client: AsyncClient
@@ -210,7 +210,6 @@ class TestSkillCRUD:
         response = await crud_client.get(f"/api/trees/{tree_id}")
         assert response.status_code == 404, "树应该返回404"
 
-        # Step 6: 验证 blob 仍然存在（blob 是去重存储，不会级联删除）
+        # Step 6: 验证 blob 也被清理（引用计数为0时 blob 会被删除）
         response = await crud_client.get(f"/api/blobs/{blob_id}")
-        assert response.status_code == 200, "blob应该仍然存在（blob是共享存储，不会被级联删除）"
-
+        assert response.status_code == 404, "blob引用计数为0应该被删除"

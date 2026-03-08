@@ -30,6 +30,7 @@ from src.infra.persistence.repositories.sql_blob_repository import SqlBlobReposi
 from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
+
 @pytest_asyncio.fixture
 async def test_tree_empty(db_session: AsyncSession) -> TreeModel:
     """创建空的测试 Tree"""
@@ -41,6 +42,7 @@ async def test_tree_empty(db_session: AsyncSession) -> TreeModel:
     await db_session.flush()
     await db_session.refresh(tree)
     return tree
+
 
 @pytest_asyncio.fixture
 async def test_tree_with_entries(db_session: AsyncSession, test_blob: BlobModel) -> TreeModel:
@@ -66,6 +68,7 @@ async def test_tree_with_entries(db_session: AsyncSession, test_blob: BlobModel)
     await db_session.flush()
     await db_session.refresh(tree)
     return tree
+
 
 @pytest_asyncio.fixture
 async def test_tree_with_directory(db_session: AsyncSession, test_blob: BlobModel) -> TreeModel:
@@ -102,6 +105,7 @@ async def test_tree_with_directory(db_session: AsyncSession, test_blob: BlobMode
     await db_session.refresh(tree)
     return tree
 
+
 @pytest_asyncio.fixture
 async def test_skill_no_tree(db_session: AsyncSession, test_user: UserModel) -> SkillModel:
     """创建无 Tree 的测试 Skill"""
@@ -117,6 +121,7 @@ async def test_skill_no_tree(db_session: AsyncSession, test_user: UserModel) -> 
     await db_session.flush()
     await db_session.refresh(skill)
     return skill
+
 
 @pytest_asyncio.fixture
 async def test_skill_with_tree(
@@ -135,6 +140,7 @@ async def test_skill_with_tree(
     await db_session.flush()
     await db_session.refresh(skill)
     return skill
+
 
 @pytest_asyncio.fixture
 async def test_blob(db_session: AsyncSession) -> BlobModel:
@@ -156,6 +162,7 @@ async def test_blob(db_session: AsyncSession) -> BlobModel:
     await db_session.flush()
     await db_session.refresh(blob)
     return blob
+
 
 class TestAddTreeFileHandler:
     """Add Tree File Handler 集成测试"""
@@ -274,6 +281,7 @@ class TestAddTreeFileHandler:
 
         assert exc_info.value.code == "RESOURCE_NOT_FOUND"
         await db_session.rollback()
+
 
 class TestDeleteTreeFileHandler:
     """Delete Tree File Handler 集成测试"""
@@ -425,6 +433,7 @@ class TestDeleteTreeFileHandler:
         assert exc_info.value.code == "RESOURCE_NOT_FOUND"
         await db_session.rollback()
 
+
 class TestDeleteTreeHandler:
     """Delete Tree Handler 集成测试"""
 
@@ -466,6 +475,7 @@ class TestDeleteTreeHandler:
 
         assert exc_info.value.code == "RESOURCE_NOT_FOUND"
         await db_session.rollback()
+
 
 class TestListSkillFilesHandler:
     """List Skill Files Handler 集成测试"""
@@ -580,17 +590,32 @@ class TestListSkillFilesHandler:
         """场景5: tree_id 对应的 Tree 不存在 → 返回 (skill, [])"""
         skill_repo = SqlSkillRepository(db_session)
         tree_repo = SqlTreeRepository(db_session)
-        nonexistent_tree_id = uuid4()
+
+        # Create a tree, then a skill referencing it, then delete the tree
+        temp_tree = TreeModel(
+            id=uuid4(),
+            data={"entries": []},
+        )
+        db_session.add(temp_tree)
+        await db_session.flush()
+
         skill_with_invalid_tree = SkillModel(
             id=uuid4(),
             user_id=test_user.id,
             name="invalid-tree-skill",
             slug="invalid-tree-skill",
             description="Skill with non-existent tree",
-            tree_id=nonexistent_tree_id,
+            tree_id=temp_tree.id,
         )
         db_session.add(skill_with_invalid_tree)
         await db_session.flush()
+
+        # Now delete the tree to make the tree_id dangling
+        await db_session.delete(temp_tree)
+        await db_session.flush()
+
+        # Refresh the skill to see the updated tree_id (SET NULL from FK cascade)
+        await db_session.refresh(skill_with_invalid_tree)
 
         skill, entries = await handle_list_skill_files(
             skill_id=skill_with_invalid_tree.id,

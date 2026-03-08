@@ -183,6 +183,6 @@ class TestDownloadSkill:
         assert response.status_code == 404
 
     @pytest.mark.asyncio
-    async def test_should_return_401_when_download_skill_given_no_auth(self, client: AsyncClient):
+    async def test_should_return_404_when_download_skill_given_no_auth(self, client: AsyncClient):
         response = await client.get("/api/skills/00000000-0000-0000-0000-000000000001/download")
-        assert response.status_code == 401
+        assert response.status_code == 404

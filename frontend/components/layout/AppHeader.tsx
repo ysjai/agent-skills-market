@@ -26,7 +26,7 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
     { key: 'market', href: '/market', icon: Store },
     { key: 'skills', href: '/skills', icon: Layers },
     { key: 'prompts', href: '/prompts', icon: BookOpen },
-    ...(user ? [{ key: 'favorites', href: '/favorites', icon: Star }] : []),
+    { key: 'favorites', href: '/favorites', icon: Star },
   ];
 
   return (

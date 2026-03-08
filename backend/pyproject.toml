@@ -84,6 +84,7 @@ filterwarnings = [
 
 [tool.coverage.run]
 source = ["src"]
+concurrency = ["greenlet", "thread"]
 omit = [
     "*/tests/*",
     "*/test_*.py",
@@ -100,6 +101,7 @@ exclude_lines = [
     "raise NotImplementedError",
     "if __name__ == .__main__.:",
     "if TYPE_CHECKING:",
+    "@abstractmethod",
 ]
 precision = 2
 show_missing = true

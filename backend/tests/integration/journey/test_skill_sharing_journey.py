@@ -12,7 +12,7 @@ from src.infra.persistence.models.skill_favorite_model import SkillFavoriteModel
 
 
 MARKET_SKILLS_URL = "/api/market/skills"
-FAVORITES_URL = "/api/favorites"
+FAVORITES_URL = "/api/favorites/skills"
 
 
 class CreateSkillPayload(TypedDict):
@@ -30,7 +30,7 @@ class SharedSkillPayload(TypedDict):
 class MarketSkillPayload(TypedDict):
     id: str
     skill_id: str | None
-    snapshot_name: str
+    name: str
     like_count: int
     is_liked: bool
     is_favorited: bool
@@ -176,7 +176,7 @@ class TestSkillSharingJourney:
         assert browse_response.status_code == 200
         browse_data = cast(MarketSkillListPayload, browse_response.json())
         market_item = _find_market_item(browse_data["items"], shared_skill["id"])
-        assert market_item["snapshot_name"] == skill_name
+        assert market_item["name"] == skill_name
         assert market_item["skill_id"] == created_skill["id"]
         assert market_item["like_count"] == 0
 
@@ -235,7 +235,7 @@ class TestSkillSharingJourney:
         assert unshare_response.status_code == 200
         unshared_data = cast(SharedSkillPayload, unshare_response.json())
         assert unshared_data["id"] == shared_skill["id"]
-        assert unshared_data["skill_id"] is None
+        assert unshared_data["skill_id"] == created_skill["id"]
         assert unshared_data["status"] == "withdrawn"
 
         refreshed_favorites_response = await client.get(FAVORITES_URL, headers=user_b_headers)

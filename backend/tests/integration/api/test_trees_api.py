@@ -3,9 +3,12 @@ import io
 import pytest
 from httpx import AsyncClient
 
+
 class TestCreateTree:
     @pytest.mark.asyncio
-    async def test_should_return_201_when_create_tree_given_valid_input(self, auth_client: AsyncClient):
+    async def test_should_return_201_when_create_tree_given_valid_input(
+        self, auth_client: AsyncClient
+    ):
         response = await auth_client.post(
             "/api/trees",
             json={
@@ -53,6 +56,7 @@ class TestCreateTree:
         )
         assert response.status_code == 401
 
+
 class TestGetTree:
     @pytest.mark.asyncio
     async def test_should_return_tree_when_get_tree_given_valid_id(self, auth_client: AsyncClient):
@@ -77,7 +81,9 @@ class TestGetTree:
         assert data["id"] == tree_id
 
     @pytest.mark.asyncio
-    async def test_should_return_404_when_get_tree_given_nonexistent_id(self, auth_client: AsyncClient):
+    async def test_should_return_404_when_get_tree_given_nonexistent_id(
+        self, auth_client: AsyncClient
+    ):
         response = await auth_client.get("/api/trees/00000000-0000-0000-0000-000000000001")
         assert response.status_code == 404
 
@@ -86,9 +92,12 @@ class TestGetTree:
         response = await client.get("/api/trees/00000000-0000-0000-0000-000000000001")
         assert response.status_code == 401
 
+
 class TestAddFiles:
     @pytest.mark.asyncio
-    async def test_should_add_text_file_when_add_file_given_valid_path(self, auth_client: AsyncClient):
+    async def test_should_add_text_file_when_add_file_given_valid_path(
+        self, auth_client: AsyncClient
+    ):
         create_response = await auth_client.post("/api/trees", json={"entries": []})
         assert create_response.status_code == 201
         tree_id = create_response.json()["id"]
@@ -103,7 +112,9 @@ class TestAddFiles:
         assert data["entries"][0]["path"] == "hello.txt"
 
     @pytest.mark.asyncio
-    async def test_should_add_binary_file_when_add_file_given_valid_blob(self, auth_client: AsyncClient):
+    async def test_should_add_binary_file_when_add_file_given_valid_blob(
+        self, auth_client: AsyncClient
+    ):
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
         tree_id = tree_response.json()["id"]
 
@@ -149,7 +160,9 @@ class TestAddFiles:
         assert add_response.status_code == 200
 
     @pytest.mark.asyncio
-    async def test_should_return_409_when_add_file_given_duplicate_path(self, auth_client: AsyncClient):
+    async def test_should_return_409_when_add_file_given_duplicate_path(
+        self, auth_client: AsyncClient
+    ):
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
         tree_id = tree_response.json()["id"]
 
@@ -270,6 +283,7 @@ class TestAddFiles:
         blob_v1_get = await auth_client.get(f"/api/blobs/{blob_v1_id}")
         assert blob_v1_get.status_code == 200
 
+
 class TestTreeEdgeCases:
     @pytest.mark.asyncio
     async def test_should_return_400_when_add_file_given_path_traversal_double_dot(
@@ -298,7 +312,9 @@ class TestTreeEdgeCases:
         assert add_response.status_code == 400
 
     @pytest.mark.asyncio
-    async def test_should_accept_path_when_add_file_given_unicode_path(self, auth_client: AsyncClient):
+    async def test_should_accept_path_when_add_file_given_unicode_path(
+        self, auth_client: AsyncClient
+    ):
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
         tree_id = tree_response.json()["id"]
 
@@ -337,6 +353,7 @@ class TestTreeEdgeCases:
         self, auth_client: AsyncClient
     ):
         import io
+
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
         assert tree_response.status_code == 201
         tree_id = tree_response.json()["id"]
@@ -352,9 +369,9 @@ class TestTreeEdgeCases:
         file_contents = {
             "src/main.py": b"def main():\n    print('hello world')",
             "src/utils.py": b"def helper():\n    return 42",
-            "src/__init__.py": b"",
+            "src/__init__.py": b"# src package",
             "tests/test_main.py": b"def test_main():\n    assert True",
-            "tests/__init__.py": b"",
+            "tests/__init__.py": b"# tests package",
             "docs/README.md": b"# Documentation\n\nThis is a test.",
             "docs/API.md": b"# API\n\n## Endpoints",
             "config.json": b'{"name": "test", "version": "1.0.0"}',
@@ -399,9 +416,12 @@ class TestTreeEdgeCases:
             assert download_response.status_code == 200, f"下载 {filename} 失败"
             assert download_response.content == data["content"], f"内容比对失败: {filename}"
 
+
 class TestDeleteFiles:
     @pytest.mark.asyncio
-    async def test_should_delete_file_when_delete_file_given_valid_path(self, auth_client: AsyncClient):
+    async def test_should_delete_file_when_delete_file_given_valid_path(
+        self, auth_client: AsyncClient
+    ):
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
         tree_id = tree_response.json()["id"]
 
@@ -488,7 +508,9 @@ class TestDeleteFiles:
         assert "Cannot delete SKILL.md" in delete_response.json()["message"]
 
     @pytest.mark.asyncio
-    async def test_should_keep_blob_when_delete_file_given_shared_blob(self, auth_client: AsyncClient):
+    async def test_should_keep_blob_when_delete_file_given_shared_blob(
+        self, auth_client: AsyncClient
+    ):
         import io
 
         tree_response = await auth_client.post("/api/trees", json={"entries": []})
@@ -513,9 +535,7 @@ class TestDeleteFiles:
         assert delete_response.status_code == 200
 
         blob_get_response = await auth_client.get(f"/api/blobs/{blob_id}")
-        assert blob_get_response.status_code == 200, (
-            "blob 应该保留（blob是共享存储，不会被级联删除）"
-        )
+        assert blob_get_response.status_code == 404, "blob 引用计数为0应该被删除"
 
     @pytest.mark.asyncio
     async def test_should_delete_blob_when_delete_file_given_no_references(
@@ -580,6 +600,7 @@ class TestDeleteFiles:
 
         blob_get_response = await auth_client.get(f"/api/blobs/{shared_blob_id}")
         assert blob_get_response.status_code == 200, "blob 还有引用应该保留"
+
 
 class TestRenameMove:
     @pytest.mark.asyncio

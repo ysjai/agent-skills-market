@@ -26,7 +26,7 @@ class TestRegisterUserHandler:
                 email="existing@example.com",
                 username="testuser",
                 password="password123",
-                user_repo=user_repo
+                user_repo=user_repo,
             )
 
         assert "already registered" in str(exc_info.value).lower()
@@ -41,9 +41,13 @@ class TestRegisterUserHandler:
         mock_user = Mock(spec=User)
         mock_user.id = "test-id"
 
-        with patch('app.application.handlers.register_user_handler.UserFactory') as MockFactory:
-            with patch('app.application.handlers.register_user_handler.create_access_token') as mock_access:
-                with patch('app.application.handlers.register_user_handler.create_refresh_token') as mock_refresh:
+        with patch("src.application.handlers.register_user_handler.UserFactory") as MockFactory:
+            with patch(
+                "src.application.handlers.register_user_handler.create_access_token"
+            ) as mock_access:
+                with patch(
+                    "src.application.handlers.register_user_handler.create_refresh_token"
+                ) as mock_refresh:
                     MockFactory.create.return_value = mock_user
                     mock_access.return_value = "access-token"
                     mock_refresh.return_value = "refresh-token"
@@ -53,7 +57,7 @@ class TestRegisterUserHandler:
                         email="new@example.com",
                         username="newuser",
                         password="password123",
-                        user_repo=user_repo
+                        user_repo=user_repo,
                     )
 
                     # Then

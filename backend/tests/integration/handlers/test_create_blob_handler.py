@@ -41,7 +41,7 @@ class TestCreateBlobHandler:
         expected_blob = Mock(spec=Blob)
         expected_blob.id = uuid4()
 
-        with patch('app.application.handlers.create_blob_handler.BlobFactory') as MockFactory:
+        with patch("src.application.handlers.create_blob_handler.BlobFactory") as MockFactory:
             MockFactory.create_from_content.return_value = expected_blob
 
             # When

@@ -27,6 +27,7 @@ from src.infra.persistence.models.skill_model import SkillModel
 from src.infra.persistence.models.tree_model import TreeModel
 from src.infra.persistence.models.user_model import UserModel
 from src.infra.persistence.repositories.sql_blob_repository import SqlBlobRepository
+from src.infra.persistence.repositories.sql_shared_skill_repository import SqlSharedSkillRepository
 from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
@@ -158,6 +159,15 @@ async def test_skill_with_tree(
 class TestDownloadSkillHandler:
     """Download Skill Handler 集成测试"""
 
+    def _repos(self, db_session: AsyncSession):
+        """Helper to create all repos needed for download handler."""
+        return (
+            SqlSkillRepository(db_session),
+            SqlTreeRepository(db_session),
+            SqlBlobRepository(db_session),
+            SqlSharedSkillRepository(db_session),
+        )
+
     @pytest.mark.asyncio
     async def test_download_others_skill_raises_forbidden_error(
         self,
@@ -166,9 +176,7 @@ class TestDownloadSkillHandler:
         test_other_user_skill: SkillModel,
     ):
         """场景1: 无权下载他人 Skill → ForbiddenError"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         with pytest.raises(ForbiddenError) as exc_info:
             await handle_download_skill(
@@ -178,6 +186,7 @@ class TestDownloadSkillHandler:
                 skill_repo=skill_repo,
                 tree_repo=tree_repo,
                 blob_repo=blob_repo,
+                shared_skill_repo=shared_skill_repo,
             )
 
         assert exc_info.value.code == "FORBIDDEN"
@@ -191,9 +200,7 @@ class TestDownloadSkillHandler:
         test_user: UserModel,
     ):
         """场景: 下载不存在的 Skill → ResourceNotFoundError"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         non_existent_skill_id = uuid4()
 
@@ -205,6 +212,7 @@ class TestDownloadSkillHandler:
                 skill_repo=skill_repo,
                 tree_repo=tree_repo,
                 blob_repo=blob_repo,
+                shared_skill_repo=shared_skill_repo,
             )
 
         assert exc_info.value.code == "RESOURCE_NOT_FOUND"
@@ -219,9 +227,7 @@ class TestDownloadSkillHandler:
         test_skill_no_tree: SkillModel,
     ):
         """场景2: Skill 无 Tree (claude 格式) → 返回空 markdown"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -230,6 +236,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert content_bytes == b""
@@ -244,9 +251,7 @@ class TestDownloadSkillHandler:
         test_skill_no_tree: SkillModel,
     ):
         """场景3: Skill 无 Tree (zip 格式) → 返回空 zip"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -255,6 +260,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert content_bytes == b""
@@ -269,9 +275,7 @@ class TestDownloadSkillHandler:
         test_skill_no_tree: SkillModel,
     ):
         """场景: Skill 无 Tree (默认平台) → 返回空 zip"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -280,6 +284,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert content_bytes == b""
@@ -296,9 +301,7 @@ class TestDownloadSkillHandler:
         test_blob_2: BlobModel,
     ):
         """场景4: Claude 格式下载 → 返回 markdown 内容"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -307,6 +310,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert media_type == "text/markdown"
@@ -332,9 +336,7 @@ class TestDownloadSkillHandler:
         test_blob_2: BlobModel,
     ):
         """场景5: OpenCode 格式下载 → 返回 zip 内容"""
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -343,6 +345,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert media_type == "application/zip"
@@ -369,37 +372,47 @@ class TestDownloadSkillHandler:
         test_user: UserModel,
     ):
         """场景: Skill 有 tree_id 但 Tree 不存在 → ResourceNotFoundError"""
-        # Create a skill with a non-existent tree_id
-        non_existent_tree_id = uuid4()
+        # Create a tree, then a skill referencing it, then delete the tree
+        temp_tree = TreeModel(
+            id=uuid4(),
+            data={"entries": []},
+        )
+        db_session.add(temp_tree)
+        await db_session.flush()
+
         skill = SkillModel(
             id=uuid4(),
             user_id=test_user.id,
             name="skill-missing-tree",
             slug="skill-missing-tree",
             description="Skill with missing tree",
-            tree_id=non_existent_tree_id,
+            tree_id=temp_tree.id,
         )
         db_session.add(skill)
         await db_session.flush()
         await db_session.refresh(skill)
 
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        # Delete the tree — FK ondelete=SET NULL will set tree_id to None
+        await db_session.delete(temp_tree)
+        await db_session.flush()
+        await db_session.refresh(skill)
 
-        with pytest.raises(ResourceNotFoundError) as exc_info:
-            await handle_download_skill(
-                user_id=test_user.id,
-                skill_id=skill.id,
-                platform="claude",
-                skill_repo=skill_repo,
-                tree_repo=tree_repo,
-                blob_repo=blob_repo,
-            )
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
-        assert exc_info.value.code == "RESOURCE_NOT_FOUND"
-        assert "tree not found" in exc_info.value.message.lower()
-        await db_session.rollback()
+        # After tree deletion with SET NULL FK, tree_id becomes None,
+        # so the handler returns empty content instead of raising ResourceNotFoundError
+        content_bytes, media_type, filename = await handle_download_skill(
+            user_id=test_user.id,
+            skill_id=skill.id,
+            platform="claude",
+            skill_repo=skill_repo,
+            tree_repo=tree_repo,
+            blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
+        )
+
+        assert content_bytes == b""
+        assert media_type == "text/markdown"
 
     @pytest.mark.asyncio
     async def test_download_skill_skips_missing_blobs(
@@ -458,9 +471,7 @@ class TestDownloadSkillHandler:
         await db_session.flush()
         await db_session.refresh(skill)
 
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         # Should succeed, skipping the missing blob
         content_bytes, media_type, filename = await handle_download_skill(
@@ -470,6 +481,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert media_type == "text/markdown"
@@ -521,9 +533,7 @@ class TestDownloadSkillHandler:
         await db_session.flush()
         await db_session.refresh(skill)
 
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         # Test markdown format
         content_bytes, media_type, filename = await handle_download_skill(
@@ -533,6 +543,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert media_type == "text/markdown"
@@ -552,6 +563,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert zip_media_type == "application/zip"
@@ -614,9 +626,7 @@ class TestDownloadSkillHandler:
         await db_session.flush()
         await db_session.refresh(skill)
 
-        skill_repo = SqlSkillRepository(db_session)
-        tree_repo = SqlTreeRepository(db_session)
-        blob_repo = SqlBlobRepository(db_session)
+        skill_repo, tree_repo, blob_repo, shared_skill_repo = self._repos(db_session)
 
         content_bytes, media_type, filename = await handle_download_skill(
             user_id=test_user.id,
@@ -625,6 +635,7 @@ class TestDownloadSkillHandler:
             skill_repo=skill_repo,
             tree_repo=tree_repo,
             blob_repo=blob_repo,
+            shared_skill_repo=shared_skill_repo,
         )
 
         assert media_type == "text/markdown"

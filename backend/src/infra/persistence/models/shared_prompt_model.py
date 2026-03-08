@@ -36,7 +36,6 @@ class SharedPromptModel(Base):
         PG_UUID(as_uuid=True),
         ForeignKey("users.id", ondelete="CASCADE"),
         nullable=False,
-        index=True,
     )
     share_message: Mapped[str | None] = mapped_column(Text, nullable=True)
     like_count: Mapped[int] = mapped_column(
