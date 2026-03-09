@@ -224,21 +224,13 @@ export default function FavoritesPage() {
 
       <div className="bg-white border-b border-gray-200 py-8 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <div className="bg-amber-100 p-2 rounded-lg">
-                <Star className="h-6 w-6 text-amber-600" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
-                {t('title')}
-              </h1>
+          <div className="flex items-center gap-3 mb-2">
+            <div className="bg-amber-100 p-2 rounded-lg">
+              <Star className="h-6 w-6 text-amber-600" />
             </div>
-                    <Button
-                      onClick={() => router.push('/plaza/skills')}
-                      className="mt-6 min-h-[44px]"
-                    >
-                      {t('browse_market')}
-                    </Button>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
+              {t('title')}
+            </h1>
           </div>
           <p className="text-gray-500 mt-1">
             {t('subtitle')}
