@@ -27,4 +27,9 @@ export const useFavoritesStore = create<FavoritesState>((set) => ({
       favorites: state.favorites.filter((f) => f.id !== id),
       total: Math.max(0, state.total - 1),
     })),
+
+  updateFavorite: (id: string, updated: Partial<SkillFavorite>) =>
+    set((state) => ({
+      favorites: state.favorites.map((f) => (f.id === id ? { ...f, ...updated } : f)),
+    })),
 }));

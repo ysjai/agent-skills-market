@@ -150,9 +150,13 @@ class FavoriteResp(BaseModel):
     snapshot_author_name: str
     snapshot_status: str
     created_at: datetime
+    like_count: int = 0
+    is_liked: bool = False
 
     @classmethod
-    def from_domain(cls, favorite: SkillFavorite) -> FavoriteResp:
+    def from_domain(
+        cls, favorite: SkillFavorite, like_count: int = 0, is_liked: bool = False
+    ) -> FavoriteResp:
         return cls(
             id=favorite.id,
             user_id=favorite.user_id,
@@ -163,6 +167,8 @@ class FavoriteResp(BaseModel):
             snapshot_author_name=favorite.snapshot_author_name,
             snapshot_status=favorite.snapshot_status,
             created_at=favorite.created_at,
+            like_count=like_count,
+            is_liked=is_liked,
         )
 
 

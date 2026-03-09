@@ -52,6 +52,8 @@ export interface SkillFavorite {
   snapshot_author_name: string;
   snapshot_status: "active" | "skill_withdrawn" | "skill_deleted";
   created_at: string;
+  like_count: number;
+  is_liked: boolean;
 }
 
 export interface FavoriteListResponse {

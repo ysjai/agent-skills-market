@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
 import { useRouter } from '@/i18n/routing';
-import { ArrowLeft, Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle, Download } from 'lucide-react';
+import { Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle, Download } from 'lucide-react';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
@@ -18,10 +18,10 @@ import { DownloadDialog } from '@/components/misc/DownloadDialog';
 interface SharedSkillDetailProps {
   id: string;
   backPath: string;
-  backLabelKey: string;
+  backLabelKey?: string;
 }
 
-export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDetailProps) {
+export function SharedSkillDetail({ id, backPath }: SharedSkillDetailProps) {
   const router = useRouter();
   const { showToast } = useToast();
   const tMarket = useTranslations('market');
@@ -160,15 +160,7 @@ export function SharedSkillDetail({ id, backPath, backLabelKey }: SharedSkillDet
         onLogoutClick={handleLogout}
       />
       
-      <main className="flex-1 max-w-4xl w-full mx-auto px-4 py-8">
-        <Button 
-          variant="ghost" 
-          onClick={() => router.push(backPath)}
-          className="mb-6 -ml-4 text-gray-600 hover:text-gray-900"
-        >
-          <ArrowLeft className="w-4 h-4 mr-2" />
-          {tMarket(backLabelKey)}
-        </Button>
+      <main className="flex-1 max-w-7xl w-full mx-auto py-8">
 
         {loading ? (
           <div className="space-y-4 animate-pulse">

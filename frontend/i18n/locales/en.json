@@ -266,6 +266,8 @@
     "my_skills": "My Skills",
     "my_prompts": "My Prompts",
     "my_favorites": "My Favorites",
+    "skill_plaza": "Skill Plaza",
+    "prompt_plaza": "Prompt Plaza",
     "settings": "Settings"
   },
   "progress": {
@@ -393,6 +395,7 @@
     "sharing": "Sharing...",
     "share": "Share",
     "back_to_market": "Back to Market",
+    "back_to_plaza": "Back to Plaza",
     "back_to_favorites": "Back to Favorites",
     "skill_not_found": "Skill Not Found",
     "skill_unavailable": "Skill Unavailable",
@@ -412,7 +415,9 @@
     "about_this_prompt": "About this prompt",
     "prompt_content": "Prompt Content",
     "export_prompt": "Export",
-    "download": "Download"
+    "download": "Download",
+    "prompt_plaza_subtitle": "Discover and explore shared prompts from the community",
+    "search_prompts_placeholder": "Search prompts..."
   },
   "favorites": {
     "title": "My Favorites",

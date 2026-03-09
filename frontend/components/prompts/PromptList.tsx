@@ -2,10 +2,11 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { Search, Plus, LayoutTemplate, Trash2, Download, Upload, Globe, GlobeLock } from 'lucide-react';
+import { Search, Plus, LayoutTemplate, Trash2, Download, Upload, Globe, GlobeLock, BookOpen } from 'lucide-react';
 import { usePromptsStore } from '@/stores/promptsStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Link } from '@/i18n/routing';
 import { cn } from '@/lib/utils';
 import { api } from '@/lib/api';
 import type { Prompt } from '@/types/prompt';
@@ -21,6 +22,7 @@ interface PromptListProps {
 
 export function PromptList({ onImportClick, onExportClick, onDeleteClick, onShareClick, onUnshareClick, sharedSet }: PromptListProps) {
   const t = useTranslations('prompts');
+  const tNav = useTranslations('nav');
   const [isCreating, setIsCreating] = useState(false);
 
   const {
@@ -59,7 +61,16 @@ export function PromptList({ onImportClick, onExportClick, onDeleteClick, onShar
     <div className="flex h-full w-[320px] flex-col border-r border-gray-100 bg-white shadow-sm shrink-0">
       {/* Header and Search */}
       <div className="flex flex-col gap-3 p-4 pb-2">
-        <h2 className="text-lg font-bold tracking-tight text-gray-900">{t('title')}</h2>
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-bold tracking-tight text-gray-900">{t('title')}</h2>
+          <Link
+            href="/plaza/prompts"
+            className="inline-flex items-center gap-1 rounded-md border border-gray-200 bg-white px-2 py-1 text-xs font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <BookOpen className="h-3.5 w-3.5" />
+            {tNav('prompt_plaza')}
+          </Link>
+        </div>
         
         <div className="flex items-center gap-2">
           <div className="relative flex-1 min-w-0">

@@ -97,4 +97,5 @@ export interface FavoritesState {
   setError: (error: string | null) => void;
   addFavorite: (favorite: SkillFavorite) => void;
   removeFavorite: (id: string) => void;
+  updateFavorite: (id: string, updated: Partial<SkillFavorite>) => void;
 }

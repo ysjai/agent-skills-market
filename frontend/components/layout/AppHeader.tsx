@@ -2,7 +2,7 @@
 
 import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Store, Star, Settings } from 'lucide-react';
+import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Rocket, Star, Settings } from 'lucide-react';
 import type { User } from '@/types/user';
 
 interface AppHeaderProps {
@@ -19,11 +19,13 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
   const router = useRouter();
 
   const parts = pathname.split('/').filter(Boolean);
-  // usePathname from next-intl returns path WITHOUT locale prefix (e.g. /market, not /en/market)
-  const currentPage = parts[0] || 'market';
+  // usePathname from next-intl returns path WITHOUT locale prefix (e.g. /plaza/skills, not /en/plaza/skills)
+  const currentPage = parts[0] || 'plaza';
+  const subPage = parts[1] || '';
 
   const navItems = [
-    { key: 'market', href: '/market', icon: Store },
+    { key: 'skill_plaza', href: '/plaza/skills', icon: Rocket, match: () => currentPage === 'plaza' && subPage === 'skills' },
+    { key: 'prompt_plaza', href: '/plaza/prompts', icon: BookOpen, match: () => currentPage === 'plaza' && subPage === 'prompts' },
   ];
 
   const userMenuItems = [
@@ -43,13 +45,13 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
         <div className="flex h-14 items-center justify-between gap-4">
           {/* Left: Logo + Navigation Tabs */}
           <div className="flex items-center gap-1 sm:gap-2">
-            <Link href="/market" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
+            <Link href="/plaza/skills" className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-gray-900 text-white">
               <span className="text-base">🎯</span>
             </Link>
 
-            <nav className="ml-2 flex items-center">
+            <nav className="ml-8 flex items-center">
               {navItems.map((item) => {
-                const isActive = currentPage === item.key;
+                const isActive = item.match();
                 const Icon = item.icon;
                 return (
                   <Link

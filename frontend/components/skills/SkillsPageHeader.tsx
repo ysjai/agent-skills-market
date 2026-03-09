@@ -1,7 +1,8 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
-import { Plus, Search, FolderUp } from 'lucide-react';
+import { Plus, Search, FolderUp, Rocket } from 'lucide-react';
+import { Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 
@@ -19,11 +20,19 @@ export function SkillsPageHeader({
   onImportClick,
 }: SkillsPageHeaderProps) {
   const t = useTranslations('skills');
+  const tNav = useTranslations('nav');
 
   return (
     <div className="border-b border-gray-200 bg-white/80 backdrop-blur-sm px-4 py-4 sm:px-6 animate-fade-in-up">
       <div className="mx-auto max-w-7xl">
         <div className="flex flex-wrap items-center gap-3">
+          <Link
+            href="/plaza/skills"
+            className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
+          >
+            <Rocket className="h-4 w-4 text-gray-500" />
+            {tNav('skill_plaza')}
+          </Link>
           <div className="relative flex-1 min-w-[200px]">
             <Search className="absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
             <Input

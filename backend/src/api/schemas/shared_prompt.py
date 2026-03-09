@@ -128,9 +128,17 @@ class PromptFavoriteResp(BaseModel):
     snapshot_status: str
     created_at: datetime
     is_stale: bool = False
+    like_count: int = 0
+    is_liked: bool = False
 
     @classmethod
-    def from_domain(cls, favorite: PromptFavorite, is_stale: bool = False) -> PromptFavoriteResp:
+    def from_domain(
+        cls,
+        favorite: PromptFavorite,
+        is_stale: bool = False,
+        like_count: int = 0,
+        is_liked: bool = False,
+    ) -> PromptFavoriteResp:
         return cls(
             id=favorite.id,
             user_id=favorite.user_id,
@@ -144,6 +152,8 @@ class PromptFavoriteResp(BaseModel):
             snapshot_status=favorite.snapshot_status,
             created_at=favorite.created_at,
             is_stale=is_stale,
+            like_count=like_count,
+            is_liked=is_liked,
         )
 
 

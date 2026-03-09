@@ -35,6 +35,8 @@ export interface PromptFavorite {
   snapshot_status: "active" | "prompt_withdrawn" | "prompt_deleted";
   created_at: string;
   is_stale: boolean;
+  like_count: number;
+  is_liked: boolean;
 }
 
 export interface PromptFavoriteListResponse {

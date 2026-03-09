@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
-import { Bookmark, Star, AlertTriangle, ExternalLink, BookmarkMinus, FileText, RefreshCw } from 'lucide-react';
+import { Bookmark, Star, AlertTriangle, ExternalLink, BookmarkMinus, FileText, RefreshCw, Heart } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
 import { Dialog } from '@/components/ui/Dialog';
@@ -21,7 +21,7 @@ export default function FavoritesPage() {
   const tMarket = useTranslations('market');
   const router = useRouter();
 
-  const { favorites, total, isLoading, error, setFavorites, setTotal, setIsLoading, setError, removeFavorite } = useFavoritesStore();
+  const { favorites, total, isLoading, error, setFavorites, setTotal, setIsLoading, setError, removeFavorite, updateFavorite } = useFavoritesStore();
 
   const [activeTab, setActiveTab] = useState<'skills' | 'prompts'>('skills');
 
@@ -155,6 +155,47 @@ export default function FavoritesPage() {
     }
   };
 
+  const handleSkillLike = async (fav: typeof favorites[0]) => {
+    if (!fav.shared_skill_id) return;
+    const wasLiked = fav.is_liked;
+    // Optimistic update
+    updateFavorite(fav.id, {
+      is_liked: !wasLiked,
+      like_count: wasLiked ? Math.max(0, fav.like_count - 1) : fav.like_count + 1,
+    });
+    try {
+      if (wasLiked) {
+        await api.unlikeSharedSkill(fav.shared_skill_id);
+      } else {
+        await api.likeSharedSkill(fav.shared_skill_id);
+      }
+    } catch {
+      // Rollback
+      updateFavorite(fav.id, { is_liked: wasLiked, like_count: fav.like_count });
+    }
+  };
+
+  const handlePromptLike = async (fav: typeof promptFavorites[0]) => {
+    if (!fav.shared_prompt_id) return;
+    const wasLiked = fav.is_liked;
+    // Optimistic update
+    updatePromptFavorite(fav.id, {
+      ...fav,
+      is_liked: !wasLiked,
+      like_count: wasLiked ? Math.max(0, fav.like_count - 1) : fav.like_count + 1,
+    });
+    try {
+      if (wasLiked) {
+        await api.unlikeSharedPrompt(fav.shared_prompt_id);
+      } else {
+        await api.likeSharedPrompt(fav.shared_prompt_id);
+      }
+    } catch {
+      // Rollback
+      updatePromptFavorite(fav.id, fav);
+    }
+  };
+
   const handleLogout = () => {
     logout();
   };
@@ -192,12 +233,12 @@ export default function FavoritesPage() {
                 {t('title')}
               </h1>
             </div>
-              <Button
-                variant="outline"
-                onClick={() => router.push('/market')}
-              >
-              {t('browse_market')}
-            </Button>
+                    <Button
+                      onClick={() => router.push('/plaza/skills')}
+                      className="mt-6 min-h-[44px]"
+                    >
+                      {t('browse_market')}
+                    </Button>
           </div>
           <p className="text-gray-500 mt-1">
             {t('subtitle')}
@@ -258,7 +299,7 @@ export default function FavoritesPage() {
                       {t('no_favorites_desc')}
                     </p>
                     <Button
-                      onClick={() => router.push('/market')}
+                      onClick={() => router.push('/plaza/skills')}
                       className="mt-6 min-h-[44px]"
                     >
                       {t('browse_market')}
@@ -307,15 +348,26 @@ export default function FavoritesPage() {
                           </p>
                         </CardContent>
                         
-                        <CardFooter className="pt-0 border-t mt-auto flex justify-between items-center bg-gray-50/50 px-6 py-4 rounded-b-xl">
-                          <div className="text-xs text-gray-500">
-                            {new Date(fav.created_at).toLocaleDateString()}
+                        <div className="mx-6 border-t border-gray-100" />
+                        <CardFooter className="pt-0 mt-auto flex justify-between items-center bg-gray-50/50 px-6 py-4 rounded-b-xl">
+                          <div className="flex items-center gap-3">
+                            <div className="text-xs text-gray-500">
+                              {new Date(fav.created_at).toLocaleDateString()}
+                            </div>
+                            <button
+                              onClick={() => handleSkillLike(fav)}
+                              disabled={fav.snapshot_status !== 'active'}
+                              className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Heart className={`h-4 w-4 ${fav.is_liked ? 'fill-red-500 text-red-500' : ''}`} />
+                              <span>{fav.like_count}</span>
+                            </button>
                           </div>
                           <Button
                             variant="secondary"
                             size="sm"
                             disabled={fav.snapshot_status !== 'active'}
-                            onClick={() => fav.snapshot_status === 'active' && router.push(`/favorites/${fav.shared_skill_id}`)}
+                            onClick={() => fav.snapshot_status === 'active' && fav.shared_skill_id && router.push(`/plaza/skills/${fav.shared_skill_id}`)}
                             className="gap-1.5 bg-white hover:bg-gray-50"
                           >
                             <ExternalLink className="h-3.5 w-3.5" />
@@ -378,7 +430,7 @@ export default function FavoritesPage() {
                       {t('no_prompt_favorites_desc') || 'Browse the market and favorite prompts to save them here'}
                     </p>
                     <Button
-                      onClick={() => router.push('/market')}
+                      onClick={() => router.push('/plaza/prompts')}
                       className="mt-6 min-h-[44px]"
                     >
                       {t('browse_market')}
@@ -453,9 +505,20 @@ export default function FavoritesPage() {
                           </p>
                         </CardContent>
                         
-                        <CardFooter className="pt-0 border-t mt-auto flex justify-between items-center bg-gray-50/50 px-6 py-4 rounded-b-xl">
-                          <div className="text-xs text-gray-500">
-                            v{fav.snapshot_version} · {new Date(fav.created_at).toLocaleDateString()}
+                        <div className="mx-6 border-t border-gray-100" />
+                        <CardFooter className="pt-0 mt-auto flex justify-between items-center bg-gray-50/50 px-6 py-4 rounded-b-xl">
+                          <div className="flex items-center gap-3">
+                            <div className="text-xs text-gray-500">
+                              v{fav.snapshot_version} · {new Date(fav.created_at).toLocaleDateString()}
+                            </div>
+                            <button
+                              onClick={() => handlePromptLike(fav)}
+                              disabled={fav.snapshot_status !== 'active'}
+                              className="flex items-center gap-1 text-sm text-gray-500 hover:text-red-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                              <Heart className={`h-4 w-4 ${fav.is_liked ? 'fill-red-500 text-red-500' : ''}`} />
+                              <span>{fav.like_count}</span>
+                            </button>
                           </div>
                           <Button
                             variant="secondary"

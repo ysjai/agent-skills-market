@@ -252,15 +252,24 @@ async def unfavorite_skill(
 )
 async def list_favorites(
     favorite_repo: Annotated[SkillFavoriteRepository, Depends(get_skill_favorite_repo)],
+    shared_skill_repo: Annotated[SharedSkillRepository, Depends(get_shared_skill_repo)],
     current_user: Annotated[User, Depends(get_current_user)],
     skip: Annotated[int, Query(ge=0)] = 0,
     limit: Annotated[int, Query(ge=1, le=100)] = 20,
 ) -> ListFavoritesResp:
     favorites, total = await handle_list_favorites(current_user, favorite_repo, skip, limit)
-    return ListFavoritesResp(
-        items=[FavoriteResp.from_domain(favorite) for favorite in favorites],
-        total=total,
-    )
+    items: list[FavoriteResp] = []
+    for fav in favorites:
+        like_count = 0
+        is_liked = False
+        if fav.shared_skill_id:
+            shared_skill = await shared_skill_repo.find_by_id(fav.shared_skill_id)
+            if shared_skill:
+                like_count = shared_skill.like_count
+                like = await shared_skill_repo.find_like(current_user.id, shared_skill.id)
+                is_liked = like is not None
+        items.append(FavoriteResp.from_domain(fav, like_count=like_count, is_liked=is_liked))
+    return ListFavoritesResp(items=items, total=total)
 
 
 @market_router.get(
@@ -546,7 +555,19 @@ async def list_prompt_favorites(
     items: list[PromptFavoriteResp] = []
     for fav in favorites:
         version_info = await handle_check_favorite_version(fav, prompt_repo, shared_prompt_repo)
-        items.append(PromptFavoriteResp.from_domain(fav, is_stale=version_info["is_stale"]))
+        like_count = 0
+        is_liked = False
+        if fav.shared_prompt_id:
+            shared_prompt = await shared_prompt_repo.find_by_id(fav.shared_prompt_id)
+            if shared_prompt:
+                like_count = shared_prompt.like_count
+                like = await shared_prompt_repo.find_like(current_user.id, shared_prompt.id)
+                is_liked = like is not None
+        items.append(
+            PromptFavoriteResp.from_domain(
+                fav, is_stale=version_info["is_stale"], like_count=like_count, is_liked=is_liked
+            )
+        )
     return ListPromptFavoritesResp(items=items, total=total)
 
 
