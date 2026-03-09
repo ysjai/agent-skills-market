@@ -2,7 +2,6 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import { useRouter } from '@/i18n/routing';
-import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -170,24 +169,16 @@ export default function PromptPlazaPage() {
         onLogoutClick={() => setIsLogoutDialogOpen(true)}
       />
 
-      <div className="bg-white border-b border-gray-200 py-8 px-4 sm:px-6">
+      <div className="bg-white border-b border-gray-200 py-4 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center justify-between mb-2">
-            <div className="flex items-center gap-3">
-              <div className="bg-purple-100 p-2 rounded-lg">
-                <BookOpen className="h-6 w-6 text-purple-600" />
-              </div>
-              <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{tNav('prompt_plaza')}</h1>
+          <div className="flex items-center gap-3">
+            <div className="bg-purple-100 p-2 rounded-lg">
+              <BookOpen className="h-6 w-6 text-purple-600" />
             </div>
-            <Link
-              href="/prompts"
-              className="inline-flex items-center gap-1.5 rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors"
-            >
-              <BookOpen className="h-4 w-4 text-gray-500" />
-              {tNav('my_prompts')}
-            </Link>
+            <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">{tNav('prompt_plaza')}</h1>
+            <span className="text-gray-400 hidden sm:inline">·</span>
+            <p className="text-gray-500 hidden sm:inline">{t('prompt_plaza_subtitle')}</p>
           </div>
-          <p className="text-gray-500 mt-1">{t('prompt_plaza_subtitle')}</p>
         </div>
       </div>
 

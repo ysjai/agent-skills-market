@@ -74,8 +74,31 @@ export function AppHeader({ user, isUserMenuOpen, onUserMenuToggle, onLogoutClic
             </nav>
           </div>
 
-          {/* Right: User Menu */}
+          {/* Right: Page Links + User Menu */}
           <div className="flex items-center gap-2">
+            <nav className="hidden sm:flex items-center">
+              {userMenuItems.map((item) => {
+                const Icon = item.icon;
+                const isActive = currentPage === item.href.replace('/', '');
+                return (
+                  <Link
+                    key={item.key}
+                    href={item.href}
+                    className={`relative flex items-center gap-1.5 px-3 py-2 text-sm font-medium transition-colors rounded-md ${
+                      isActive
+                        ? 'text-gray-900'
+                        : 'text-gray-500 hover:text-gray-700 hover:bg-gray-50'
+                    }`}
+                  >
+                    <Icon className={`h-4 w-4 ${isActive ? 'text-gray-900' : 'text-gray-400'}`} />
+                    <span>{t(item.key)}</span>
+                    {isActive && (
+                      <span className="absolute bottom-0 left-3 right-3 h-0.5 bg-gray-900 rounded-full translate-y-[9px]" />
+                    )}
+                  </Link>
+                );
+              })}
+            </nav>
             <div className="relative user-menu-container">
               <button
                 onClick={onUserMenuToggle}

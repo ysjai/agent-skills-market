@@ -222,41 +222,37 @@ export default function FavoritesPage() {
         onLogoutClick={() => setIsLogoutDialogOpen(true)}
       />
 
-      <div className="bg-white border-b border-gray-200 py-8 px-4 sm:px-6">
+      <div className="bg-white border-b border-gray-200 py-4 px-4 sm:px-6">
         <div className="mx-auto max-w-7xl">
-          <div className="flex items-center gap-3 mb-2">
+          <div className="flex items-center gap-3">
             <div className="bg-amber-100 p-2 rounded-lg">
               <Star className="h-6 w-6 text-amber-600" />
             </div>
             <h1 className="text-2xl font-bold text-gray-900 sm:text-3xl">
               {t('title')}
             </h1>
-          </div>
-          <p className="text-gray-500 mt-1">
-            {t('subtitle')}
-          </p>
-          {/* Tab Switch */}
-          <div className="mt-4 flex gap-1 bg-gray-100 rounded-lg p-1 w-fit">
-            <button
-              onClick={() => setActiveTab('skills')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'skills'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {t('tabs_skills') || 'Skills'}
-            </button>
-            <button
-              onClick={() => setActiveTab('prompts')}
-              className={`px-4 py-2 text-sm font-medium rounded-md transition-colors ${
-                activeTab === 'prompts'
-                  ? 'bg-white text-gray-900 shadow-sm'
-                  : 'text-gray-500 hover:text-gray-700'
-              }`}
-            >
-              {t('tabs_prompts') || 'Prompts'}
-            </button>
+            <div className="ml-4 flex gap-1 bg-gray-100 rounded-lg p-1">
+              <button
+                onClick={() => setActiveTab('skills')}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  activeTab === 'skills'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {t('tabs_skills') || 'Skills'}
+              </button>
+              <button
+                onClick={() => setActiveTab('prompts')}
+                className={`px-4 py-1.5 text-sm font-medium rounded-md transition-colors ${
+                  activeTab === 'prompts'
+                    ? 'bg-white text-gray-900 shadow-sm'
+                    : 'text-gray-500 hover:text-gray-700'
+                }`}
+              >
+                {t('tabs_prompts') || 'Prompts'}
+              </button>
+            </div>
           </div>
         </div>
       </div>
