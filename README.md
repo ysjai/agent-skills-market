@@ -78,30 +78,36 @@ docker compose up -d postgres
 ```bash
 cd backend
 
-# Create virtual environment (optional)
+# Install dependencies using uv (推荐)
+uv sync
+
+# Or create venv manually
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Configure environment variables
 cp .env.example .env
 # Edit .env to set database credentials
+
+# Create database (if not exists)
+docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skills"
+# Or: psql -U postgres -c "CREATE DATABASE agent_skills"
 
 # Run migrations
 alembic downgrade base
 alembic upgrade head
 
 # Start the server (SECRET_KEY auto-generated in dev)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 Once the backend starts, access:
 
 - API: http://localhost:8000
-- Docs: http://localhost:8000/docs
+- API Docs: http://localhost:8000/docs
+- ReDoc: http://localhost:8000/redoc
 
 ### 4. Frontend Setup
 
@@ -139,11 +145,12 @@ curl -X POST http://localhost:8000/api/auth/login \
 ```
 agent-skills-manager/
 ├── backend/                     # FastAPI Backend (DDD Architecture)
-│   ├── app/
+│   ├── src/
 │   │   ├── api/                # API Layer (routers, dependencies, schemas)
 │   │   │   ├── dependencies/   # FastAPI dependency injection
 │   │   │   ├── routers/        # API route handlers
-│   │   │   └── schemas/        # Pydantic DTOs (Request/Response)
+│   │   │   ├── schemas/        # Pydantic DTOs (Request/Response)
+│   │   │   └── exception_handlers.py
 │   │   ├── application/        # Application Layer (handlers)
 │   │   │   └── handlers/       # Use case handlers
 │   │   ├── domain/             # Domain Layer (core business logic)
@@ -157,8 +164,9 @@ agent-skills-manager/
 │   │   ├── core/               # Configuration
 │   │   └── main.py            # Application entry point
 │   ├── alembic/                # Database migrations
+│   ├── tests/                  # Test files
 │   ├── pyproject.toml          # Project configuration
-│   ├── requirements.txt        # Dependencies
+│   ├── uv.lock                 # uv lock file
 │   └── project_conventions.md  # DDD Architecture guide
 │
 ├── frontend/                   # Next.js Frontend

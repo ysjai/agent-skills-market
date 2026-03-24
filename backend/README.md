@@ -38,89 +38,71 @@ This backend service provides RESTful APIs for the Agent Skills Manager platform
 ### Project Structure
 
 ```
-backend/src/
-├── api/                      # API Layer
-│   ├── dependencies/         # FastAPI dependency injection
-│   │   ├── auth.py          # get_current_user dependency
-│   │   └── repositories.py  # Repository DI functions
-│   ├── routers/              # API route handlers
-│   │   ├── auth.py          # Auth endpoints
-│   │   ├── blobs.py         # Blob storage endpoints
-│   │   ├── health.py        # Health check
-│   │   ├── projects.py      # Project endpoints
-│   │   ├── skills.py        # Skill endpoints
-│   │   └── trees.py         # Tree structure endpoints
-│   └── schemas/              # Pydantic DTOs
-│       ├── blob.py
-│       ├── project.py
-│       ├── skill.py
-│       ├── tree.py
-│       └── user.py
+backend/
+├── src/                      # Source code
+│   ├── api/                  # API Layer
+│   │   ├── dependencies/     # FastAPI dependency injection
+│   │   │   ├── auth.py      # get_current_user dependency
+│   │   │   └── repositories.py # Repository DI functions
+│   │   ├── routers/          # API route handlers
+│   │   │   ├── auth.py      # Auth endpoints
+│   │   │   ├── blobs.py     # Blob storage endpoints
+│   │   │   ├── health.py    # Health check
+│   │   │   ├── skills.py    # Skill endpoints
+│   │   │   ├── trees.py     # Tree structure endpoints
+│   │   │   ├── categories.py
+│   │   │   ├── prompts.py
+│   │   │   ├── sharing.py
+│   │   │   └── market.py
+│   │   ├── schemas/          # Pydantic DTOs
+│   │   │   ├── blob.py
+│   │   │   ├── skill.py
+│   │   │   ├── tree.py
+│   │   │   └── user.py
+│   │   ├── exception_handlers.py
+│   │   └── __init__.py
+│   │
+│   ├── application/          # Application Layer
+│   │   └── handlers/         # Use case handlers
+│   │       ├── skill_handlers/
+│   │       ├── tree_handlers/
+│   │       ├── auth_handlers/
+│   │       └── ...
+│   │
+│   ├── domain/               # Domain Layer (Core)
+│   │   ├── aggregates/      # Aggregate roots
+│   │   │   ├── skill.py
+│   │   │   ├── tree.py
+│   │   │   ├── user.py
+│   │   │   └── ...
+│   │   ├── entities/        # Domain entities
+│   │   ├── value_objects/   # Value objects
+│   │   │   ├── email.py
+│   │   │   ├── path.py
+│   │   │   └── slug.py
+│   │   ├── repositories/    # Repository interfaces (abstract)
+│   │   └── exceptions.py    # Domain exceptions
+│   │
+│   ├── infra/               # Infrastructure Layer
+│   │   └── persistence/     # Data persistence
+│   │       ├── models/      # SQLAlchemy ORM models
+│   │       └── repositories/ # Repository implementations
+│   │
+│   ├── core/                # Configuration
+│   │   ├── config.py
+│   │   ├── auth.py
+│   │   └── logging.py
+│   │
+│   ├── crud/                # CRUD operations
+│   ├── models/              # Database models
+│   ├── main.py              # Application entry point
+│   └── auth.py              # Authentication utilities
 │
-├── application/              # Application Layer
-│   └── handlers/             # Use case handlers
-│       ├── add_tree_file_handler.py
-│       ├── create_blob_handler.py
-│       ├── create_project_handler.py
-│       ├── create_skill_handler.py
-│       ├── create_tree_handler.py
-│       ├── delete_skill_handler.py
-│       ├── delete_tree_file_handler.py
-│       ├── get_blob_handler.py
-│       ├── get_current_user_handler.py
-│       ├── get_project_handler.py
-│       ├── get_skill_handler.py
-│       ├── get_tree_handler.py
-│       ├── handle_create_tree_file.py
-│       ├── import_skill_handler.py
-│       ├── list_skills_handler.py
-│       ├── login_handler.py
-│       ├── move_tree_file_handler.py
-│       ├── refresh_token_handler.py
-│       ├── register_user_handler.py
-│       ├── rename_tree_file_handler.py
-│       └── update_skill_handler.py
-│
-├── domain/                   # Domain Layer (Core)
-│   ├── aggregates/           # Aggregate roots
-│   │   ├── project.py
-│   │   ├── skill.py
-│   │   ├── tree.py
-│   │   └── user.py
-│   ├── entities/             # Domain entities
-│   │   └── blob.py
-│   ├── value_objects/        # Value objects
-│   │   ├── email.py
-│   │   ├── path.py
-│   │   └── slug.py
-│   ├── repositories/         # Repository interfaces (abstract)
-│   │   ├── blob_repository.py
-│   │   ├── project_repository.py
-│   │   ├── skill_repository.py
-│   │   ├── tree_repository.py
-│   │   └── user_repository.py
-│   └── exceptions.py         # Domain exceptions
-│
-├── infra/                    # Infrastructure Layer
-│   └── persistence/          # Data persistence
-│       ├── models/           # SQLAlchemy ORM models
-│       │   ├── base.py
-│       │   ├── blob_model.py
-│       │   ├── project_model.py
-│       │   ├── skill_model.py
-│       │   ├── tree_model.py
-│       │   └── user_model.py
-│       └── repositories/     # Repository implementations
-│           ├── sql_blob_repository.py
-│           ├── sql_project_repository.py
-│           ├── sql_skill_repository.py
-│           ├── sql_tree_repository.py
-│           └── sql_user_repository.py
-│
-├── core/                     # Configuration
-│   └── config.py
-│
-└── main.py                   # Application entry point
+├── alembic/                  # Database migrations
+├── tests/                    # Test files
+├── pyproject.toml            # Project configuration
+├── uv.lock                   # uv lock file
+└── README.md                  # This file
 ```
 
 ### Key Patterns
@@ -151,18 +133,21 @@ backend/src/
 ### Prerequisites
 
 - Python 3.10+
-- PostgreSQL 16+
+- PostgreSQL 16+ (or use Docker)
 
 ### 1. Setup Environment
 
 ```bash
-# Create virtual environment
+cd backend
+
+# Install dependencies using uv (推荐)
+uv sync
+
+# Or create venv manually and install
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
-
-# Install dependencies
-pip install -r requirements.txt
+uv sync
 
 # Configure environment
 cp .env.example .env
@@ -172,6 +157,13 @@ cp .env.example .env
 ### 2. Database Setup
 
 ```bash
+# Create database (if PostgreSQL is running)
+# Option A: Using Docker
+docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skills"
+
+# Option B: Using psql directly
+# psql -U postgres -c "CREATE DATABASE agent_skills"
+
 # Run migrations
 alembic downgrade base
 alembic upgrade head
@@ -181,16 +173,23 @@ alembic upgrade head
 
 ```bash
 # Development (auto-reload)
-uvicorn app.main:app --reload --host 0.0.0.0 --port 8000
+uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 # Production
-uvicorn app.main:app --host 0.0.0.0 --port 8000
+uvicorn src.main:app --host 0.0.0.0 --port 8000
 ```
 
 Access:
 - API: http://localhost:8000
 - API Docs: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
+
+### Alternative: Using Docker Compose
+
+```bash
+# From project root
+docker compose up -d postgres backend
+```
 
 ## API Endpoints
 
@@ -333,7 +332,8 @@ POSTGRES_PASSWORD=password
 POSTGRES_DB=dbname
 
 # JWT (auto-generated in development, required in production)
-SECRET_KEY=your-secret-key
-ACCESS_TOKEN_EXPIRE_MINUTES=30
-REFRESH_TOKEN_EXPIRE_DAYS=7
+SECRET_KEY=your-secret-key (min 32 characters)
+
+# Environment
+ENVIRONMENT=development  # or production
 ```
