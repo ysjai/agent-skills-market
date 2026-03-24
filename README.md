@@ -7,279 +7,279 @@
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
 
-> Agent Skills Management Platform - Manage, Sync, and Share Custom Agent Skills
+> Agent Skills 管理平台 - 管理、同步和分享自定义 Agent Skills
 
-## Overview
+## 简介
 
-Agent Skills Manager is a B/S architecture system that helps users manage, sync, and share custom Agent Skills. Supports both Claude Code and OpenCode platforms.
+Agent Skills Manager 是一个 B/S 架构系统，帮助用户管理、同步和分享自定义 Agent Skills。支持 Claude Code 和 OpenCode 平台。
 
-## Features
+## 功能特性
 
-- **Web Interface** - Create, edit, and version-manage Skills
-- **Bidirectional Sync** - Web and local automatic synchronization
-- **Multi-file Skills** - Supports SKILL.md + templates/ + examples/ directory structure
-- **Version History** - Git-like version control with rollback capability
-- **User System** - Email registration/login with JWT authentication
-- **Local Daemon** - Auto-discovery of projects and file watching
-- **Symbolic Links** - Automatic linking to project directories
-- **Open Source & Self-hosted** - Fully open source with private deployment support
+- **Web 界面** - 创建、编辑和版本管理 Skills
+- **双向同步** - Web 与本地自动同步
+- **多文件 Skills** - 支持 SKILL.md + templates/ + examples/ 目录结构
+- **版本历史** - Git 风格的版本控制，支持回滚
+- **用户系统** - 邮箱注册/登录，JWT 认证
+- **本地 Daemon** - 自动发现项目和文件监控
+- **符号链接** - 自动链接到项目目录
+- **开源可自托管** - 完全开源，支持私有部署
 
-## Tech Stack
+## 技术栈
 
-### Backend
+### 后端
 
 - **Python**: 3.10+
-- **FastAPI**: 0.129.0+ (Web framework)
+- **FastAPI**: 0.129.0+ (Web 框架)
 - **SQLAlchemy**: 2.0+ (ORM)
-- **PostgreSQL**: 16+ (Database)
-- **Alembic**: (Database migrations)
-- **JWT**: (Authentication)
+- **PostgreSQL**: 16+ (数据库)
+- **Alembic**: (数据库迁移)
+- **JWT**: (认证)
 
-### Frontend
+### 前端
 
 - **Next.js**: 15+ (App Router)
 - **React**: 19+
 - **TypeScript**: 5.7+
 - **Tailwind CSS**: 4.0+
 
-### Local Daemon
+### 本地 Daemon
 
 - **Python**: 3.10+
-- **WebSocket**: (Real-time sync)
-- **watchdog**: (File monitoring)
+- **WebSocket**: (实时同步)
+- **watchdog**: (文件监控)
 
-## Quick Start
+## 快速开始
 
-### Prerequisites
+### 前置要求
 
 - Python 3.10+
 - Node.js 18+
-- PostgreSQL 16+ (or Docker)
-- Docker (optional)
+- PostgreSQL 16+ (或 Docker)
+- Docker (可选)
 
-### 1. Clone the Project
+### 1. 克隆项目
 
 ```bash
-git clone https://github.com/your-repo/agent-skills-manager.git
-cd agent-skills-manager
+git clone https://github.com/ai-agent-ysj/agent-skills-market.git
+cd agent-skills-market
 ```
 
-### 2. Start PostgreSQL
+### 2. 启动 PostgreSQL
 
 ```bash
-# Using Docker
+# 使用 Docker
 docker compose up -d postgres
 
-# Or configure PostgreSQL manually
+# 或手动配置 PostgreSQL
 ```
 
-### 3. Backend Setup
+### 3. 后端设置
 
 ```bash
 cd backend
 
-# Install dependencies using uv (推荐)
+# 使用 uv 安装依赖（推荐）
 uv sync
 
-# Or create venv manually
+# 手动创建虚拟环境
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
 uv sync
 
-# Configure environment variables
+# 配置环境变量
 cp .env.example .env
-# Edit .env to set database credentials
+# 编辑 .env 设置数据库连接
 
-# Create database (if not exists)
+# 创建数据库（如果不存在）
 docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skills"
-# Or: psql -U postgres -c "CREATE DATABASE agent_skills"
+# 或: psql -U postgres -c "CREATE DATABASE agent_skills"
 
-# Run migrations
+# 运行迁移
 alembic downgrade base
 alembic upgrade head
 
-# Start the server (SECRET_KEY auto-generated in dev)
+# 启动开发服务器（开发模式下 SECRET_KEY 自动生成）
 uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
-Once the backend starts, access:
+后端启动后，访问：
 
 - API: http://localhost:8000
-- API Docs: http://localhost:8000/docs
+- API 文档: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-### 4. Frontend Setup
+### 4. 前端设置
 
 ```bash
 cd frontend
 
-# Install dependencies
+# 安装依赖
 npm install
 
-# Start development server
+# 启动开发服务器
 npm run dev
 ```
 
-Once the frontend starts, access: http://localhost:3000
+前端启动后，访问：http://localhost:3000
 
-### 5. Verification
+### 5. 验证
 
 ```bash
-# Test health check
+# 测试健康检查
 curl http://localhost:8000/health
 
-# Test registration
+# 测试注册
 curl -X POST http://localhost:8000/api/auth/register \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "username": "testuser", "password": "password123"}'
 
-# Test login
+# 测试登录
 curl -X POST http://localhost:8000/api/auth/login \
   -H "Content-Type: application/json" \
   -d '{"email": "test@example.com", "password": "password123"}'
 ```
 
-## Project Structure
+## 项目结构
 
 ```
-agent-skills-manager/
-├── backend/                     # FastAPI Backend (DDD Architecture)
+agent-skills-market/
+├── backend/                     # FastAPI 后端 (DDD 架构)
 │   ├── src/
-│   │   ├── api/                # API Layer (routers, dependencies, schemas)
-│   │   │   ├── dependencies/   # FastAPI dependency injection
-│   │   │   ├── routers/        # API route handlers
-│   │   │   ├── schemas/        # Pydantic DTOs (Request/Response)
+│   │   ├── api/                # API 层 (路由、依赖、schemas)
+│   │   │   ├── dependencies/   # FastAPI 依赖注入
+│   │   │   ├── routers/        # API 路由
+│   │   │   ├── schemas/        # Pydantic DTOs
 │   │   │   └── exception_handlers.py
-│   │   ├── application/        # Application Layer (handlers)
-│   │   │   └── handlers/       # Use case handlers
-│   │   ├── domain/             # Domain Layer (core business logic)
-│   │   │   ├── aggregates/     # Aggregate roots (Skill, User, Tree, etc.)
-│   │   │   ├── entities/       # Domain entities
-│   │   │   ├── value_objects/  # Value objects (Slug, Email, etc.)
-│   │   │   ├── repositories/   # Repository interfaces (abstract)
-│   │   │   └── exceptions.py   # Domain exceptions
-│   │   ├── infra/              # Infrastructure Layer
-│   │   │   └── persistence/    # ORM models and repository implementations
-│   │   ├── core/               # Configuration
-│   │   └── main.py            # Application entry point
-│   ├── alembic/                # Database migrations
-│   ├── tests/                  # Test files
-│   ├── pyproject.toml          # Project configuration
-│   ├── uv.lock                 # uv lock file
-│   └── project_conventions.md  # DDD Architecture guide
+│   │   ├── application/       # 应用层 (handlers)
+│   │   │   └── handlers/       # 用例处理器
+│   │   ├── domain/            # 领域层 (核心业务逻辑)
+│   │   │   ├── aggregates/     # 聚合根 (Skill, User, Tree 等)
+│   │   │   ├── entities/       # 实体
+│   │   │   ├── value_objects/  # 值对象 (Slug, Email 等)
+│   │   │   ├── repositories/   # 仓库接口 (抽象)
+│   │   │   └── exceptions.py   # 领域异常
+│   │   ├── infra/             # 基础设施层
+│   │   │   └── persistence/   # ORM 模型和仓库实现
+│   │   ├── core/              # 配置
+│   │   └── main.py            # 应用入口
+│   ├── alembic/               # 数据库迁移
+│   ├── tests/                 # 测试文件
+│   ├── pyproject.toml         # 项目配置
+│   ├── uv.lock                # uv 锁文件
+│   └── project_conventions.md # DDD 架构指南
 │
-├── frontend/                   # Next.js Frontend
-│   ├── app/                   # App Router pages
-│   ├── components/            # React components
-│   ├── lib/                   # Utility functions
-│   └── types/                 # TypeScript types
+├── frontend/                  # Next.js 前端
+│   ├── app/                   # App Router 页面
+│   ├── components/            # React 组件
+│   ├── lib/                  # 工具函数
+│   └── types/                # TypeScript 类型
 │
-├── daemon/                     # Local daemon (TODO)
+├── daemon/                    # 本地 Daemon (TODO)
 │
-├── docker-compose.yml          # Docker configuration
-├── AGENT.md                    # Agent operations guide
-└── README.md                   # This file
+├── docker-compose.yml        # Docker 配置
+├── AGENTS.md                 # Agent 工作指南
+└── README.md                # 本文件
 ```
 
-## Architecture Overview
+## 架构概览
 
-This project follows **Domain-Driven Design (DDD) Four-Layer Architecture**:
+本项目采用 **领域驱动设计 (DDD) 四层架构**：
 
 ```
 ┌─────────────────────────────────────────────┐
-│                  API Layer                    │
-│         (routers, dependencies)             │
-│              ↓ Depends on                     │
+│                  API 层                      │
+│            (routers, dependencies)          │
+│                ↓ 依赖方向                      │
 ├─────────────────────────────────────────────┤
-│              Application Layer                │
-│           (handlers, commands)               │
-│              ↓ Depends on                     │
+│                应用层                          │
+│             (handlers, commands)              │
+│                ↓ 依赖方向                      │
 ├─────────────────────────────────────────────┤
-│               Domain Layer                    │
-│      (entities, value_objects, repositories) │
-│              ↑ Implemented by                 │
+│                 领域层                         │
+│       (entities, value_objects, repositories)│
+│                ↑ 实现方向                      │
 ├─────────────────────────────────────────────┤
-│             Infrastructure Layer              │
-│        (persistence, external_services)     │
+│               基础设施层                        │
+│          (persistence, external_services)    │
 └─────────────────────────────────────────────┘
 ```
 
-### Key Patterns
+### 核心模式
 
-- **Value Objects**: Immutable objects validated at construction (e.g., Slug, Email)
-- **Aggregate Roots**: Domain entities that encapsulate business logic (e.g., Skill, User)
-- **Repositories**: Abstract data access interfaces with SQLAlchemy implementations
-- **Handlers**: Stateless use case functions in the Application layer
-- **Dependency Injection**: Repositories injected via FastAPI Depends
+- **值对象**: 构造时验证的不可变对象 (如 Slug, Email)
+- **聚合根**: 封装业务逻辑的领域实体 (如 Skill, User)
+- **仓库**: 抽象数据访问接口，SQLAlchemy 实现
+- **处理器**: 应用层中的无状态用例函数
+- **依赖注入**: 通过 FastAPI Depends 注入仓库
 
-For detailed architecture documentation, see [backend/project_conventions.md](backend/project_conventions.md).
+详细架构文档请查看 [backend/project_conventions.md](backend/project_conventions.md)。
 
-## API Documentation
+## API 文档
 
-### Authentication
+### 认证
 
-| Method | Path | Description | Request DTO | Response DTO |
-|--------|------|-------------|-------------|--------------|
-| POST | /api/auth/register | User registration | RegisterUserReq | RegisterUserResp |
-| POST | /api/auth/login | User login | LoginReq | LoginResp |
-| POST | /api/auth/refresh | Refresh access token | - (Header: Bearer) | LoginResp |
-| GET | /api/auth/me | Get current user | - | GetUserResp |
-| POST | /api/auth/logout | User logout | - | Message |
+| 方法   | 路径                  | 描述           | 请求 DTO        | 响应 DTO         |
+|--------|----------------------|----------------|-----------------|------------------|
+| POST   | /api/auth/register   | 用户注册       | RegisterUserReq | RegisterUserResp |
+| POST   | /api/auth/login      | 用户登录       | LoginReq        | LoginResp        |
+| POST   | /api/auth/refresh    | 刷新访问令牌   | - (Header)      | LoginResp        |
+| GET    | /api/auth/me        | 获取当前用户   | -               | GetUserResp      |
+| POST   | /api/auth/logout     | 用户登出       | -               | Message          |
 
 ### Skills
 
-| Method | Path | Description | Request DTO | Response DTO |
-|--------|------|-------------|-------------|--------------|
-| GET | /api/skills | List user skills | Query: skip, limit | ListSkillsResp |
-| POST | /api/skills | Create skill | CreateSkillReq | CreateSkillResp |
-| POST | /api/skills/import | Import skill | ImportSkillReq | CreateSkillResp |
-| GET | /api/skills/{id} | Get skill details | - | GetSkillResp |
-| PUT | /api/skills/{id} | Update skill | UpdateSkillReq | UpdateSkillResp |
-| DELETE | /api/skills/{id} | Delete skill | - | - |
+| 方法   | 路径                     | 描述         | 请求 DTO         | 响应 DTO         |
+|--------|-------------------------|--------------|------------------|------------------|
+| GET    | /api/skills             | 列出用户 Skills | Query: skip, limit | ListSkillsResp  |
+| POST   | /api/skills             | 创建 Skill   | CreateSkillReq   | CreateSkillResp  |
+| POST   | /api/skills/import      | 导入 Skill   | ImportSkillReq   | CreateSkillResp  |
+| GET    | /api/skills/{id}        | 获取详情     | -                | GetSkillResp     |
+| PUT    | /api/skills/{id}        | 更新 Skill   | UpdateSkillReq   | UpdateSkillResp  |
+| DELETE | /api/skills/{id}        | 删除 Skill   | -                | -                |
 
 ### Trees
 
-| Method | Path | Description | Request DTO | Response DTO |
-|--------|------|-------------|-------------|--------------|
-| POST | /api/trees | Create tree | CreateTreeReq | CreateTreeResp |
-| GET | /api/trees/{id} | Get tree | - | GetTreeResp |
-| POST | /api/trees/{id}/files | Add file to tree | AddTreeFileReq | AddTreeFileResp |
-| DELETE | /api/trees/{id}/files | Delete file from tree | DeleteTreeFileReq | CreateTreeResp |
-| PUT | /api/trees/{id}/files/rename | Rename file | RenameTreeFileReq | CreateTreeResp |
-| PUT | /api/trees/{id}/files/move | Move file | MoveTreeFileReq | CreateTreeResp |
+| 方法   | 路径                          | 描述         | 请求 DTO          | 响应 DTO         |
+|--------|------------------------------|--------------|-------------------|------------------|
+| POST   | /api/trees                   | 创建树       | CreateTreeReq     | CreateTreeResp   |
+| GET    | /api/trees/{id}              | 获取树       | -                 | GetTreeResp      |
+| POST   | /api/trees/{id}/files        | 添加文件     | AddTreeFileReq    | AddTreeFileResp  |
+| DELETE | /api/trees/{id}/files        | 删除文件     | DeleteTreeFileReq | CreateTreeResp   |
+| PUT    | /api/trees/{id}/files/rename | 重命名文件   | RenameTreeFileReq | CreateTreeResp   |
+| PUT    | /api/trees/{id}/files/move   | 移动文件     | MoveTreeFileReq   | CreateTreeResp   |
 
 ### Blobs
 
-| Method | Path | Description | Request DTO | Response DTO |
-|--------|------|-------------|-------------|--------------|
-| POST | /api/blobs | Upload blob | Multipart file | UploadBlobResp |
-| GET | /api/blobs/{id} | Download blob | - | Binary content |
+| 方法   | 路径              | 描述       | 请求 DTO     | 响应 DTO       |
+|--------|------------------|------------|--------------|----------------|
+| POST   | /api/blobs       | 上传 blob  | Multipart    | UploadBlobResp |
+| GET    | /api/blobs/{id}  | 下载 blob  | -            | 二进制内容      |
 
 ### Projects
 
-| Method | Path | Description | Request DTO | Response DTO |
-|--------|------|-------------|-------------|--------------|
-| GET | /api/projects | List user projects | Query: skip, limit | ListProjectsResp |
-| POST | /api/projects | Create project | CreateProjectReq | CreateProjectResp |
-| GET | /api/projects/{id} | Get project details | - | GetProjectResp |
-| PUT | /api/projects/{id} | Update project | UpdateProjectReq | UpdateProjectResp |
-| DELETE | /api/projects/{id} | Delete project | - | - |
+| 方法   | 路径                   | 描述           | 请求 DTO           | 响应 DTO            |
+|--------|----------------------|----------------|--------------------|---------------------|
+| GET    | /api/projects        | 列出用户项目   | Query: skip, limit | ListProjectsResp    |
+| POST   | /api/projects        | 创建项目       | CreateProjectReq   | CreateProjectResp   |
+| GET    | /api/projects/{id}   | 获取项目详情   | -                  | GetProjectResp      |
+| PUT    | /api/projects/{id}  | 更新项目       | UpdateProjectReq   | UpdateProjectResp   |
+| DELETE | /api/projects/{id}   | 删除项目       | -                  | -                   |
 
 ### Health
 
-| Method | Path | Description | Response |
-|--------|------|-------------|----------|
-| GET | /health | Health check | {"status": "ok", "version": "1.0.0"} |
+| 方法   | 路径       | 描述       | 响应                        |
+|--------|-----------|-----------|----------------------------|
+| GET    | /health   | 健康检查   | {"status": "ok", "version": "1.0.0"} |
 
-Full API documentation available at: http://localhost:8000/docs
+完整 API 文档：http://localhost:8000/docs
 
-## Environment Variables
+## 环境变量
 
-### Backend (.env)
+### 后端 (.env)
 
 ```bash
-# Database
+# 数据库
 DATABASE_URL=postgresql+asyncpg://user:password@localhost:5432/dbname
 POSTGRES_HOST=localhost
 POSTGRES_PORT=5432
@@ -287,59 +287,59 @@ POSTGRES_USER=user
 POSTGRES_PASSWORD=password
 POSTGRES_DB=dbname
 
-# JWT (auto-generated in dev, required in production)
+# JWT（开发环境自动生成，生产环境需设置）
 # SECRET_KEY=your-generated-secret-key-here
 ```
 
-## Development
+## 开发
 
-### Code Formatting
+### 代码格式化
 
 ```bash
-# Backend - using ruff
+# 后端 - 使用 ruff
 cd backend
 ruff check .
 ruff format .
 
-# Frontend - using ESLint
+# 前端 - 使用 ESLint
 cd frontend
 npm run lint
 ```
 
-### Security Scanning
+### 安全扫描
 
 ```bash
-# Run full security scan
+# 运行完整安全扫描
 ./scripts/security-check.sh
 
-# Scan Python dependencies
+# 扫描 Python 依赖
 cd backend
 safety check
 
-# Scan Node.js dependencies
+# 扫描 Node.js 依赖
 cd frontend
 npm audit --audit-level=high
 ```
 
-### Testing
+### 测试
 
 ```bash
-# Backend
+# 后端
 cd backend
 pytest
 
-# Frontend
+# 前端
 cd frontend
 npm run test
 ```
 
 ## License
 
-MIT License - See LICENSE file for details
+MIT License - 详见 LICENSE 文件
 
-## Contributing
+## 贡献
 
-Issues and Pull Requests are welcome!
+欢迎提交 Issues 和 Pull Requests！
 
 ---
 
