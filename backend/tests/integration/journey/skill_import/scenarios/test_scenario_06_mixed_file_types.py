@@ -3,6 +3,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+
 class TestScenario06MixedFileTypes:
 
     @pytest.mark.asyncio
@@ -20,7 +21,6 @@ class TestScenario06MixedFileTypes:
         )
         assert response.status_code == 201
         skill_data = response.json()
-        skill_id = skill_data["id"]
         tree_id = skill_data["tree_id"]
 
         # Step 2: 准备各种类型文件
@@ -262,4 +262,3 @@ startxref 308
 
             downloaded_content = response.content
             assert file_info["verify"](downloaded_content), f"{filename} 内容验证失败"
-

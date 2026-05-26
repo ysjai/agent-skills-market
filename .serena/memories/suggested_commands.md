@@ -1,0 +1,28 @@
+- Prefer root-level commands via `just`:
+  - `just --list`
+  - `just setup`
+  - `just postgres-up`
+  - `just db-upgrade`
+  - `just run-backend`
+  - `just run-frontend`
+  - `just dev`
+  - `just lint`
+  - `just typecheck`
+  - `just test`
+  - `just check`
+  - `just clean`
+- Focused recipes:
+  - `just db-migrate <message>`
+  - `just db-downgrade`
+  - `just db-history`
+  - `just test-backend <pytest-args>`
+  - `just test-frontend <bun-test-args>`
+  - `just build-frontend`
+- Direct fallbacks when needed:
+  - `cd backend && uv sync --extra dev`
+  - `cd backend && uv run alembic upgrade head`
+  - `cd backend && uv run uvicorn src.main:app --reload --host 0.0.0.0 --port 8000`
+  - `cd frontend && npm install`
+  - `cd frontend && npm run dev`
+  - `cd frontend && bun test`
+  - `docker compose up -d postgres`

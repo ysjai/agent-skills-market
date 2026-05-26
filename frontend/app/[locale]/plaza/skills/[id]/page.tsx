@@ -1,6 +1,7 @@
 'use client';
 
 import { use } from 'react';
+
 import { SharedSkillDetail } from '@/components/market/SharedSkillDetail';
 
 export default function PlazaSkillDetailPage({ params }: { params: Promise<{ id: string }> }) {

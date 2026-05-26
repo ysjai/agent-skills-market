@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from '@/i18n/routing';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Bookmark, Star, AlertTriangle, ExternalLink, BookmarkMinus, FileText, RefreshCw, Heart } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardFooter } from '@/components/ui/Card';
 import { Dialog } from '@/components/ui/Dialog';
@@ -51,41 +52,24 @@ export default function FavoritesPage() {
     return () => clearTimeout(timer);
   }, []);
 
-  useEffect(() => {
-    loadUser();
-  }, []);
-
-  useEffect(() => {
-    if (user) {
-      loadFavorites(0, true);
-    }
-  }, [user]);
-
-  useEffect(() => {
-    if (user && activeTab === 'prompts') {
-      loadPromptFavorites(0, true);
-    }
-  }, [user, activeTab]);
-
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     try {
       const userData = await getCurrentUser();
       setUser(userData);
     } catch {
       router.push('/login');
     }
-  };
+  }, [router]);
 
-  const loadFavorites = async (currentSkip: number, reset: boolean = false) => {
+  const loadFavorites = useCallback(async (currentSkip: number, reset: boolean = false) => {
     setIsLoading(true);
     setError(null);
     try {
       const data = await api.getMyFavorites(currentSkip, limit);
-      if (reset) {
-        setFavorites(data.items);
-      } else {
-        setFavorites([...favorites, ...data.items]);
-      }
+      const nextItems = reset
+        ? data.items
+        : [...useFavoritesStore.getState().favorites, ...data.items];
+      setFavorites(nextItems);
       setTotal(data.total);
       setSkip(currentSkip);
     } catch {
@@ -93,7 +77,7 @@ export default function FavoritesPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [limit, setError, setFavorites, setIsLoading, setTotal, tCommon]);
 
   const handleLoadMore = () => {
     loadFavorites(skip + limit, false);
@@ -113,16 +97,15 @@ export default function FavoritesPage() {
     }
   };
 
-  const loadPromptFavorites = async (currentSkip: number, reset: boolean = false) => {
+  const loadPromptFavorites = useCallback(async (currentSkip: number, reset: boolean = false) => {
     setPromptIsLoading(true);
     setPromptError(null);
     try {
       const data = await api.getMyPromptFavorites(currentSkip, limit);
-      if (reset) {
-        setPromptFavorites(data.items);
-      } else {
-        setPromptFavorites([...promptFavorites, ...data.items]);
-      }
+      const nextItems = reset
+        ? data.items
+        : [...usePromptFavoritesStore.getState().favorites, ...data.items];
+      setPromptFavorites(nextItems);
       setPromptTotal(data.total);
       setPromptSkip(currentSkip);
     } catch {
@@ -130,7 +113,23 @@ export default function FavoritesPage() {
     } finally {
       setPromptIsLoading(false);
     }
-  };
+  }, [limit, setPromptError, setPromptFavorites, setPromptIsLoading, setPromptTotal, tCommon]);
+
+  useEffect(() => {
+    void loadUser();
+  }, [loadUser]);
+
+  useEffect(() => {
+    if (user) {
+      void loadFavorites(0, true);
+    }
+  }, [loadFavorites, user]);
+
+  useEffect(() => {
+    if (user && activeTab === 'prompts') {
+      void loadPromptFavorites(0, true);
+    }
+  }, [activeTab, loadPromptFavorites, user]);
 
   const handleUnfavoritePrompt = async (sharedPromptId: string | null, favoriteId: string) => {
     if (!sharedPromptId) {
@@ -148,8 +147,7 @@ export default function FavoritesPage() {
   const handleRefreshPromptFavorite = async (favoriteId: string) => {
     try {
       const updated = await api.refreshPromptFavorite(favoriteId);
-      // The response has { message, favorite } - extract the favorite
-      updatePromptFavorite(favoriteId, (updated as any).favorite || updated);
+      updatePromptFavorite(favoriteId, updated);
     } catch {
       // Silently ignore
     }

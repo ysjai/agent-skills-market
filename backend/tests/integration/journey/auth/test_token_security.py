@@ -420,7 +420,6 @@ class TestRefreshTokenRotation:
         await db_session.refresh(user)
 
         # Step 2: 生成初始token对
-        access_token = create_access_token(data={"sub": str(user.id)})
         refresh_token = create_refresh_token(data={"sub": str(user.id)})
 
         # Step 3: 正常使用refresh token刷新
@@ -441,7 +440,7 @@ class TestRefreshTokenRotation:
 
         # Step 6: 该用户的所有token应该被撤销（安全策略）
         new_access_token = response1.json()["access_token"]
-        response3 = await client.get(
+        await client.get(
             f"{AUTH_PREFIX}/me",
             headers={"Authorization": f"Bearer {new_access_token}"},
         )

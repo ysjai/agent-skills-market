@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
 import { Search, Plus, LayoutTemplate, Trash2, Download, Upload, Globe, GlobeLock } from 'lucide-react';
+
 import { usePromptsStore } from '@/stores/promptsStore';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';

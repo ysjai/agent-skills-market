@@ -2,14 +2,16 @@
 
 import React from 'react';
 import { Download } from 'lucide-react';
+
 import { getFileType, type FileType } from '@/lib/file-utils';
-import { ImagePreview } from './ImagePreview';
-import { PdfPreview } from './PdfPreview';
 import { MarkdownViewer } from '@/components/editors/MarkdownViewer';
 import { TextViewer } from '@/components/editors/TextViewer';
 import { getFileIcon } from '@/components/ui/FileIcons';
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
+
+import { PdfPreview } from './PdfPreview';
+import { ImagePreview } from './ImagePreview';
 
 export interface FilePreviewProps {
   blobId?: string;

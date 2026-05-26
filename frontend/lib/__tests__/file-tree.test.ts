@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'bun:test';
-import { buildTree, findNodeByPath, findFirstFileInDirectory, applyExpandedState } from '../file-tree-utils';
+
+import {
+  applyExpandedState,
+  buildTree,
+  findFirstFileInDirectory,
+  findNextFileAfterDelete,
+  findNodeByPath,
+  findSiblingFiles,
+} from '../file-tree-utils';
 
 describe('buildTree', () => {
   it('builds correct directory structure from Git entries', () => {
@@ -15,7 +23,7 @@ describe('buildTree', () => {
   });
   it('returns empty array for empty input', () => {
     expect(buildTree([])).toEqual([]);
-    expect(buildTree(null as any)).toEqual([]);
+    expect(buildTree(null as unknown as Parameters<typeof buildTree>[0])).toEqual([]);
   });
   it('sorts directories first then alphabetically', () => {
     const entries = [
@@ -83,9 +91,6 @@ describe('applyExpandedState', () => {
     expect(expanded[0].isExpanded).toBe(false);
   });
 });
-
-import { findSiblingFiles, findNextFileAfterDelete } from '../file-tree-utils';
-
 describe('findSiblingFiles', () => {
   it('returns all files in the same directory', () => {
     const entries = [

@@ -5,9 +5,10 @@ Revises: v9_shared_prompts
 Create Date: 2026-03-08
 """
 
-from alembic import op
 import sqlalchemy as sa
-from sqlalchemy.dialects.postgresql import UUID, ARRAY
+from sqlalchemy.dialects.postgresql import ARRAY, UUID
+
+from alembic import op
 
 revision = "v10_prompt_favorites"
 down_revision = "v9_shared_prompts"

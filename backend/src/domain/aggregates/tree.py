@@ -160,7 +160,7 @@ class Tree:
             raise ValidationError("Target path cannot be empty")
 
         _ = Path(source)
-        target_path = Path(target)
+        _ = Path(target)
 
         source_prefix = source if source.endswith("/") else source + "/"
         entry_found = False

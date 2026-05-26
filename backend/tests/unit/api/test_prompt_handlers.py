@@ -16,25 +16,24 @@
 测试设计遵循 Given-When-Then 模式。
 """
 
-from unittest.mock import AsyncMock, MagicMock
+from unittest.mock import AsyncMock
 from uuid import uuid4
 
 import pytest
 
+from src.application.handlers.create_prompt_handler import handle_create_prompt
+from src.application.handlers.delete_prompt_handler import handle_delete_prompt
+from src.application.handlers.export_prompt_handler import handle_export_prompt
+from src.application.handlers.get_prompt_handler import handle_get_prompt
+from src.application.handlers.get_prompt_version_handler import handle_get_prompt_version
+from src.application.handlers.import_prompt_handler import handle_import_prompt
+from src.application.handlers.list_prompt_versions_handler import handle_list_prompt_versions
+from src.application.handlers.list_prompts_handler import handle_list_prompts
+from src.application.handlers.publish_prompt_version_handler import handle_publish_prompt_version
+from src.application.handlers.update_prompt_handler import handle_update_prompt
 from src.domain.aggregates.prompt import Prompt
 from src.domain.entities.prompt_version import PromptVersion
 from src.domain.exceptions import ResourceNotFoundError, ValidationError
-
-from src.application.handlers.create_prompt_handler import handle_create_prompt
-from src.application.handlers.list_prompts_handler import handle_list_prompts
-from src.application.handlers.get_prompt_handler import handle_get_prompt
-from src.application.handlers.update_prompt_handler import handle_update_prompt
-from src.application.handlers.delete_prompt_handler import handle_delete_prompt
-from src.application.handlers.publish_prompt_version_handler import handle_publish_prompt_version
-from src.application.handlers.list_prompt_versions_handler import handle_list_prompt_versions
-from src.application.handlers.get_prompt_version_handler import handle_get_prompt_version
-from src.application.handlers.import_prompt_handler import handle_import_prompt
-from src.application.handlers.export_prompt_handler import handle_export_prompt
 
 
 @pytest.fixture

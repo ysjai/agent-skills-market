@@ -204,7 +204,7 @@ class TestUpdateTreeHandler:
         ]
 
         # When
-        result = await handle_update_tree(
+        await handle_update_tree(
             tree_repo=tree_repo,
             tree_id=test_tree_empty.id,
             entries=new_entries,

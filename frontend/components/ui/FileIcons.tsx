@@ -1,3 +1,5 @@
+/* eslint-disable @next/next/no-img-element */
+
 import {
   FileText,
   FileCode,
@@ -50,7 +52,7 @@ const SkillSVGIcon: React.FC = () => (
   <img src="/file-item-icons/skill.svg" alt="Skill" className="h-4 w-4" />
 );
 
-export const MarkdownIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const MarkdownIcon: React.FC<{ className?: string }> = ({ className = 'h-4 w-4' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"
@@ -67,7 +69,7 @@ export const MarkdownIcon: React.FC<{ className?: string }> = ({ className = "h-
   </svg>
 );
 
-export const SkillFileIcon: React.FC<{ className?: string }> = ({ className = "h-4 w-4" }) => (
+export const SkillFileIcon: React.FC<{ className?: string }> = ({ className = 'h-4 w-4' }) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
     viewBox="0 0 24 24"

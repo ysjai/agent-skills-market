@@ -1,5 +1,6 @@
 import {NextIntlClientProvider} from 'next-intl';
 import {notFound} from 'next/navigation';
+
 import {routing} from '@/i18n/routing';
 import '../globals.css';
 import {ToastProvider} from '@/components/ui/Toast';

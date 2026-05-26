@@ -46,19 +46,32 @@
 
 ## 快速启动
 
+优先从项目根目录使用 `just`：
+
+```bash
+# 在仓库根目录
+just setup-backend
+just db-upgrade
+just run-backend
+```
+
+如果只在 `backend/` 目录工作，可直接运行：
+
 ```bash
 # 安装依赖
-uv sync
+uv sync --extra dev
 
-# 配置环境
+# 在仓库根目录准备共享环境变量
+cd ..
 cp .env.example .env
-# 编辑 .env 设置数据库连接
+# 编辑 .env 设置数据库连接后再回到 backend
+cd backend
 
 # 运行迁移
-alembic upgrade head
+uv run --extra dev alembic upgrade head
 
 # 启动服务
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+uv run --extra dev uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 ```
 
 访问：http://localhost:8000/docs

@@ -4,11 +4,9 @@ Covers: sql_shared_prompt_repository, sql_prompt_repository,
 sql_prompt_favorite_repository, market.py prompt endpoints.
 """
 
-from uuid import UUID
 
 import pytest
 from httpx import AsyncClient
-
 
 PROMPTS_URL = "/api/prompts"
 MARKET_PROMPTS_URL = "/api/market/prompts"

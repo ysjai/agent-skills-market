@@ -9,7 +9,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.persistence.models.category_model import CategoryModel
 
-
 MARKET_SKILLS_URL = "/api/market/skills"
 
 

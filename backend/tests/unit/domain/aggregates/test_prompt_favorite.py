@@ -1,8 +1,8 @@
-import pytest
+from unittest.mock import MagicMock
 from uuid import uuid4
+
 from src.domain.aggregates.prompt_favorite import PromptFavorite
 from src.domain.factories.prompt_favorite_factory import PromptFavoriteFactory
-from unittest.mock import MagicMock
 
 
 def test_create_prompt_favorite():

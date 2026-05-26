@@ -3,6 +3,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+
 class TestScenario03DuplicateName:
 
     @pytest.mark.asyncio
@@ -19,8 +20,7 @@ class TestScenario03DuplicateName:
             },
         )
         assert response.status_code == 201, f"第一次导入失败: {response.text}"
-        skill_data = response.json()
-        skill_id = skill_data["id"]
+        response.json()
 
         # Step 2: 再次导入同名技能，应该失败
         response = await business_client.post(
@@ -59,4 +59,3 @@ class TestScenario03DuplicateName:
         slugs = [s["slug"] for s in skills]
         assert unique_slug in slugs
         assert different_slug in slugs
-

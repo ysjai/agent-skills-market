@@ -1,0 +1,5 @@
+- Backend: Python >=3.10, `uv` for env/deps (`uv sync --extra dev` for local development), FastAPI, SQLAlchemy async, Alembic, PostgreSQL 16+, pytest, ruff, mypy.
+- Frontend: Next.js 15, React 19, TypeScript 5, Tailwind CSS 4, next-intl, Zustand, Bun test.
+- Package-manager/tool split on frontend: `npm` is the install/dev/lint/build path from `frontend/package.json`; Bun is required for tests (`bun test`).
+- Root/dev tooling: `just` for task orchestration, Docker Compose for local Postgres, root `.env` for shared local env.
+- Backend env settings are defined in `backend/src/core/config.py`; settings model expects `.env` variables such as `DATABASE_URL`, `POSTGRES_*`, `ENVIRONMENT`, `SECRET_KEY`.

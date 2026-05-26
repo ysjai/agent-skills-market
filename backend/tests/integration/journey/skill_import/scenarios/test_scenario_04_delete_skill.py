@@ -3,6 +3,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+
 class TestScenario04DeleteSkill:
 
     @pytest.mark.asyncio

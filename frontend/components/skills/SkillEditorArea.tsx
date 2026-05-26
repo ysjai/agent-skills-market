@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { FileText, Menu } from 'lucide-react';
+
 import { Button } from '@/components/ui/Button';
 import { FilePreview } from '@/components/file-tree/FilePreview';
 import type { Skill } from '@/types/skill';

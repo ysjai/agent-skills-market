@@ -2,13 +2,15 @@
 
 import { useTranslations } from 'next-intl';
 import { FileText } from 'lucide-react';
-import { MarketSkillFileTree } from './MarketSkillFileTree';
+
 import { useMarketFileTree } from '@/hooks/useMarketFileTree';
 import { MarkdownViewer } from '@/components/editors/MarkdownViewer';
 import { TextViewer } from '@/components/editors/TextViewer';
 import { getFileType } from '@/lib/file-utils';
 import { ImagePreview } from '@/components/file-tree/ImagePreview';
 import { PdfPreview } from '@/components/file-tree/PdfPreview';
+
+import { MarketSkillFileTree } from './MarketSkillFileTree';
 
 interface MarketSkillViewerProps {
   sharedSkillId: string;

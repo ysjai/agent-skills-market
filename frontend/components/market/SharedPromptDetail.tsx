@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { useTranslations } from 'next-intl';
-import { useRouter } from '@/i18n/routing';
 import { Heart, Star, Clock, User as UserIcon, Tag, AlertTriangle, Download, FileText } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { AppHeader } from '@/components/layout/AppHeader';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
@@ -75,7 +76,7 @@ export function SharedPromptDetail({ id, backPath }: SharedPromptDetailProps) {
     };
 
     fetchData();
-  }, [id]);
+  }, [id, tMarket]);
 
   const handleLike = async () => {
     if (!user) {

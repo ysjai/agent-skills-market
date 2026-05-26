@@ -1,0 +1,6 @@
+- Frontend lives in `frontend/` and uses Next.js App Router with locale-prefixed routes under `app/[locale]/`.
+- Structure is feature-oriented: `components/`, `hooks/`, `stores/`, `types/`, `lib/`, `i18n/`; non-React tests are commonly under `lib/__tests__/`.
+- API base URL is read from `NEXT_PUBLIC_API_URL` and defaults in code to `http://localhost:8000/api`.
+- Local dev/install workflow is mixed: install with `npm install`; dev/lint/build use package scripts; tests are Bun-based (`bun test`). Root `justfile` normalizes this.
+- Frontend conventions are centralized in `frontend/project_conventions.md`; that file defines import rules, component patterns, hook/store organization, and quality gates.
+- Tailwind is v4 CSS-first; theme/config lives in `frontend/app/globals.css` rather than `tailwind.config.ts`.

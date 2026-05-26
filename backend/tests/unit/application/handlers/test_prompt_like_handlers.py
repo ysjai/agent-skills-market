@@ -1,6 +1,7 @@
-import pytest
-from uuid import uuid4
 from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
+
+import pytest
 
 from src.application.handlers.prompt_like_handlers import (
     handle_like_prompt,
@@ -23,7 +24,7 @@ async def test_like_prompt_success():
     repo.find_like.return_value = None
     repo.save_like.side_effect = lambda like: like
 
-    result = await handle_like_prompt(shared_prompt_id, user, repo)
+    await handle_like_prompt(shared_prompt_id, user, repo)
     repo.save_like.assert_called_once()
     repo.increment_like_count.assert_called_once_with(shared_prompt_id)
 
@@ -64,7 +65,7 @@ async def test_unlike_prompt_success():
     repo.find_by_id.return_value = MagicMock()
     repo.find_like.return_value = MagicMock()
 
-    result = await handle_unlike_prompt(shared_prompt_id, user, repo)
+    await handle_unlike_prompt(shared_prompt_id, user, repo)
     repo.delete_like.assert_called_once_with(user.id, shared_prompt_id)
     repo.decrement_like_count.assert_called_once_with(shared_prompt_id)
 

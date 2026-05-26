@@ -3,6 +3,8 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { X, Folder, AlertCircle, CheckCircle, Loader2, Package, FileText, ChevronDown, ChevronUp, Copy, Check } from 'lucide-react';
+import JSZip from 'jszip';
+
 import { Button } from '@/components/ui/Button';
 import {
   checkFileSystemAccessSupport,
@@ -18,7 +20,6 @@ import {
   type FileNameMapping,
 } from '@/lib/download';
 import { api } from '@/lib/api';
-import JSZip from 'jszip';
 
 interface DownloadDialogProps {
   open: boolean;

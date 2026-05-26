@@ -1,7 +1,8 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
+
 import { Dialog } from '@/components/ui/Dialog';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -29,26 +30,28 @@ export function ShareSkillDialog({ open, onClose, skillId, onSuccess }: ShareSki
   const [error, setError] = useState('');
   const [loadingCategories, setLoadingCategories] = useState(false);
 
-  useEffect(() => {
-    if (open && categories.length === 0) {
-      loadCategories();
-    }
-  }, [open]);
-
-  const loadCategories = async () => {
+  const loadCategories = useCallback(async () => {
     setLoadingCategories(true);
-      try {
-        const response = await api.getCategories();
-        setCategories(response.items);
-        if (response.items.length > 0 && !form.category_id) {
-          setForm((prev) => ({ ...prev, category_id: response.items[0].id }));
-        }
+    try {
+      const response = await api.getCategories();
+      setCategories(response.items);
+      if (response.items.length > 0) {
+        setForm((prev) => (
+          prev.category_id ? prev : { ...prev, category_id: response.items[0].id }
+        ));
+      }
     } catch (err) {
       setError(parseApiError(err) || 'Failed to load categories');
     } finally {
       setLoadingCategories(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    if (open && categories.length === 0) {
+      void loadCategories();
+    }
+  }, [categories.length, loadCategories, open]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

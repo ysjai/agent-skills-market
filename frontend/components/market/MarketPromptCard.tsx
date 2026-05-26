@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
 import { Heart, Star, User, Clock, MessageSquare, FileText, Tag } from 'lucide-react';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import type { SharedPrompt } from '@/types/prompt-market';
 

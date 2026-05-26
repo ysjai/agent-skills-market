@@ -5,9 +5,9 @@ Covers: api/dependencies/auth.py (get_current_user, get_optional_current_user).
 
 from uuid import uuid4
 
+import httpx
 import pytest
 from httpx import AsyncClient
-import httpx
 
 from src.auth import create_access_token
 
@@ -30,7 +30,6 @@ class TestAuthDependency:
         client: AsyncClient,
     ):
         """Invalid JWT token should return 401."""
-        from src.infra.persistence.db.session import get_db
         from src.main import app
 
         async with httpx.AsyncClient(
@@ -46,7 +45,6 @@ class TestAuthDependency:
         client: AsyncClient,
     ):
         """Token with valid JWT but non-existent user_id should return 401."""
-        from src.infra.persistence.db.session import get_db
         from src.main import app
 
         fake_user_id = str(uuid4())

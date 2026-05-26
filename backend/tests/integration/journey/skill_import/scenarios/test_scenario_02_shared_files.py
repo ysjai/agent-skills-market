@@ -3,6 +3,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+
 class TestScenario02SharedFiles:
 
     @pytest.mark.asyncio

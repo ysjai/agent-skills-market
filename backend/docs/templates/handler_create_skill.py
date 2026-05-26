@@ -47,9 +47,9 @@ async def handle_create_skill(
 
 
 
+from fastapi import APIRouter, Depends, status
 from src.dependencies.auth import get_current_user
 from src.schemas.skill import CreateSkillReq, CreateSkillResp
-from fastapi import APIRouter, Depends, status
 
 from src.api.dependencies.repositories import get_skill_repo
 from src.application.handlers.create_skill_handler import handle_create_skill

@@ -169,9 +169,7 @@ class TestCascadeDeletion:
         # 我们需要检查Blob是否仍然存在，如果存在则引用计数应该正确
         blob = await self._get_blob(db_session, UUID(blob_id))
         if blob is not None:
-            new_ref_count = await self._get_blob_ref_count(db_session, UUID(blob_id))
-        else:
-            pass  # Blob was already cleaned up
+            await self._get_blob_ref_count(db_session, UUID(blob_id))
 
     @pytest.mark.asyncio
     async def test_shared_blob_ref_count_accuracy(

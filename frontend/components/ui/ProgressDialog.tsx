@@ -1,8 +1,9 @@
 'use client';
 
 import { X, Loader2, AlertCircle, CheckCircle, FileUp, FileDown } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
+
+import { Button } from '@/components/ui/Button';
 
 export interface ProgressItem {
   name: string;

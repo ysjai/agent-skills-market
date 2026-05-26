@@ -1,12 +1,11 @@
-from uuid import uuid4
 from typing import TypedDict, cast
+from uuid import uuid4
 
 import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.persistence.models.category_model import CategoryModel
-
 
 MARKET_SKILLS_URL = "/api/market/skills"
 FAVORITES_URL = "/api/favorites/skills"

@@ -1,8 +1,9 @@
 'use client';
 
-import { Link, usePathname, useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { User as UserIcon, ChevronDown, LogOut, Layers, BookOpen, Rocket, Star, Settings } from 'lucide-react';
+
+import { Link, usePathname, useRouter } from '@/i18n/routing';
 import type { User } from '@/types/user';
 
 interface AppHeaderProps {

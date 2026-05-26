@@ -4,21 +4,23 @@ import * as React from 'react';
 import { forwardRef, useCallback } from 'react';
 import { useTranslations } from 'next-intl';
 import { FolderTree, FilePlus, FolderPlus } from 'lucide-react';
+
 import { cn } from '@/lib/utils';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useToast } from '@/components/ui/Toast';
-import { FileTreeItem } from './FileTreeItem';
-import { FileTreeToolbar } from './FileTreeToolbar';
-import { FileTreeDragOverlay } from './FileTreeDragOverlay';
-import { FileTreeWarnings } from './FileTreeWarnings';
-import { FileTreeDialogs } from './FileTreeDialogs';
 import { useFileTree } from '@/hooks/useFileTree';
 import { useFileTreeDialogs } from '@/hooks/useFileTreeDialogs';
 import { useFileUpload } from '@/hooks/useFileUpload';
 import { useFolderDownload } from '@/hooks/useFolderDownload';
 import { api } from '@/lib/api';
 import { findNodeByPath } from '@/lib/file-tree-utils';
+
+import { FileTreeDialogs } from './FileTreeDialogs';
+import { FileTreeWarnings } from './FileTreeWarnings';
+import { FileTreeDragOverlay } from './FileTreeDragOverlay';
+import { FileTreeToolbar } from './FileTreeToolbar';
+import { FileTreeItem } from './FileTreeItem';
 
 interface FileTreeProps {
   treeId?: string;

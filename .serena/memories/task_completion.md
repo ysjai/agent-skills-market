@@ -1,0 +1,7 @@
+- For root or cross-stack work, run the relevant `just` recipes from repo root before claiming completion.
+- Minimum backend verification: `just lint-backend`, `just typecheck-backend`, `just test-backend`.
+- Minimum frontend verification: `just lint-frontend`, `just typecheck-frontend`, `just test-frontend`; add `just build-frontend` for UI/config/significant rendering changes.
+- Full-stack or workflow/config changes: `just check`; if task changes startup/database flow, also validate the affected recipe with `just --dry-run <recipe>` or the real command when safe.
+- If DB schema or persistence code changed, include the relevant Alembic command (`just db-upgrade`, and migration generation if applicable).
+- Backend tests use `backend/.env.test` and expect a local Postgres role/database matching that file; if absent, `just test-backend` fails during fixture setup before running assertions.
+- Do not report success based on intended commands; report the exact commands actually run and any commands not run.

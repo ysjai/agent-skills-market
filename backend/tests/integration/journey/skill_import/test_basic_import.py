@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.conftest import create_override_get_db
 
+
 class TestJourneyImport:
     @pytest_asyncio.fixture
     async def import_user(self, db_session: AsyncSession):

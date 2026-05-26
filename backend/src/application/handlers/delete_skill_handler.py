@@ -3,7 +3,6 @@ from __future__ import annotations
 from typing import Protocol
 from uuid import UUID
 
-from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.exceptions import ForbiddenError, ResourceNotFoundError
 from src.domain.repositories.blob_repository import BlobRepository
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository

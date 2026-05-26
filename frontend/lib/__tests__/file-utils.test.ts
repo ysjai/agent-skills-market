@@ -1,4 +1,5 @@
 import { describe, it, expect } from 'bun:test';
+
 import { getFileType, isMarkdown } from '../file-utils';
 
 describe('getFileType', () => {

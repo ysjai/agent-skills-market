@@ -130,6 +130,24 @@ backend/
 
 ## 快速开始
 
+### 推荐：从项目根目录使用 just
+
+根目录 `justfile` 已经收口了后端常用命令：
+
+```bash
+# 在仓库根目录执行
+just setup-backend
+just db-upgrade
+just run-backend
+
+# 质量检查
+just lint-backend
+just typecheck-backend
+just test-backend
+```
+
+如果需要同时带前端一起启动，使用根目录的 `just dev`。
+
 ### 前置要求
 
 - Python 3.10+
@@ -140,18 +158,20 @@ backend/
 ```bash
 cd backend
 
-# 使用 uv 安装依赖（推荐）
-uv sync
+# 使用 uv 安装依赖（推荐，包含开发依赖）
+uv sync --extra dev
 
 # 手动创建虚拟环境
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
-uv sync
+uv sync --extra dev
 
-# 配置环境变量
+# 在项目根目录配置环境变量
+cd ..
 cp .env.example .env
-# 编辑 .env 设置数据库连接
+# 编辑 .env 设置数据库连接后再回到 backend
+cd backend
 ```
 
 ### 2. 数据库设置
@@ -165,18 +185,18 @@ docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skill
 # psql -U postgres -c "CREATE DATABASE agent_skills"
 
 # 运行迁移
-alembic downgrade base
-alembic upgrade head
+uv run --extra dev alembic downgrade base
+uv run --extra dev alembic upgrade head
 ```
 
 ### 3. 启动服务
 
 ```bash
 # 开发模式（自动重载）
-uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
+uv run --extra dev uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 # 生产模式
-uvicorn src.main:app --host 0.0.0.0 --port 8000
+uv run uvicorn src.main:app --host 0.0.0.0 --port 8000
 ```
 
 访问：
@@ -280,37 +300,39 @@ docker compose up -d postgres backend
 
 ## 开发
 
+如果已经安装 `just`，优先在仓库根目录使用 `just lint-backend`、`just typecheck-backend`、`just test-backend` 和 `just db-*`。
+
 ### 代码风格
 
 ```bash
 # 检查代码
-ruff check .
+uv run --extra dev ruff check .
 
 # 格式化代码
-ruff format .
+uv run --extra dev ruff format .
 ```
 
 ### 测试
 
 ```bash
 # 运行所有测试
-pytest
+uv run --extra dev pytest
 
 # 带覆盖率
-pytest --cov=src
+uv run --extra dev pytest --cov=src
 ```
 
 ### 数据库迁移
 
 ```bash
 # 创建新迁移
-alembic revision --autogenerate -m "description"
+uv run --extra dev alembic revision --autogenerate -m "description"
 
 # 升级到最新
-alembic upgrade head
+uv run --extra dev alembic upgrade head
 
 # 回滚
-alembic downgrade -1
+uv run --extra dev alembic downgrade -1
 ```
 
 ## 架构文档

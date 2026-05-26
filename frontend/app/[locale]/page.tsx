@@ -1,8 +1,9 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+
+import { Link } from '@/i18n/routing';
 
 export default function Home() {
   const t = useTranslations('home');

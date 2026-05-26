@@ -9,7 +9,6 @@ from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.aggregates.skill import Skill
 from src.domain.aggregates.tree import Tree
 from src.domain.exceptions import ResourceNotFoundError
-from src.domain.value_objects.slug import Slug
 
 
 @pytest.fixture

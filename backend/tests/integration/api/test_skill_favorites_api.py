@@ -12,7 +12,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.infra.persistence.models.category_model import CategoryModel
 
-
 SKILLS_URL = "/api/skills"
 SHARE_URL = "/api/skills"  # POST /api/skills/{id}/share
 MARKET_SKILLS_URL = "/api/market/skills"

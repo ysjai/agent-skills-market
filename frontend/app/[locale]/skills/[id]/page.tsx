@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useRef, useEffect } from 'react';
-import { useRouter } from '@/i18n/routing';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { useParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
+
+import { useRouter } from '@/i18n/routing';
 import { DownloadDialog } from '@/components/misc/DownloadDialog';
 import { SkillHeader } from '@/components/skills/SkillHeader';
 import { DeleteConfirmDialog } from '@/components/skills/DeleteConfirmDialog';
@@ -49,15 +50,7 @@ export default function SkillDetailPage() {
     return true;
   };
 
-  useEffect(() => {
-    if (skillId) {
-      loadSkill();
-    }
-    const timer = setTimeout(() => setMounted(true), 50);
-    return () => clearTimeout(timer);
-  }, [skillId]);
-
-  const loadSkill = async () => {
+  const loadSkill = useCallback(async () => {
     setLoading(true);
     setError('');
     try {
@@ -68,7 +61,15 @@ export default function SkillDetailPage() {
     } finally {
       setLoading(false);
     }
-  };
+  }, [skillId]);
+
+  useEffect(() => {
+    if (skillId) {
+      void loadSkill();
+    }
+    const timer = setTimeout(() => setMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, [loadSkill, skillId]);
 
   const handleDelete = async () => {
     if (!skill) return;

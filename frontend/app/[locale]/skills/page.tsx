@@ -1,9 +1,10 @@
 'use client';
 
-import { useState, useEffect, useMemo, useCallback } from 'react';
-import { useRouter } from '@/i18n/routing';
-import { useLocale, useTranslations } from 'next-intl';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useTranslations } from 'next-intl';
 import { FolderGit2, FolderUp } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent } from '@/components/ui/Card';
 import { Dialog } from '@/components/ui/Dialog';
@@ -27,7 +28,6 @@ export default function SkillsPage() {
   const tCommon = useTranslations('common');
   const tAuth = useTranslations('auth');
   const router = useRouter();
-  const locale = useLocale();
   const [skills, setSkills] = useState<Skill[]>([]);
   const [sharedMap, setSharedMap] = useState<Record<string, string>>({});
   const [user, setUser] = useState<User | null>(null);
@@ -51,30 +51,7 @@ export default function SkillsPage() {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false);
   const [shareSkillId, setShareSkillId] = useState<string>('');
 
-  useEffect(() => {
-    loadSkills();
-    loadUser();
-    const timer = setTimeout(() => setIsMounted(true), 50);
-    return () => clearTimeout(timer);
-  }, []);
-
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      const target = e.target as HTMLElement;
-      if (!target.closest('.menu-container')) {
-        setOpenMenuId(null);
-      }
-      if (!target.closest('.user-menu-container')) {
-        setIsUserMenuOpen(false);
-      }
-    };
-    if (openMenuId || isUserMenuOpen) {
-      document.addEventListener('click', handleClickOutside);
-      return () => document.removeEventListener('click', handleClickOutside);
-    }
-  }, [openMenuId, isUserMenuOpen]);
-
-  const loadSkills = async () => {
+  const loadSkills = useCallback(async () => {
     setIsLoading(true);
     setError('');
     try {
@@ -96,16 +73,39 @@ export default function SkillsPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [t]);
 
-  const loadUser = async () => {
+  const loadUser = useCallback(async () => {
     try {
       const userData = await getCurrentUser();
       setUser(userData);
     } catch {
       // Silently ignore user load errors
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    void loadSkills();
+    void loadUser();
+    const timer = setTimeout(() => setIsMounted(true), 50);
+    return () => clearTimeout(timer);
+  }, [loadSkills, loadUser]);
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      if (!target.closest('.menu-container')) {
+        setOpenMenuId(null);
+      }
+      if (!target.closest('.user-menu-container')) {
+        setIsUserMenuOpen(false);
+      }
+    };
+    if (openMenuId || isUserMenuOpen) {
+      document.addEventListener('click', handleClickOutside);
+      return () => document.removeEventListener('click', handleClickOutside);
+    }
+  }, [openMenuId, isUserMenuOpen]);
 
   const handleLogout = () => {
     logout();
@@ -153,7 +153,7 @@ export default function SkillsPage() {
 
   const handleNavigate = useCallback((skillId: string) => {
     router.push(`/skills/${skillId}`);
-  }, [locale, router]);
+  }, [router]);
 
   const handleShareClick = useCallback((skillId: string) => {
     setShareSkillId(skillId);
@@ -174,8 +174,8 @@ export default function SkillsPage() {
   }, []);
 
   const handleShareSuccess = useCallback(() => {
-    loadSkills();
-  }, []);
+    void loadSkills();
+  }, [loadSkills]);
   return (
     <div className={`flex min-h-screen flex-col bg-gradient-subtle transition-opacity duration-500 ${isMounted ? 'opacity-100' : 'opacity-0'}`}>
       <AppHeader

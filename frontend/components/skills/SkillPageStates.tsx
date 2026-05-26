@@ -1,8 +1,9 @@
 'use client';
 
-import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Loader2, AlertCircle } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 
 interface LoadingStateProps {

@@ -2,8 +2,9 @@
 
 import { useState, useCallback } from 'react';
 import { X, AlertTriangle, FileText, Check } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
+
+import { Button } from '@/components/ui/Button';
 
 export type ConflictAction = 'skip' | 'overwrite' | 'rename';
 

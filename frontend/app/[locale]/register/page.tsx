@@ -1,8 +1,9 @@
 'use client';
 
 import { useState } from 'react';
-import { useRouter, Link } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
+
+import { useRouter, Link } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { register } from '@/app/api/auth';

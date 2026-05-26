@@ -50,13 +50,13 @@ from src.application.handlers.prompt_like_handlers import handle_like_prompt, ha
 from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.aggregates.skill_favorite import SkillFavorite
 from src.domain.aggregates.user import User
+from src.domain.repositories.blob_repository import BlobRepository
 from src.domain.repositories.prompt_favorite_repository import PromptFavoriteRepository
 from src.domain.repositories.prompt_repository import PromptRepository
 from src.domain.repositories.shared_prompt_repository import SharedPromptRepository
 from src.domain.repositories.shared_skill_repository import SharedSkillRepository
 from src.domain.repositories.skill_repository import SkillRepository
 from src.domain.repositories.tree_repository import TreeRepository
-from src.domain.repositories.blob_repository import BlobRepository
 from src.domain.repositories.user_repository import UserRepository
 
 MarketListHandler = Callable[
@@ -87,7 +87,8 @@ MarketDetailHandler = Callable[
 ]
 LikeHandler = Callable[[UUID, User, SharedSkillRepository], Awaitable[SharedSkill]]
 FavoriteHandler = Callable[
-    [UUID, User, SharedSkillRepository, object, SkillRepository], Awaitable[SkillFavorite]
+    [UUID, User, SharedSkillRepository, object, SkillRepository, UserRepository],
+    Awaitable[SkillFavorite],
 ]
 UnfavoriteHandler = Callable[[UUID, User, SharedSkillRepository, object], Awaitable[None]]
 ListFavoritesHandler = Callable[

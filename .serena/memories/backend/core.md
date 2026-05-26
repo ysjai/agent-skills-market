@@ -1,0 +1,9 @@
+- Backend source lives under `backend/src/`.
+- Architecture is strict DDD layering: `api -> application -> domain <- infra`.
+- `domain/` is the core: entities/aggregates, value objects, repository interfaces, domain exceptions. It must not import FastAPI or SQLAlchemy.
+- `application/handlers/` orchestrates use cases; repo implementations live under `infra/persistence/repositories/`.
+- Route layer is thin: request parsing + dependency wiring only. Do not place business logic or per-route try/except translation there; global exception handlers handle HTTP mapping.
+- Value objects validate at construction time; aggregates are expected to be behavior-rich rather than anemic data holders.
+- Default backend rules doc is `backend/project_conventions.md`; deeper references are `backend/docs/templates/*.py` and `backend/docs/architecture/ddd-guide.md`.
+- Runtime/config entrypoint is `backend/src/main.py`; DB migrations live in `backend/alembic/`.
+- Direct backend commands run from `backend/`, but root `justfile` is safer for local work because it loads root `.env` into the command environment.

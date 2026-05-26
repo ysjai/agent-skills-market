@@ -41,14 +41,14 @@ class TestRegisterUserHandler:
         mock_user = Mock(spec=User)
         mock_user.id = "test-id"
 
-        with patch("src.application.handlers.register_user_handler.UserFactory") as MockFactory:
+        with patch("src.application.handlers.register_user_handler.UserFactory") as mock_factory:
             with patch(
                 "src.application.handlers.register_user_handler.create_access_token"
             ) as mock_access:
                 with patch(
                     "src.application.handlers.register_user_handler.create_refresh_token"
                 ) as mock_refresh:
-                    MockFactory.create.return_value = mock_user
+                    mock_factory.create.return_value = mock_user
                     mock_access.return_value = "access-token"
                     mock_refresh.return_value = "refresh-token"
 

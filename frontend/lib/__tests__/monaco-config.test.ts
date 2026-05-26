@@ -1,11 +1,12 @@
 import { describe, test, expect, mock } from "bun:test";
+import type { Monaco } from "@monaco-editor/react";
+import type { editor, Position } from "monaco-editor";
+
 import {
   MARKDOWN_SNIPPETS,
   MARKDOWN_THEME,
   configureMonaco,
 } from "../monaco-config";
-import type { Monaco } from "@monaco-editor/react";
-import type { editor, Position } from "monaco-editor";
 
 describe("MARKDOWN_SNIPPETS", () => {
   test("should contain all 16 snippets", () => {

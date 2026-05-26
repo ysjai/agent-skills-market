@@ -1,9 +1,9 @@
 from typing import Annotated
 from uuid import UUID
 
-from pydantic import BaseModel
 from fastapi import APIRouter, Depends, Query, status
 from fastapi.responses import StreamingResponse
+from pydantic import BaseModel
 
 from src.api.dependencies.auth import get_current_user, get_optional_current_user
 from src.api.dependencies.repositories import (

@@ -1,11 +1,11 @@
 """Tests for database session management."""
 
-import pytest
 from unittest.mock import AsyncMock, patch
 
+import pytest
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.infra.persistence.db.session import get_db, POOL_SIZE, MAX_OVERFLOW
+from src.infra.persistence.db.session import MAX_OVERFLOW, POOL_SIZE, get_db
 
 
 class TestDatabaseSession:

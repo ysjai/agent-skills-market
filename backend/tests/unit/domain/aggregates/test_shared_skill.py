@@ -1,7 +1,8 @@
 from __future__ import annotations
 
-import pytest
 from uuid import uuid4
+
+import pytest
 
 from src.domain.aggregates.shared_skill import SharedSkill
 from src.domain.exceptions import ValidationError

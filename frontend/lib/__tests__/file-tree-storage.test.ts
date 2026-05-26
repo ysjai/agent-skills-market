@@ -1,4 +1,5 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
+
 import type { FileTreeNode } from '@/types/file-tree';
 
 // Create a mock storage

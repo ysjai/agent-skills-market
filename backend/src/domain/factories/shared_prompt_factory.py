@@ -1,4 +1,5 @@
 from uuid import UUID
+
 from src.domain.aggregates.shared_prompt import SharedPrompt
 
 

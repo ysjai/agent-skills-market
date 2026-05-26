@@ -3,11 +3,12 @@
 import React, { useEffect, useImperativeHandle, useRef, useState } from 'react';
 import Editor, { type OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
+import { Loader2, Save, AlertCircle, Download } from 'lucide-react';
+
 import { api } from '@/lib/api';
 import { getFileIcon } from '@/components/ui/FileIcons';
 import { getErrorMessage, isAbortError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
-import { Loader2, Save, AlertCircle, Download } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { configureMonaco, MARKDOWN_EDITOR_OPTIONS } from '@/lib/monaco-config';
 

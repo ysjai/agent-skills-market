@@ -21,6 +21,7 @@ import pytest
 
 from src.domain.entities.blob import Blob
 
+
 class TestBlobPostInit:
     """__post_init__ 计算 size 和 checksum 测试场景。"""
 

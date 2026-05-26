@@ -8,6 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from tests.conftest import create_override_get_db
 
+
 class TestDownloadFlow:
     @pytest_asyncio.fixture
     async def download_user(self, db_session: AsyncSession):
@@ -139,8 +140,6 @@ class TestDownloadFlow:
         # Step 4: 获取文件列表
         response = await download_client.get(f"/api/skills/{skill_id}/files")
         assert response.status_code == 200, "获取文件列表失败"
-        skill_files = response.json()
-
         # Step 5: 逐个下载文件并验证内容
         for path, expected_content in files_content.items():
             blob_id = blob_map[path]
@@ -163,4 +162,3 @@ class TestDownloadFlow:
             params={"platform": "claude"},
         )
         assert response.status_code == 200, "下载Markdown失败"
-

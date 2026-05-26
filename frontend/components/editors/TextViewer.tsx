@@ -1,14 +1,15 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import Editor from '@monaco-editor/react';
+import { Loader2, Copy, Check, Download } from 'lucide-react';
+
 import { api } from '@/lib/api';
 import { getFileIcon } from '@/components/ui/FileIcons';
 import { getErrorMessage } from '@/lib/errors';
 import { useClipboard } from '@/hooks/useClipboard';
 import { cn } from '@/lib/utils';
-import { Loader2, Copy, Check, Download } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface TextViewerProps {
@@ -39,13 +40,7 @@ export function TextViewer({
   const t = useTranslations('fileViewer');
   const tCommon = useTranslations('common');
 
-  useEffect(() => {
-    if (blobId) {
-      loadBlobContent(blobId);
-    }
-  }, [blobId]);
-
-  const loadBlobContent = async (id: string) => {
+  const loadBlobContent = useCallback(async (id: string) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -59,7 +54,13 @@ export function TextViewer({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [blobUrl]);
+
+  useEffect(() => {
+    if (blobId) {
+      void loadBlobContent(blobId);
+    }
+  }, [blobId, loadBlobContent]);
 
   const handleCopy = () => {
     copy(content);

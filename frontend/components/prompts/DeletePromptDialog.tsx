@@ -1,8 +1,9 @@
 'use client';
 
 import { Trash2 } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
 import { useTranslations } from 'next-intl';
+
+import { Button } from '@/components/ui/Button';
 
 interface DeletePromptDialogProps {
   open: boolean;

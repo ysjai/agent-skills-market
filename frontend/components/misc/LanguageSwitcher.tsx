@@ -2,8 +2,9 @@
 
 import { useState, useEffect } from 'react';
 import { Globe } from 'lucide-react';
-import { usePathname, useRouter } from '@/i18n/routing';
 import { useLocale } from 'next-intl';
+
+import { usePathname, useRouter } from '@/i18n/routing';
 import { routing } from '@/i18n/routing';
 
 interface LanguageSwitcherProps {

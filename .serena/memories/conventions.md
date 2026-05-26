@@ -1,0 +1,7 @@
+- User-facing communication is Chinese.
+- Before backend edits, read `backend/project_conventions.md`.
+- Backend invariants: strict DDD dependency direction; rich domain models; value objects validate in constructors; repository interfaces belong in `domain/`, implementations in `infra/`; route layer stays thin and does not hand-roll exception translation.
+- Before frontend edits, read `frontend/project_conventions.md`.
+- Frontend invariants: use `@/` aliases instead of relative imports; expose shared types/stores via barrel files; prefer function declarations + `memo`; callbacks passed down should use `useCallback`; filtered/transformed derived data should use `useMemo`; centralize error parsing in `@/lib/errors`.
+- Frontend avoidances: no `any`, no `console.log`, no ad-hoc duplicate error handling, no oversized hooks that should be split by feature.
+- Tailwind v4 config is CSS-first in `frontend/app/globals.css`; do not recreate `tailwind.config.ts` unless the project deliberately changes direction.

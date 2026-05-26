@@ -64,7 +64,45 @@ git clone https://github.com/ai-agent-ysj/agent-skills-market.git
 cd agent-skills-market
 ```
 
-### 2. 启动 PostgreSQL
+### 使用 just（推荐）
+
+项目根目录现在提供了 `justfile`，可以把常用的安装、启动、迁移和检查命令收口到一个入口：
+
+```bash
+# 查看全部命令
+just --list
+
+# 首次初始化（复制根目录 .env 并安装依赖）
+just setup
+
+# 启动 PostgreSQL
+just postgres-up
+
+# 运行数据库迁移
+just db-upgrade
+
+# 同时启动后端和前端
+just dev
+```
+
+常用质量检查：
+
+```bash
+just lint
+just typecheck
+just test
+just check
+```
+
+### 2. 配置环境变量
+
+```bash
+# 在项目根目录执行
+cp .env.example .env
+# 编辑 .env 设置数据库连接
+```
+
+### 3. 启动 PostgreSQL
 
 ```bash
 # 使用 Docker
@@ -73,23 +111,19 @@ docker compose up -d postgres
 # 或手动配置 PostgreSQL
 ```
 
-### 3. 后端设置
+### 4. 后端设置
 
 ```bash
 cd backend
 
-# 使用 uv 安装依赖（推荐）
-uv sync
+# 使用 uv 安装依赖（推荐，包含开发依赖）
+uv sync --extra dev
 
 # 手动创建虚拟环境
 python -m venv .venv
 source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
-uv sync
-
-# 配置环境变量
-cp .env.example .env
-# 编辑 .env 设置数据库连接
+uv sync --extra dev
 
 # 创建数据库（如果不存在）
 docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skills"
@@ -109,7 +143,7 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 - API 文档: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-### 4. 前端设置
+### 5. 前端设置
 
 ```bash
 cd frontend
@@ -123,7 +157,7 @@ npm run dev
 
 前端启动后，访问：http://localhost:3000
 
-### 5. 验证
+### 6. 验证
 
 ```bash
 # 测试健康检查
@@ -292,6 +326,8 @@ POSTGRES_DB=dbname
 ```
 
 ## 开发
+
+如果已经安装 `just`，优先使用 `just lint`、`just typecheck`、`just test` 和 `just check`。
 
 ### 代码格式化
 

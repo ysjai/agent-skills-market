@@ -17,7 +17,7 @@ export function isAbortError(err: unknown): boolean {
   }
   if (err && typeof err === "object") {
     const errObj = err as Record<string, unknown>;
-    return errObj.name === "AbortError" || errObj.type === "cancelation" || false;
+    return errObj.type === "cancelation" || errObj.code === "ERR_CANCELED" || false;
   }
   return false;
 }

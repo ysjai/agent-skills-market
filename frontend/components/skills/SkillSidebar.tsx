@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import { X } from 'lucide-react';
+
 import { FileTree } from '@/components/file-tree/FileTree';
 import type { FileTreeRef } from '@/components/file-tree/FileTree';
 import type { Skill } from '@/types/skill';

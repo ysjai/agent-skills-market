@@ -31,19 +31,22 @@ from sqlalchemy.pool import NullPool
 from src.auth import create_access_token
 from src.core.config import Settings, get_settings
 from src.infra.persistence.db.base import Base
+from src.infra.persistence.models.blob_model import BlobModel  # noqa: F401
+from src.infra.persistence.models.category_model import CategoryModel  # noqa: F401
+from src.infra.persistence.models.prompt_favorite_model import PromptFavoriteModel  # noqa: F401
+from src.infra.persistence.models.prompt_model import PromptModel  # noqa: F401
+from src.infra.persistence.models.shared_prompt_model import SharedPromptModel  # noqa: F401
+from src.infra.persistence.models.shared_skill_model import (  # noqa: F401
+    SharedSkillModel,
+    SkillLikeModel,
+)
+from src.infra.persistence.models.skill_favorite_model import SkillFavoriteModel  # noqa: F401
+from src.infra.persistence.models.skill_model import SkillModel  # noqa: F401
+from src.infra.persistence.models.tree_model import TreeModel  # noqa: F401
 
 # Import ALL models to register them in Base.metadata
 # This ensures drop_all/create_all handles all tables correctly
 from src.infra.persistence.models.user_model import UserModel
-from src.infra.persistence.models.skill_model import SkillModel  # noqa: F401
-from src.infra.persistence.models.shared_skill_model import SharedSkillModel, SkillLikeModel  # noqa: F401
-from src.infra.persistence.models.skill_favorite_model import SkillFavoriteModel  # noqa: F401
-from src.infra.persistence.models.tree_model import TreeModel  # noqa: F401
-from src.infra.persistence.models.blob_model import BlobModel  # noqa: F401
-from src.infra.persistence.models.category_model import CategoryModel  # noqa: F401
-from src.infra.persistence.models.prompt_model import PromptModel  # noqa: F401
-from src.infra.persistence.models.shared_prompt_model import SharedPromptModel  # noqa: F401
-from src.infra.persistence.models.prompt_favorite_model import PromptFavoriteModel  # noqa: F401
 
 
 def create_override_get_db(db_session):

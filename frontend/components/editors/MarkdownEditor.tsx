@@ -3,11 +3,12 @@
 import React, { useCallback, useEffect, useRef, useState } from 'react';
 import Editor, { type OnMount } from '@monaco-editor/react';
 import type { editor } from 'monaco-editor';
+import { Loader2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
+
 import { api } from '@/lib/api';
 import { getFileIcon } from '@/components/ui/FileIcons';
 import { getErrorMessage, isAbortError } from '@/lib/errors';
 import { logger } from '@/lib/logger';
-import { Loader2, Save, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { configureMonaco, MARKDOWN_EDITOR_OPTIONS } from '@/lib/monaco-config';
 
@@ -46,20 +47,7 @@ export function MarkdownEditor({
   const editorRef = useRef<editor.IStandaloneCodeEditor | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    if (blobId) {
-      loadBlobContent(blobId);
-    }
-
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-        abortControllerRef.current = null;
-      }
-    };
-  }, [blobId]);
-
-  const loadBlobContent = async (id: string) => {
+  const loadBlobContent = useCallback(async (id: string) => {
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
@@ -86,9 +74,9 @@ export function MarkdownEditor({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, []);
 
-  const saveBlobContent = async (newContent: string) => {
+  const saveBlobContent = useCallback(async (newContent: string) => {
     // If we have treeId and filePath, use the tree update API
     if (treeId && filePath) {
       setSaveStatus('saving');
@@ -157,7 +145,20 @@ export function MarkdownEditor({
       setError(errorMessage);
       logger.error('Error saving blob:', err);
     }
-  };
+  }, [blobId, fileName, filePath, onSave, treeId]);
+
+  useEffect(() => {
+    if (blobId) {
+      void loadBlobContent(blobId);
+    }
+
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+        abortControllerRef.current = null;
+      }
+    };
+  }, [blobId, loadBlobContent]);
 
   const debouncedSave = useCallback(
     (newContent: string) => {
@@ -171,7 +172,7 @@ export function MarkdownEditor({
         saveBlobContent(newContent);
       }, 1000);
     },
-    [blobId, treeId, filePath, fileName, onSave]
+    [saveBlobContent]
   );
 
   const handleEditorChange = (value: string | undefined) => {

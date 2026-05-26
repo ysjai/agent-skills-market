@@ -140,7 +140,6 @@ class TestSkillCRUD:
             files={"file": ("hello.txt", b"hello updated", "text/plain")},
         )
         assert response.status_code == 201, f"上传新版本文件失败: {response.text}"
-        new_blob_id = response.json()["id"]
         response = await crud_client.put(
             f"/api/trees/{tree_id}/files/content",
             json={

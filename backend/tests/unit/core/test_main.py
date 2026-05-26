@@ -1,11 +1,8 @@
 """Tests for main application configuration and lifespan."""
 
-import pytest
-from unittest.mock import AsyncMock, MagicMock, patch
-from contextlib import asynccontextmanager
+from unittest.mock import MagicMock, patch
 
-from fastapi import FastAPI
-from httpx import AsyncClient
+import pytest
 
 from src.main import app, lifespan
 

@@ -5,9 +5,10 @@ Revises: v8_skill_favorites
 Create Date: 2026-03-08
 """
 
-from alembic import op
 import sqlalchemy as sa
 from sqlalchemy.dialects.postgresql import UUID
+
+from alembic import op
 
 revision = "v9_shared_prompts"
 down_revision = "v8_skill_favorites"

@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, Rocket } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { AppHeader } from '@/components/layout/AppHeader';
@@ -62,7 +63,7 @@ export default function SkillPlazaPage() {
     void loadCategories();
     const timer = setTimeout(() => setIsMounted(true), 50);
     return () => clearTimeout(timer);
-  }, []);
+  }, [loadCategories]);
 
   // Debounce search
   useEffect(() => {
@@ -77,7 +78,7 @@ export default function SkillPlazaPage() {
   // Fetch skills when filters change
   useEffect(() => {
     void loadMarketSkills();
-  }, [filters]);
+  }, [filters, loadMarketSkills]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

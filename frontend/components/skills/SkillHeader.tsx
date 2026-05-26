@@ -1,11 +1,12 @@
 'use client';
 
 import { useEffect, useRef, useState } from 'react';
-import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ArrowLeft, Download, Trash2, Menu, User as UserIcon, ChevronDown, LogOut, Layers, BookOpen } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { LanguageSwitcher } from '@/components/misc/LanguageSwitcher';
 import { getCurrentUser } from '@/app/api/auth';

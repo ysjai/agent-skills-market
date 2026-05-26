@@ -1,8 +1,11 @@
+/* eslint-disable @next/next/no-img-element */
+
 'use client';
 
 import React, { useEffect, useState } from 'react';
-import { api } from '@/lib/api';
 import { Loader2, AlertCircle } from 'lucide-react';
+
+import { api } from '@/lib/api';
 import { cn } from '@/lib/utils';
 import { logger } from '@/lib/logger';
 import { isAbortError } from '@/lib/errors';

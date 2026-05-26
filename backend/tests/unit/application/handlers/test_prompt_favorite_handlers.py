@@ -1,13 +1,14 @@
-import pytest
-from uuid import uuid4
 from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
+
+import pytest
 
 from src.application.handlers.prompt_favorite_handlers import (
-    handle_favorite_prompt,
-    handle_unfavorite_prompt,
-    handle_list_prompt_favorites,
     handle_check_favorite_version,
+    handle_favorite_prompt,
+    handle_list_prompt_favorites,
     handle_refresh_favorite,
+    handle_unfavorite_prompt,
 )
 from src.domain.exceptions import ResourceConflictError, ResourceNotFoundError
 
@@ -167,7 +168,7 @@ async def test_refresh_favorite_success():
     favorite_repo = AsyncMock()
     favorite_repo.save.side_effect = lambda f: f
 
-    result = await handle_refresh_favorite(favorite, prompt_repo, shared_prompt_repo, favorite_repo)
+    await handle_refresh_favorite(favorite, prompt_repo, shared_prompt_repo, favorite_repo)
     favorite.refresh_snapshot.assert_called_once_with(
         title="Updated Title",
         content="Updated Content",

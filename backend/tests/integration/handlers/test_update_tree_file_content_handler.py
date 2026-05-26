@@ -173,7 +173,7 @@ class TestUpdateTreeFileContentHandler:
         new_content = "persisted content"
 
         # When
-        result = await handle_update_tree_file_content(
+        await handle_update_tree_file_content(
             tree_repo=tree_repo,
             blob_repo=blob_repo,
             tree_id=test_tree_with_file.id,

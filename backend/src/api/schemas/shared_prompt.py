@@ -6,8 +6,8 @@ from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict
 
-from src.domain.aggregates.shared_prompt import SharedPrompt
 from src.domain.aggregates.prompt_favorite import PromptFavorite
+from src.domain.aggregates.shared_prompt import SharedPrompt
 
 
 class SharePromptReq(BaseModel):

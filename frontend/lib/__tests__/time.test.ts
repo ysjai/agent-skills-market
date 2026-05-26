@@ -1,17 +1,21 @@
 import { describe, it, expect } from 'bun:test';
+
 import { formatRelativeTime } from '../time';
+
+type MockDateArgs = ConstructorParameters<typeof Date>;
+
 // Helper to mock Date constructor
 function mockDate(mockTimestamp: number) {
   const OriginalDate = global.Date;
   global.Date = class extends Date {
-    constructor(...args: any[]) {
+    constructor(...args: MockDateArgs) {
       if (args.length === 0) {
         super(mockTimestamp);
       } else {
         super(...args);
       }
     }
-  } as any;
+  } as unknown as DateConstructor;
   return () => { global.Date = OriginalDate; };
 }
 describe('formatRelativeTime', () => {

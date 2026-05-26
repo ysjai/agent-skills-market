@@ -1,9 +1,10 @@
 'use client';
 
 import { useState, useEffect, useCallback } from 'react';
-import { useRouter } from '@/i18n/routing';
 import { useTranslations } from 'next-intl';
 import { ChevronLeft, ChevronRight, BookOpen } from 'lucide-react';
+
+import { useRouter } from '@/i18n/routing';
 import { Button } from '@/components/ui/Button';
 import { Dialog } from '@/components/ui/Dialog';
 import { AppHeader } from '@/components/layout/AppHeader';
@@ -73,7 +74,7 @@ export default function PromptPlazaPage() {
   // Fetch prompts when filters change
   useEffect(() => {
     void loadMarketPrompts();
-  }, [promptFilters]);
+  }, [loadMarketPrompts, promptFilters]);
 
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {

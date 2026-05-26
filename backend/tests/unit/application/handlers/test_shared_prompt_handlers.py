@@ -1,6 +1,7 @@
-import pytest
-from uuid import uuid4
 from unittest.mock import AsyncMock, MagicMock
+from uuid import uuid4
+
+import pytest
 
 from src.application.handlers.shared_prompt_handlers import (
     handle_share_prompt,
@@ -143,7 +144,7 @@ async def test_unshare_prompt_success():
 
     favorite_repo = AsyncMock()
 
-    result = await handle_unshare_prompt(
+    await handle_unshare_prompt(
         prompt_id=prompt_id,
         user=user,
         prompt_repo=prompt_repo,

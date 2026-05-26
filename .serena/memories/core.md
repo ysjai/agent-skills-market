@@ -1,0 +1,9 @@
+- Monorepo with two primary apps: `backend/` (FastAPI + DDD) and `frontend/` (Next.js App Router). Root also owns `.env.example`, `docker-compose.yml`, `justfile`, `docs/`, and `.opencode/`.
+- Prefer root `justfile` as the operational entrypoint. It loads root `.env`, wraps backend/frontend commands, and exposes setup/dev/db/quality recipes from repo root.
+- Root `.env.example` is the authoritative env template for local development; copy to root `.env` before DB/app startup.
+- Read `mem:backend/core` for backend structure and invariants.
+- Read `mem:frontend/core` for frontend structure and quality gates.
+- Read `mem:tech_stack` for toolchain/package-manager details.
+- Read `mem:suggested_commands` for the exact commands this repo expects humans/agents to run.
+- Read `mem:conventions` before editing code.
+- Read `mem:task_completion` before claiming work is done.

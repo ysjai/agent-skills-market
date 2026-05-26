@@ -1,13 +1,15 @@
 import { describe, it, expect, beforeEach, mock } from 'bun:test';
-import { logout } from '../auth';
+
+import { logout } from '../../app/api/auth';
 import '@testing-library/jest-dom';
 
 const mockLogout = mock(() => Promise.resolve());
 
-mock.module('../../lib/api', () => ({
+mock.module('@/lib/api', () => ({
   api: {
-    logout: mockLogout,
+    post: mockLogout,
   },
+  getLoginUrl: () => '/login',
 }));
 
 describe('auth', () => {

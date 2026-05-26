@@ -1,17 +1,18 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import Editor from '@monaco-editor/react';
+import { Loader2, Eye, FileCode, Copy, Check, Download, ExternalLink } from 'lucide-react';
+
 import { api } from '@/lib/api';
 import { getFileIcon } from '@/components/ui/FileIcons';
 import { getErrorMessage } from '@/lib/errors';
 import { useClipboard } from '@/hooks/useClipboard';
 import { MARKDOWN_TYPOGRAPHY_STYLES } from '@/lib/markdown-styles';
 import { cn } from '@/lib/utils';
-import { Loader2, Eye, FileCode, Copy, Check, Download, ExternalLink } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 
 interface FrontmatterMetadata {
@@ -100,13 +101,7 @@ export function MarkdownViewer({
   const { metadata, body } = parseFrontmatter(rawContent);
   const displayContent = Object.keys(metadata).length > 0 ? body : rawContent;
 
-  useEffect(() => {
-    if (blobId) {
-      loadBlobContent(blobId);
-    }
-  }, [blobId]);
-
-  const loadBlobContent = async (id: string) => {
+  const loadBlobContent = useCallback(async (id: string) => {
     setIsLoading(true);
     setError(null);
     try {
@@ -120,7 +115,13 @@ export function MarkdownViewer({
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [blobUrl]);
+
+  useEffect(() => {
+    if (blobId) {
+      void loadBlobContent(blobId);
+    }
+  }, [blobId, loadBlobContent]);
 
   const handleCopy = () => {
     copy(rawContent);

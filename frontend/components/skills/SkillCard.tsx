@@ -3,6 +3,7 @@
 import { memo } from 'react';
 import { useTranslations, useFormatter } from 'next-intl';
 import { Clock, MoreVertical, Trash2, Download, Globe } from 'lucide-react';
+
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import type { Skill } from '@/types/skill';

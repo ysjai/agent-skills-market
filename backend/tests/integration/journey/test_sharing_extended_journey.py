@@ -8,11 +8,13 @@ Covers remaining uncovered lines in:
 - sql_prompt_favorite_repository.py: save, delete, find_by_user_and_shared_prompt, find_by_id
 """
 
-import pytest
 from typing import cast
 from uuid import uuid4
+
+import pytest
 from httpx import AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession
+
 from src.infra.persistence.models.category_model import CategoryModel
 
 pytestmark = pytest.mark.asyncio

@@ -3,6 +3,7 @@ import uuid
 import pytest
 from httpx import AsyncClient
 
+
 class TestScenario07IncrementalAdd:
 
     @pytest.mark.asyncio
@@ -104,7 +105,6 @@ class TestScenario07IncrementalAdd:
         for directory in new_dirs:
             assert directory in final_paths, f"新目录 {directory} 应该存在"
         all_files = {**initial_files, **new_files}
-        all_blob_ids = {**initial_blob_ids, **new_blob_ids}
 
         for filepath, expected_content in all_files.items():
             entry = next((e for e in final_entries if e["path"] == filepath), None)
@@ -128,4 +128,3 @@ class TestScenario07IncrementalAdd:
         assert file_count == len(all_files), (
             f"文件列表应该包含 {len(all_files)} 个文件，实际 {file_count} 个"
         )
-

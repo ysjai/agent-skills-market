@@ -29,7 +29,7 @@ class SqlPromptRepository(PromptRepository):
         stmt = select(PromptModel).where(PromptModel.user_id == user_id)
 
         if tag is not None:
-            stmt = stmt.where(PromptModel.tags.any(tag))
+            stmt = stmt.where(PromptModel.tags.contains([tag]))
 
         if search is not None:
             stmt = stmt.where(PromptModel.title.ilike(f"%{search}%"))
@@ -48,7 +48,7 @@ class SqlPromptRepository(PromptRepository):
         stmt = select(func.count()).select_from(PromptModel).where(PromptModel.user_id == user_id)
 
         if tag is not None:
-            stmt = stmt.where(PromptModel.tags.any(tag))
+            stmt = stmt.where(PromptModel.tags.contains([tag]))
 
         if search is not None:
             stmt = stmt.where(PromptModel.title.ilike(f"%{search}%"))

@@ -26,6 +26,7 @@ from src.infra.persistence.repositories.sql_blob_repository import SqlBlobReposi
 from src.infra.persistence.repositories.sql_skill_repository import SqlSkillRepository
 from src.infra.persistence.repositories.sql_tree_repository import SqlTreeRepository
 
+
 @pytest_asyncio.fixture
 async def test_skill_no_tree(db_session: AsyncSession, test_user: UserModel) -> SkillModel:
     """创建无 Tree 的测试 Skill"""

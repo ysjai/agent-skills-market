@@ -1,7 +1,7 @@
 """Integration tests for sharing APIs and shared-skill cleanup behavior."""
 
-from uuid import UUID, uuid4
 from typing import TypedDict, cast
+from uuid import UUID, uuid4
 
 import pytest
 from httpx import AsyncClient
@@ -11,7 +11,6 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from src.infra.persistence.models.category_model import CategoryModel
 from src.infra.persistence.models.shared_skill_model import SharedSkillModel
 from src.infra.persistence.models.user_model import UserModel
-
 
 MARKET_SKILLS_URL = "/api/market/skills"
 

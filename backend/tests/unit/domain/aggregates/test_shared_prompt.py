@@ -1,5 +1,7 @@
-import pytest
 from uuid import uuid4
+
+import pytest
+
 from src.domain.aggregates.shared_prompt import SharedPrompt
 from src.domain.factories.shared_prompt_factory import SharedPromptFactory
 
