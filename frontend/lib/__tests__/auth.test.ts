@@ -3,35 +3,54 @@ import { describe, it, expect, beforeEach, mock } from 'bun:test';
 import { logout } from '../../app/api/auth';
 import '@testing-library/jest-dom';
 
-const mockLogout = mock(() => Promise.resolve());
-
-mock.module('@/lib/api', () => ({
-  api: {
-    post: mockLogout,
-  },
-  getLoginUrl: () => '/login',
-}));
+const createMockStorage = () => {
+  const storage = new Map<string, string>();
+  return {
+    getItem: (key: string) => storage.get(key) || null,
+    setItem: (key: string, value: string) => storage.set(key, value),
+    removeItem: (key: string) => storage.delete(key),
+    clear: () => storage.clear(),
+  };
+};
 
 describe('auth', () => {
+  let mockFetch: ReturnType<typeof mock>;
+
   beforeEach(() => {
-    mockLogout.mockClear();
+    mockFetch = mock(() => Promise.resolve(new Response(null, { status: 204 })));
+
+    Object.defineProperty(global, 'fetch', {
+      value: mockFetch,
+      writable: true,
+      configurable: true,
+    });
+
+    Object.defineProperty(global, 'localStorage', {
+      value: createMockStorage(),
+      writable: true,
+      configurable: true,
+    });
+
+    Object.defineProperty(global, 'window', {
+      value: { location: { href: '', pathname: '/en/settings' } },
+      writable: true,
+      configurable: true,
+    });
   });
 
   describe('logout', () => {
-    it('should call api.logout', async () => {
-      mockLogout.mockResolvedValueOnce(undefined);
-
+    it('should call logout endpoint', async () => {
       await logout();
 
-      expect(mockLogout).toHaveBeenCalled();
+      expect(mockFetch).toHaveBeenCalledWith('/api/auth/logout', expect.objectContaining({
+        method: 'POST',
+      }));
     });
 
-    it('should complete successfully when api.logout resolves', async () => {
-      mockLogout.mockResolvedValueOnce(undefined);
-
+    it('should redirect to localized login after logout', async () => {
       await logout();
 
-      expect(mockLogout).toHaveBeenCalledTimes(1);
+      expect(window.location.href).toBe('/en/login');
     });
   });
 });

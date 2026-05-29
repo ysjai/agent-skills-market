@@ -1,5 +1,7 @@
 # Environment variables with sensitive data
 .env
+.env.*
+!.env.example
 
 # Python
 __pycache__/
@@ -63,6 +65,10 @@ Thumbs.db
 
 # TypeScript build cache
 frontend/tsconfig.tsbuildinfo
+
+# Vercel local project metadata and pulled env files
+.vercel/
+**/.vercel/
 
 # Git worktrees
 .worktrees/
