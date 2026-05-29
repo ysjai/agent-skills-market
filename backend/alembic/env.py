@@ -26,7 +26,10 @@ load_dotenv()
 config = context.config
 
 # Override sqlalchemy.url with the one from environment
-config.set_main_option("sqlalchemy.url", os.getenv("DATABASE_URL") or "")
+database_url = os.getenv("DATABASE_URL") or ""
+# Alembic stores the URL through configparser, which treats '%' as interpolation.
+# Passwords with URL-encoded characters like '%40' must therefore escape '%' first.
+config.set_main_option("sqlalchemy.url", database_url.replace("%", "%%"))
 
 # Interpret the config file for Python logging.
 # This line sets up loggers basically.

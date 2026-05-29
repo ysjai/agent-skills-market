@@ -6,8 +6,7 @@ services:
     plan: free
     autoDeployTrigger: off
     buildCommand: uv sync --frozen
-    preDeployCommand: uv run alembic upgrade head
-    startCommand: uv run uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    startCommand: uv run alembic upgrade head && uv run uvicorn src.main:app --host 0.0.0.0 --port $PORT
     healthCheckPath: /health
     buildFilter:
       paths:
