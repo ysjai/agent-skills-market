@@ -63,6 +63,22 @@ class TestSettingsValidation:
             assert len(w) == 1
             assert "Development mode: Auto-generated SECRET_KEY" in str(w[0].message)
 
+    def test_settings_empty_secret_key_auto_generates_in_development(self):
+        """Test empty SECRET_KEY is treated as unset in development."""
+        with warnings.catch_warnings(record=True) as w:
+            warnings.simplefilter("always")
+            settings = Settings(
+                DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
+                POSTGRES_PASSWORD="test",
+                ENVIRONMENT="development",
+                SECRET_KEY="",
+            )
+
+            assert settings.SECRET_KEY is not None
+            assert len(settings.SECRET_KEY) >= 32
+            assert len(w) == 1
+            assert "Development mode: Auto-generated SECRET_KEY" in str(w[0].message)
+
     def test_settings_valid_secret_key_no_warning(self):
         """Test valid SECRET_KEY does not generate warning."""
         with warnings.catch_warnings(record=True) as w:
@@ -131,6 +147,80 @@ class TestAllowedOriginsParsing:
 
         assert settings.ALLOWED_ORIGINS == ["http://localhost:3000", "http://localhost:3001"]
 
+    def test_allowed_origins_from_env_string(self, monkeypatch: pytest.MonkeyPatch):
+        """Test ALLOWED_ORIGINS from env keeps comma-separated support."""
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://user:pass@localhost/db")
+        monkeypatch.setenv("POSTGRES_PASSWORD", "test")
+        monkeypatch.setenv("SECRET_KEY", "a" * 32)
+        monkeypatch.setenv(
+            "ALLOWED_ORIGINS",
+            "http://localhost:3000,http://localhost:3001",
+        )
+
+        settings = Settings(_env_file=None)
+
+        assert settings.ALLOWED_ORIGINS == [
+            "http://localhost:3000",
+            "http://localhost:3001",
+        ]
+
+    def test_empty_allowed_origin_regex_from_env_becomes_none(
+        self, monkeypatch: pytest.MonkeyPatch
+    ):
+        """Test empty ALLOWED_ORIGIN_REGEX does not remain an empty string."""
+        monkeypatch.setenv("DATABASE_URL", "postgresql+asyncpg://user:pass@localhost/db")
+        monkeypatch.setenv("POSTGRES_PASSWORD", "test")
+        monkeypatch.setenv("SECRET_KEY", "a" * 32)
+        monkeypatch.setenv("ALLOWED_ORIGIN_REGEX", "")
+
+        settings = Settings(_env_file=None)
+
+        assert settings.ALLOWED_ORIGIN_REGEX is None
+
+
+class TestDatabaseUrlParsing:
+    """Test DATABASE_URL-derived Postgres settings."""
+
+    def test_postgres_fields_derive_from_database_url(self, monkeypatch: pytest.MonkeyPatch):
+        monkeypatch.delenv("POSTGRES_HOST", raising=False)
+        monkeypatch.delenv("POSTGRES_PORT", raising=False)
+        monkeypatch.delenv("POSTGRES_USER", raising=False)
+        monkeypatch.delenv("POSTGRES_PASSWORD", raising=False)
+        monkeypatch.delenv("POSTGRES_DB", raising=False)
+
+        settings = Settings(
+            DATABASE_URL=(
+                "postgresql+asyncpg://postgres.abpkobhfnmcqqzqeeqss:super-secret"
+                "@aws-0-ap-southeast-1.pooler.supabase.com:5432/postgres?ssl=require"
+            ),
+            SECRET_KEY="a" * 32,
+            _env_file=None,
+        )
+
+        assert settings.POSTGRES_HOST == "aws-0-ap-southeast-1.pooler.supabase.com"
+        assert settings.POSTGRES_PORT == 5432
+        assert settings.POSTGRES_USER == "postgres.abpkobhfnmcqqzqeeqss"
+        assert settings.POSTGRES_PASSWORD == "super-secret"
+        assert settings.POSTGRES_DB == "postgres"
+
+    def test_explicit_postgres_fields_are_not_overridden(self):
+        settings = Settings(
+            DATABASE_URL="postgresql+asyncpg://derived-user:derived-pass@derived-host:6543/derived-db",
+            POSTGRES_HOST="custom-host",
+            POSTGRES_PORT=6000,
+            POSTGRES_USER="custom-user",
+            POSTGRES_PASSWORD="custom-pass",
+            POSTGRES_DB="custom-db",
+            SECRET_KEY="a" * 32,
+            _env_file=None,
+        )
+
+        assert settings.POSTGRES_HOST == "custom-host"
+        assert settings.POSTGRES_PORT == 6000
+        assert settings.POSTGRES_USER == "custom-user"
+        assert settings.POSTGRES_PASSWORD == "custom-pass"
+        assert settings.POSTGRES_DB == "custom-db"
+
 
 class TestSettingsDefaults:
     """Test settings default values."""
@@ -141,6 +231,7 @@ class TestSettingsDefaults:
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
         assert settings.POSTGRES_HOST == "localhost"
@@ -151,19 +242,23 @@ class TestSettingsDefaults:
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
         assert settings.POSTGRES_PORT == 5432
 
-    def test_default_postgres_user(self):
-        """Test default POSTGRES_USER."""
+    def test_default_postgres_user(self, monkeypatch: pytest.MonkeyPatch):
+        """Test POSTGRES_USER derives from DATABASE_URL when omitted."""
+        monkeypatch.delenv("POSTGRES_USER", raising=False)
+
         settings = Settings(
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
-        assert settings.POSTGRES_USER == "agent_skills_user"
+        assert settings.POSTGRES_USER == "user"
 
     def test_default_environment(self):
         """Test default ENVIRONMENT."""

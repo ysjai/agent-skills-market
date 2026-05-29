@@ -1,0 +1,28 @@
+services:
+  - type: web
+    name: agent-skills-market-api
+    runtime: python
+    rootDir: backend
+    plan: free
+    autoDeployTrigger: off
+    buildCommand: uv sync --frozen
+    preDeployCommand: uv run alembic upgrade head
+    startCommand: uv run uvicorn src.main:app --host 0.0.0.0 --port $PORT
+    healthCheckPath: /health
+    buildFilter:
+      paths:
+        - backend/**
+        - render.yaml
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.11
+      - key: ENVIRONMENT
+        value: production
+      - key: DATABASE_URL
+        sync: false
+      - key: SECRET_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: ALLOWED_ORIGIN_REGEX
+        sync: false

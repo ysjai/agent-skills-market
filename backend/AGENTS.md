@@ -80,7 +80,7 @@ uv run --extra dev uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 
 ## 技术栈
 
-Python 3.10+ / FastAPI / SQLAlchemy 2.0 / PostgreSQL / uv
+Python 3.12+ / FastAPI / SQLAlchemy 2.0 / PostgreSQL / uv
 
 ## 参考资料
 

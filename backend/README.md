@@ -150,7 +150,7 @@ just test-backend
 
 ### 前置要求
 
-- Python 3.10+
+- Python 3.12+
 - PostgreSQL 16+ (或使用 Docker)
 
 ### 1. 环境设置
@@ -207,9 +207,18 @@ uv run uvicorn src.main:app --host 0.0.0.0 --port 8000
 ### 方式二: 使用 Docker Compose
 
 ```bash
-# 从项目根目录
-docker compose up -d postgres backend
+# 从项目根目录启动完整开发栈（gateway + postgres + backend + frontend）
+docker compose up
+
+# 如果已配置 DOCKER_DATABASE_URL，希望跳过本地 postgres
+docker compose up gateway backend frontend
 ```
+
+说明：
+- 后端容器会自动执行 `alembic upgrade head`
+- Docker 模式下默认通过 Nginx 网关访问 API，默认地址为 `http://localhost:8080/api`
+- 完整 Docker 栈默认不会把 PostgreSQL 暴露到宿主机；如果本机要直连数据库，请在仓库根目录执行 `just postgres-up`
+- 如果要把 Docker 中的后端改连云数据库，请在根目录 `.env` 中设置 `DOCKER_DATABASE_URL`
 
 ## API 端点
 

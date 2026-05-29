@@ -10,7 +10,7 @@ def load_env_file(env_path: Path) -> None:
                 line = line.strip()
                 if line and not line.startswith("#") and "=" in line:
                     key, value = line.split("=", 1)
-                    os.environ[key.strip()] = value.strip()
+                    os.environ.setdefault(key.strip(), value.strip())
 
 
 backend_dir = Path(__file__).parent.parent

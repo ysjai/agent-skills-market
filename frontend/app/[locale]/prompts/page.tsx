@@ -118,7 +118,7 @@ export default function PromptsPage() {
 
   const handleExport = useCallback(async (promptId: string) => {
     try {
-      const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
+      const apiUrl = process.env.NEXT_PUBLIC_API_URL || '/api';
       const resp = await fetch(`${apiUrl}/prompts/${promptId}/export`, {
         headers: {
           'Authorization': `Bearer ${localStorage.getItem('access_token')}`,

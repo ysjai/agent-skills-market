@@ -10,7 +10,7 @@ BACKEND_HOST := env_var_or_default("BACKEND_HOST", "127.0.0.1")
 BACKEND_PORT := env_var_or_default("BACKEND_PORT", "8000")
 FRONTEND_HOST := env_var_or_default("FRONTEND_HOST", "127.0.0.1")
 FRONTEND_PORT := env_var_or_default("FRONTEND_PORT", "3000")
-API_URL := env_var_or_default("NEXT_PUBLIC_API_URL", "http://127.0.0.1:8000/api")
+API_PUBLIC_URL := env_var_or_default("NEXT_PUBLIC_API_URL", "/api")
 
 # List all available commands.
 default:
@@ -72,20 +72,40 @@ run-backend: _check_uv
 
 # run-frontend: Start Next.js frontend.
 run-frontend: _check_node
-    @cd {{FRONTEND_DIR}} && NEXT_PUBLIC_API_URL={{API_URL}} npm run dev -- --hostname {{FRONTEND_HOST}} --port {{FRONTEND_PORT}}
+    @cd {{FRONTEND_DIR}} && NEXT_PUBLIC_API_URL={{API_PUBLIC_URL}} API_PROXY_TARGET=${API_PROXY_TARGET:-http://{{BACKEND_HOST}}:{{BACKEND_PORT}}/api} npm run dev -- --hostname {{FRONTEND_HOST}} --port {{FRONTEND_PORT}}
 
 # dev: Start backend and frontend together. Ctrl-C stops both.
 dev: _check_uv _check_node
     @trap 'kill 0' INT TERM EXIT; \
         (cd {{BACKEND_DIR}} && uv run --extra dev uvicorn {{BACKEND_APP}} --reload --host {{BACKEND_HOST}} --port {{BACKEND_PORT}}) & \
-        (cd {{FRONTEND_DIR}} && NEXT_PUBLIC_API_URL={{API_URL}} npm run dev -- --hostname {{FRONTEND_HOST}} --port {{FRONTEND_PORT}}) & \
+        (cd {{FRONTEND_DIR}} && NEXT_PUBLIC_API_URL={{API_PUBLIC_URL}} API_PROXY_TARGET=${API_PROXY_TARGET:-http://{{BACKEND_HOST}}:{{BACKEND_PORT}}/api} npm run dev -- --hostname {{FRONTEND_HOST}} --port {{FRONTEND_PORT}}) & \
         wait
+
+# docker-up: Start gateway, frontend, backend, and postgres.
+docker-up: setup-env _check_docker
+    @docker compose up
+
+# docker-up-remote-db: Start gateway, frontend, and backend against external DB.
+docker-up-remote-db: setup-env _check_docker
+    @docker compose up gateway frontend backend
+
+# docker-up-detached: Start Docker Compose stack in background.
+docker-up-detached: setup-env _check_docker
+    @docker compose up -d
+
+# docker-down: Stop the Docker Compose stack.
+docker-down: _check_docker
+    @docker compose down
+
+# docker-logs: Follow logs for all Docker Compose services.
+docker-logs: _check_docker
+    @docker compose logs -f
 
 # ----------------- Database -----------------
 
 # postgres-up: Start the local PostgreSQL container.
 postgres-up: _check_docker
-    @docker compose up -d postgres
+    @docker compose -f docker-compose.yml -f docker-compose.postgres-exposed.yml up -d postgres
 
 # postgres-down: Stop the local PostgreSQL container.
 postgres-down: _check_docker

@@ -2,7 +2,7 @@
 
 <p align="center">
   <img src="https://img.shields.io/badge/Version-0.1.0-blue.svg" alt="Version">
-  <img src="https://img.shields.io/badge/Python-3.10+-green.svg" alt="Python">
+  <img src="https://img.shields.io/badge/Python-3.12+-green.svg" alt="Python">
   <img src="https://img.shields.io/badge/Next.js-15+-blue.svg" alt="Next.js">
   <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License">
 </p>
@@ -12,6 +12,8 @@
 ## 简介
 
 Agent Skills Manager 是一个 B/S 架构系统，帮助用户管理、同步和分享自定义 Agent Skills。支持 Claude Code 和 OpenCode 平台。
+
+部署到 `Vercel + Render + Supabase` 的完整步骤见：`docs/deployment/vercel-render-supabase.md`
 
 ## 功能特性
 
@@ -28,7 +30,7 @@ Agent Skills Manager 是一个 B/S 架构系统，帮助用户管理、同步和
 
 ### 后端
 
-- **Python**: 3.10+
+- **Python**: 3.12+
 - **FastAPI**: 0.129.0+ (Web 框架)
 - **SQLAlchemy**: 2.0+ (ORM)
 - **PostgreSQL**: 16+ (数据库)
@@ -44,7 +46,7 @@ Agent Skills Manager 是一个 B/S 架构系统，帮助用户管理、同步和
 
 ### 本地 Daemon
 
-- **Python**: 3.10+
+- **Python**: 3.12+
 - **WebSocket**: (实时同步)
 - **watchdog**: (文件监控)
 
@@ -52,7 +54,7 @@ Agent Skills Manager 是一个 B/S 架构系统，帮助用户管理、同步和
 
 ### 前置要求
 
-- Python 3.10+
+- Python 3.12+
 - Node.js 18+
 - PostgreSQL 16+ (或 Docker)
 - Docker (可选)
@@ -75,6 +77,12 @@ just --list
 # 首次初始化（复制根目录 .env 并安装依赖）
 just setup
 
+# 一键启动完整 Docker 开发环境（通过 Nginx 网关暴露）
+just docker-up
+
+# 如果已经配置 DOCKER_DATABASE_URL，直接用云数据库启动
+just docker-up-remote-db
+
 # 启动 PostgreSQL
 just postgres-up
 
@@ -94,7 +102,48 @@ just test
 just check
 ```
 
-### 2. 配置环境变量
+### 2. Docker 一键启动（推荐）
+
+```bash
+# 可选：先生成根目录 .env，方便后续改网关端口或切云数据库
+cp .env.example .env
+
+# 启动 Nginx 网关 + PostgreSQL + FastAPI + Next.js
+just docker-up
+
+# 如果已经设置 DOCKER_DATABASE_URL，希望跳过本地 postgres
+just docker-up-remote-db
+
+# 或直接使用 docker compose
+docker compose up
+```
+
+启动完成后可直接访问：
+
+- 网关首页: http://localhost:8080
+- API: http://localhost:8080/api
+- API 文档: http://localhost:8080/docs
+
+说明：
+
+- 后端容器启动时会自动执行 `alembic upgrade head`
+- 后端和前端在 Docker 模式下不再直接占用宿主机 `8000` 和 `3000`
+- PostgreSQL 在完整 Docker 栈里默认只走容器内网络，不再默认占用宿主机 `5432`
+- 对外只暴露一个网关端口，默认 `8080`，可在根目录 `.env` 中通过 `GATEWAY_PORT` 修改
+- 第一次启动会拉取镜像并安装依赖，耗时会明显更长
+- 如果你准备改接云数据库，只需要修改根目录 `.env` 中的 `DOCKER_DATABASE_URL`
+
+停止服务：
+
+```bash
+just docker-down
+# 或
+docker compose down
+```
+
+### 3. 手动启动（非 Docker）
+
+#### 配置环境变量
 
 ```bash
 # 在项目根目录执行
@@ -102,16 +151,19 @@ cp .env.example .env
 # 编辑 .env 设置数据库连接
 ```
 
-### 3. 启动 PostgreSQL
+#### 启动 PostgreSQL
 
 ```bash
-# 使用 Docker
-docker compose up -d postgres
+# 使用 Docker 暴露 PostgreSQL 到宿主机（供本机后端直连）
+just postgres-up
+
+# 或等价地：
+docker compose -f docker-compose.yml -f docker-compose.postgres-exposed.yml up -d postgres
 
 # 或手动配置 PostgreSQL
 ```
 
-### 4. 后端设置
+#### 后端设置
 
 ```bash
 cd backend
@@ -125,9 +177,9 @@ source .venv/bin/activate  # Linux/Mac
 # .venv\Scripts\activate  # Windows
 uv sync --extra dev
 
-# 创建数据库（如果不存在）
-docker exec -it agent_skills_db psql -U postgres -c "CREATE DATABASE agent_skills"
-# 或: psql -U postgres -c "CREATE DATABASE agent_skills"
+# 如果使用 Docker Compose 默认 postgres，POSTGRES_DB 会自动创建，无需手动 CREATE DATABASE
+# 只有你自己手动安装 PostgreSQL 且尚未创建数据库时才需要执行：
+# psql -U agent_skills_user -d postgres -c "CREATE DATABASE agent_skills"
 
 # 运行迁移
 alembic downgrade base
@@ -143,7 +195,7 @@ uvicorn src.main:app --reload --host 0.0.0.0 --port 8000
 - API 文档: http://localhost:8000/docs
 - ReDoc: http://localhost:8000/redoc
 
-### 5. 前端设置
+#### 前端设置
 
 ```bash
 cd frontend
@@ -157,7 +209,7 @@ npm run dev
 
 前端启动后，访问：http://localhost:3000
 
-### 6. 验证
+#### 验证
 
 ```bash
 # 测试健康检查
@@ -306,7 +358,7 @@ agent-skills-market/
 |--------|-----------|-----------|----------------------------|
 | GET    | /health   | 健康检查   | {"status": "ok", "version": "1.0.0"} |
 
-完整 API 文档：http://localhost:8000/docs
+完整 API 文档：Docker 模式下为 `http://localhost:8080/docs`，本机直接运行后端时为 `http://localhost:8000/docs`
 
 ## 环境变量
 
@@ -321,9 +373,37 @@ POSTGRES_USER=user
 POSTGRES_PASSWORD=password
 POSTGRES_DB=dbname
 
+# Docker 容器内后端使用的数据库连接；留空时走 compose 内置 postgres
+# DOCKER_DATABASE_URL=postgresql+asyncpg://user:password@cloud-host:5432/dbname?ssl=require
+
+# 前端浏览器访问的 API 地址；通过网关时推荐保持相对路径
+NEXT_PUBLIC_API_URL=/api
+
+# 仅在直接运行 frontend 开发服务器时使用，把 /api 代理到后端
+# API_PROXY_TARGET=http://127.0.0.1:8000/api
+
+# CORS 与端口
+ALLOWED_ORIGINS=http://localhost:3000,http://localhost:3001,http://localhost:3002,http://localhost:3003
+
+# Docker 网关端口
+GATEWAY_PORT=8080
+
+# 手动本机开发时的前后端端口
+BACKEND_PORT=8000
+FRONTEND_PORT=3000
+
 # JWT（开发环境自动生成，生产环境需设置）
 # SECRET_KEY=your-generated-secret-key-here
 ```
+
+### 切换到云数据库
+
+- 本机直接运行后端时，修改 `DATABASE_URL`
+- 使用 Docker Compose 跑后端时，修改 `DOCKER_DATABASE_URL`
+- 云数据库连接串通常需要 `?ssl=require`
+- 通过网关运行时，`NEXT_PUBLIC_API_URL` 推荐保持为 `/api`
+- 如果你直接运行 `frontend` 开发服务器，请把 `API_PROXY_TARGET` 设成后端地址，例如 `http://127.0.0.1:8000/api`
+- 如果你想继续使用本机后端 + Docker Postgres，执行 `just postgres-up` 即可按 `POSTGRES_PORT` 把数据库暴露出来
 
 ## 开发
 
