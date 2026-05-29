@@ -15,7 +15,7 @@ class TestApplicationLifespan:
         """Test startup logging is called (L18-19)."""
         mock_logger = MagicMock()
 
-        with patch("app.main.logger", mock_logger):
+        with patch("src.main.logger", mock_logger):
             async with lifespan(app):
                 pass
 
@@ -27,7 +27,7 @@ class TestApplicationLifespan:
         """Test shutdown logging is called (L21)."""
         mock_logger = MagicMock()
 
-        with patch("app.main.logger", mock_logger):
+        with patch("src.main.logger", mock_logger):
             async with lifespan(app):
                 pass
 

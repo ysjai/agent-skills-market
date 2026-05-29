@@ -266,6 +266,7 @@ class TestSettingsDefaults:
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
         assert settings.ENVIRONMENT == "development"
@@ -276,6 +277,7 @@ class TestSettingsDefaults:
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
         assert settings.MAX_FILE_SIZE == 10 * 1024 * 1024
@@ -286,6 +288,7 @@ class TestSettingsDefaults:
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
             SECRET_KEY="a" * 32,
+            _env_file=None,
         )
 
         assert settings.ALLOWED_ORIGINS == [

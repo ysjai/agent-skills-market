@@ -21,7 +21,7 @@ class TestDatabaseSession:
         async_mock_context.__aexit__ = AsyncMock(return_value=None)
 
         with patch(
-            "app.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
+            "src.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
         ):
             async for session in get_db():
                 assert session == mock_session
@@ -35,19 +35,21 @@ class TestDatabaseSession:
     async def test_get_db_exception_rollback(self):
         """Test session rolls back on exception (L40-42)."""
         mock_session = AsyncMock(spec=AsyncSession)
+        test_exception = ValueError("Test exception")
 
         async_mock_context = AsyncMock()
         async_mock_context.__aenter__ = AsyncMock(return_value=mock_session)
         async_mock_context.__aexit__ = AsyncMock(return_value=None)
 
         with patch(
-            "app.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
+            "src.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
         ):
-            try:
-                async for session in get_db():
-                    raise ValueError("Test exception")
-            except ValueError:
-                pass
+            generator = get_db()
+            session = await anext(generator)
+            assert session == mock_session
+
+            with pytest.raises(ValueError, match="Test exception"):
+                await generator.athrow(test_exception)
 
             # Verify rollback was called
             mock_session.rollback.assert_called_once()
@@ -64,7 +66,7 @@ class TestDatabaseSession:
         async_mock_context.__aexit__ = AsyncMock(return_value=None)
 
         with patch(
-            "app.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
+            "src.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
         ):
             async for session in get_db():
                 pass
@@ -83,11 +85,14 @@ class TestDatabaseSession:
         async_mock_context.__aexit__ = AsyncMock(return_value=None)
 
         with patch(
-            "app.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
+            "src.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
         ):
+            generator = get_db()
+            session = await anext(generator)
+            assert session == mock_session
+
             with pytest.raises(ValueError, match="Test rollback"):
-                async for session in get_db():
-                    raise test_exception
+                await generator.athrow(test_exception)
 
     @pytest.mark.asyncio
     async def test_get_db_multiple_yields_not_allowed(self):
@@ -99,7 +104,7 @@ class TestDatabaseSession:
         async_mock_context.__aexit__ = AsyncMock(return_value=None)
 
         with patch(
-            "app.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
+            "src.infra.persistence.db.session.AsyncSessionLocal", return_value=async_mock_context
         ):
             count = 0
             async for session in get_db():

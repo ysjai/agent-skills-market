@@ -1,6 +1,6 @@
 """Authentication 单元测试套件。
 
-本模块测试 app.core.auth 模块的 get_current_user FastAPI 依赖函数，
+本模块测试 src.core.auth 模块的 get_current_user FastAPI 依赖函数，
 覆盖所有认证场景，包括：
 - 无 Authorization Header
 - 无效 JWT Token
@@ -94,7 +94,7 @@ class TestGetCurrentUserAuthenticationScenarios:
         # Given
         invalid_token = "invalid_token"
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.side_effect = JWTError("Invalid token signature")
 
             # When / Then
@@ -115,7 +115,7 @@ class TestGetCurrentUserAuthenticationScenarios:
         token_without_sub = "valid_token_but_no_sub"
         payload_without_sub = {"exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload_without_sub
 
             # When / Then
@@ -136,10 +136,10 @@ class TestGetCurrentUserAuthenticationScenarios:
         valid_token = "valid_token_with_user_id"
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=None)
 
                 # When / Then
@@ -160,10 +160,10 @@ class TestGetCurrentUserAuthenticationScenarios:
         valid_token = "valid_token_with_inactive_user"
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=inactive_user)
 
                 # When / Then
@@ -184,10 +184,10 @@ class TestGetCurrentUserAuthenticationScenarios:
         raw_token = "raw_token_without_bearer_prefix"
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=active_user)
 
                 # When
@@ -210,10 +210,10 @@ class TestGetCurrentUserAuthenticationScenarios:
         valid_token = "valid_token"
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=active_user)
 
                 # When
@@ -261,10 +261,10 @@ class TestGetCurrentUserEdgeCases:
         valid_user_id = uuid.uuid4()
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=None)
 
                 try:
@@ -298,7 +298,7 @@ class TestGetCurrentUserEdgeCases:
         # Given
         invalid_token = "invalid_token"
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.side_effect = JWTError("Invalid token")
 
             # When / Then
@@ -350,10 +350,10 @@ class TestGetCurrentUserTokenVariations:
         valid_user_id = valid_user.id
         payload = {"sub": str(valid_user_id), "exp": 1234567890, "type": "access"}
 
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.return_value = payload
 
-            with patch("app.core.auth.user") as mock_user_crud:
+            with patch("src.core.auth.user") as mock_user_crud:
                 mock_user_crud.get = AsyncMock(return_value=valid_user)
 
                 # When
@@ -384,7 +384,7 @@ class TestGetCurrentUserTokenVariations:
         Then: 抛出 HTTPException
         """
         # Given
-        with patch("app.core.auth.verify_token") as mock_verify:
+        with patch("src.core.auth.verify_token") as mock_verify:
             mock_verify.side_effect = JWTError("Empty token")
 
             # When / Then
@@ -413,10 +413,10 @@ class TestGetCurrentUserLogging:
         import logging
 
         # 设置日志级别为 WARNING
-        with caplog.at_level(logging.WARNING, logger="app.core.auth"):
+        with caplog.at_level(logging.WARNING, logger="src.core.auth"):
             invalid_token = "invalid_token"
 
-            with patch("app.core.auth.verify_token") as mock_verify:
+            with patch("src.core.auth.verify_token") as mock_verify:
                 mock_verify.side_effect = JWTError("Invalid signature")
 
                 # When
