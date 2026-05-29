@@ -260,8 +260,10 @@ class TestSettingsDefaults:
 
         assert settings.POSTGRES_USER == "user"
 
-    def test_default_environment(self):
+    def test_default_environment(self, monkeypatch: pytest.MonkeyPatch):
         """Test default ENVIRONMENT."""
+        monkeypatch.delenv("ENVIRONMENT", raising=False)
+
         settings = Settings(
             DATABASE_URL="postgresql+asyncpg://user:pass@localhost/db",
             POSTGRES_PASSWORD="test",
